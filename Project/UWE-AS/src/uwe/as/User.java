@@ -9,6 +9,64 @@ package uwe.as;
  *
  * @author 
  */
-public class User {
+public abstract class User {
+    private String name;
+    private int UID;
+    private String passwordHash;
+    private String realName;
+    private String emailAddress;
     
+    public void User(String name, String password, String realName, String emailAddress)
+    {
+        this.name = name;
+        this.passwordHash = password;
+        this.realName = realName;
+        this.emailAddress = emailAddress;
+    }
+    
+    public void modifyName(String newName)
+    {
+        this.name = newName;
+    }
+    
+    public void modifyPasswordHash(String newHash)
+    {
+        this.passwordHash = newHash;
+    }
+    
+    public void modifyRealName(String newName)
+    {
+        this.realName = newName;
+    }
+    
+    public void modifyEmailAddress(String newAddress)
+    {
+        this.emailAddress = newAddress;
+    }
+    
+    public String getName()
+    {
+        return name;
+    }
+    
+    public int getUID()
+    {
+        return UID;
+    }
+    
+    public String getRealName()
+    {
+        return realName;
+    }
+    
+    public String getEmailAddress()
+    {
+        return emailAddress;
+    }
+    
+    public boolean authenticate(String hash)
+    {
+        // TODO
+        return false;
+    }
 }

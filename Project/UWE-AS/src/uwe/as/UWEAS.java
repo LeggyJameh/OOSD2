@@ -16,7 +16,7 @@ public class UWEAS {
     // Using list interface (cannot instantiate)
     private static List<Hall> halls;
     private static List<User> users;
-    private static List<Application> applications;
+    private static List<RoomApplication> applications;
     
     /**
      * @param args the command line arguments
@@ -27,7 +27,7 @@ public class UWEAS {
         // Instantiate main lists
         halls = new ArrayList<Hall>();
         users = new ArrayList<User>();
-        applications = new ArrayList<Application>();
+        applications = new ArrayList<RoomApplication>();
     }
     
     // Adds an unique hall to the hall list
@@ -67,7 +67,7 @@ public class UWEAS {
     }
     
     // Adds an unique application to the application list
-    public void addApplication(Application application)
+    public void addApplication(RoomApplication application)
     {
         if (applications.contains(application) == false)
         {
@@ -76,7 +76,7 @@ public class UWEAS {
     }
     
     // Removes an existing application from the application list
-    public void removeApplication(Application application)
+    public void removeApplication(RoomApplication application)
     {
         if (applications.contains(application))
         {
@@ -97,7 +97,7 @@ public class UWEAS {
     }
     
     // Returns byref the application list
-    public List<Application> getApplications()
+    public List<RoomApplication> getApplications()
     {
         return applications;
     }
