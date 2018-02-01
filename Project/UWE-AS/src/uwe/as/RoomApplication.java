@@ -1,28 +1,25 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package uwe.as;
 
 import java.util.Date;
 
 /**
  *
- * @author 
+ * @author
+ * (WIP 31/01/2018)
  */
 public class RoomApplication {
-    private Room room;
+    private int UID;
+    private int roomUID;
     private Date date;
     private int duration;
-    private Student student;
+    private int studentUID;
     
-    public void RoomApplication(Room room, Date date, int duration, Student student)
+    public void RoomApplication(int roomUID, Date date, int duration, int studentUID)
     {
-        this.room = room;
+        this.roomUID = roomUID;
         this.date = date;
         this.duration = duration;
-        this.student = student;
+        this.studentUID = studentUID;
     }
     
     public void approveApplication()
@@ -35,11 +32,6 @@ public class RoomApplication {
         
     }
     
-    public Room getRoom()
-    {
-        return this.room;
-    }
-    
     public Date getDate()
     {
         return this.date;
@@ -50,14 +42,15 @@ public class RoomApplication {
         return this.duration;
     }
     
-    public Student getStudent()
-    {
-        return this.student;
-    }
-    
     public Date getEndDate()
     {
         // TODO
         return this.date;
+    }
+    
+    public String toString()
+    {
+        // TODO
+        return "";
     }
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package uwe.as;
 
 import java.util.Date;
@@ -10,18 +5,19 @@ import java.util.Date;
 /**
  *
  * @author 
+ * (WIP 31/01/2018)
  */
 public class Lease {
-    
+    private int UID;
     private int leaseNumber;
     private int duration;
-    private Student student;
+    private int studentUID;
     private Date startDate;
     
-    public void Lease(int number, Student student)
+    public void Lease(int number, int studentUID)
     {
         this.leaseNumber = number;
-        this.student = student;
+        this.studentUID = studentUID;
     }
     
     public void modifyDuration(int newDuration)
@@ -32,5 +28,11 @@ public class Lease {
     public void modifyStartDate(Date newDate)
     {
         this.startDate = newDate;
+    }
+    
+    public String toString()
+    {
+        // TODO
+        return "";
     }
 }

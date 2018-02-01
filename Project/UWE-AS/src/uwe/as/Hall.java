@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package uwe.as;
 
 import java.util.List;
@@ -10,14 +5,16 @@ import java.util.List;
 /**
  *
  * @author 
+ * (WIP 31/01/2018)
  */
 public class Hall {
-    private Warden warden;
+    private int UID;
+    private int wardenUID;
     private String name;
     private String number;
     private String address;
     private String telephoneNumber;
-    private List<Room> rooms;
+    private List<Integer> roomUIDs;
     
     public void Hall(String name, String number)
     {
@@ -39,28 +36,25 @@ public class Hall {
         }
     }
     
-    public void addRoom(Room room)
+    public void addRoom(int room)
     {
-        if (rooms.contains(room) == false)
+        if (roomUIDs.contains(room) == false)
         {
-            rooms.add(room);
+            roomUIDs.add(room);
         }
     }
     
-    public void removeRoom(Room room)
+    public void removeRoom(int room)
     {
-        if (rooms.contains(room))
+        if (roomUIDs.contains(room))
         {
-            rooms.remove(room);
+            roomUIDs.remove(room);
         }
     }
     
-    public void modifyWarden(Warden warden)
+    public void modifyWarden(int warden)
     {
-        if (warden != null)
-        {
-            this.warden = warden;
-        }
+        this.wardenUID = warden;
     }
     
     public void modifyAddress(String address)
@@ -127,9 +121,15 @@ public class Hall {
         return this.telephoneNumber;
     }
     
-    public List<Room> getRooms()
+    public List<Integer> getRooms()
     {
-        return rooms;
+        return roomUIDs;
+    }
+    
+    public String toString()
+    {
+        // TODO
+        return "";
     }
 }
 

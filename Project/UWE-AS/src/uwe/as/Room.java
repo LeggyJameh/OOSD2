@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package uwe.as;
 
 import java.util.Date;
@@ -11,12 +6,14 @@ import java.util.List;
 /**
  *
  * @author 
+ * (WIP 31/01/2018)
  */
 public class Room {
+    private int UID;
     private String number;
     private int rentRate;
     private CleanState cleanliness;
-    private List<Lease> leases;
+    private List<Integer> leases;
     
     public void Room(String number, int rate)
     {
@@ -41,7 +38,7 @@ public class Room {
         this.rentRate = newRate;
     }
     
-    public boolean addLease(Lease lease)
+    public boolean addLease(int lease)
     {
        // TODO add calculation logic
         // Return false if cannot fit in lease due to another being in that time slot
@@ -49,7 +46,7 @@ public class Room {
         return false;
     }
     
-    public boolean removeLease(Lease lease)
+    public boolean removeLease(int lease)
     {
         // TODO
         return false;
@@ -70,7 +67,7 @@ public class Room {
         return this.cleanliness;
     }
     
-    public List<Lease> getLeases()
+    public List<Integer> getLeases()
     {
         return this.leases;
     }
@@ -81,10 +78,16 @@ public class Room {
         return null;
     }
     
-    public Lease getLeaseForStudent(Student student)
+    public Lease getLeaseForStudent(User student)
     {
         // TODO
         return null;
+    }
+    
+    public String toString()
+    {
+        // TODO
+        return "";
     }
 }
 
