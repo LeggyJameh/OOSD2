@@ -7,9 +7,8 @@ package uwe.as;
 
 /**
  *
- * @author 
+ * @author
  */
-public enum CleanState
-{
+public enum CleanState {
     CLEAN, DIRTY, OFFLINE;
 }
