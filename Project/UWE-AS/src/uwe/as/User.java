@@ -13,21 +13,20 @@ public class User {
     private String emailAddress;
     private String studentNumber;
     private int accountLevel;
-    private static Data_Cache data_cache;
+    public static Data_Cache data_cache;
     
     // General use constructor
-    public void User(String name, String password, String realName, String emailAddress, Data_Cache data_cache)
+    public User(String name, String password, String realName, String emailAddress)
     {
         this.name = name;
         this.passwordHash = password;
         this.realName = realName;
         this.emailAddress = emailAddress;
-        this.data_cache = data_cache;
-        data_cache.addUser(this);
+        data_cache.createUser(this);
     }
     
     // DB Controller constructor
-    public void User(int UID, String name, String realName, String emailAddress, String passwordHash, int accountLevel, String studentNumber, Data_Cache data_cache)
+    public User(int UID, String name, String realName, String emailAddress, String passwordHash, int accountLevel, String studentNumber)
     {
         this.UID = UID;
         this.name = name;
@@ -36,7 +35,6 @@ public class User {
         this.passwordHash = passwordHash;
         this.accountLevel = accountLevel;
         this.studentNumber = studentNumber;
-        this.data_cache = data_cache;
         data_cache.addUser(this);
     }
     
@@ -96,6 +94,11 @@ public class User {
         return emailAddress;
     }
     
+    public String getPasswordHash()
+    {
+        return passwordHash;
+    }
+    
     public String getStudentNumber()
     {
         return this.studentNumber;
@@ -110,17 +113,5 @@ public class User {
     {
         // TODO
         return false;
-    }
-    
-    public String toString()
-    {
-        return "User [UID='" + this.UID +
-                "', name='"+ this.name +
-                "', realName='" + this.realName +
-                "', emailAddress='" + this.emailAddress +
-                "', passwordHash='" + this.passwordHash +
-                "', accountLevel='" + this.accountLevel +
-                "', studentNumber='" + this.studentNumber +
-                "']";
     }
 }

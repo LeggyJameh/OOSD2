@@ -13,13 +13,25 @@ public class RoomApplication {
     private Date date;
     private int duration;
     private int studentUID;
+    public static Data_Cache data_cache;
     
-    public void RoomApplication(int roomUID, Date date, int duration, int studentUID)
+    public RoomApplication(int roomUID, Date date, int duration, int studentUID)
     {
         this.roomUID = roomUID;
         this.date = date;
         this.duration = duration;
         this.studentUID = studentUID;
+        data_cache.createApplication(this);
+    }
+    
+    public RoomApplication(int UID, int roomUID, Date date, int duration, int studentUID)
+    {
+        this.UID = UID;
+        this.roomUID = roomUID;
+        this.date = date;
+        this.duration = duration;
+        this.studentUID = studentUID;
+        data_cache.addApplication(this);
     }
     
     public void approveApplication()
@@ -32,6 +44,16 @@ public class RoomApplication {
         
     }
     
+    public int getUID()
+    {
+        return this.UID;
+    }
+    
+    public int getRoomUID()
+    {
+        return this.roomUID;
+    }
+    
     public Date getDate()
     {
         return this.date;
@@ -42,15 +64,14 @@ public class RoomApplication {
         return this.duration;
     }
     
+    public int getStudentUID()
+    {
+        return this.studentUID;
+    }
+    
     public Date getEndDate()
     {
         // TODO
         return this.date;
-    }
-    
-    public String toString()
-    {
-        // TODO
-        return "";
     }
 }

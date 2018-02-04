@@ -1,0 +1,1 @@
+start Database\bin\mysqld.exe

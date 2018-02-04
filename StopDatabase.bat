@@ -1,0 +1,1 @@
+start Database\bin\mysqladmin.exe -u root shutdown

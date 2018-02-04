@@ -1,5 +1,6 @@
 package uwe.as;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,8 +15,9 @@ public class Room {
     private int rentRate;
     private CleanState cleanliness;
     private List<Integer> leases;
+    public static Data_Cache data_cache;
     
-    public void Room(String number, int rate)
+    public Room(String number, int rate)
     {
         if (number != null)
         {
@@ -26,30 +28,22 @@ public class Room {
             this.number = "";
         }
         this.rentRate = rate;
+        data_cache.createRoom(this);
     }
     
-    public void changeCleaninessState(CleanState newState)
+    public Room(int UID, String number, int rentRate, CleanState cleaniness)
     {
-        this.cleanliness = newState;
+        this.UID = UID;
+        this.number = number;
+        this.rentRate = rentRate;
+        this.cleanliness = cleaniness;
+        this.leases = new ArrayList<Integer>();
+        data_cache.addRoom(this);
     }
     
-    public void modifyRate(int newRate)
+    public int getUID()
     {
-        this.rentRate = newRate;
-    }
-    
-    public boolean addLease(int lease)
-    {
-       // TODO add calculation logic
-        // Return false if cannot fit in lease due to another being in that time slot
-        // return true if added successfully.
-        return false;
-    }
-    
-    public boolean removeLease(int lease)
-    {
-        // TODO
-        return false;
+        return this.UID;
     }
     
     public String getNumber()
@@ -72,6 +66,26 @@ public class Room {
         return this.leases;
     }
     
+    public void changeCleaninessState(CleanState newState)
+    {
+        this.cleanliness = newState;
+    }
+    
+    public void modifyRate(int newRate)
+    {
+        this.rentRate = newRate;
+    }
+    
+    public void addLease(int lease)
+    {
+        leases.add(lease);
+    }
+    
+    public void removeLease(int lease)
+    {
+        leases.remove(lease);
+    }
+    
     public Lease getLeaseForDate(Date date)
     {
         // TODO
@@ -82,12 +96,6 @@ public class Room {
     {
         // TODO
         return null;
-    }
-    
-    public String toString()
-    {
-        // TODO
-        return "";
     }
 }
 

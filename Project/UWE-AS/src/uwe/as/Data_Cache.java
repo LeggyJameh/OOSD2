@@ -20,13 +20,20 @@ public class Data_Cache {
     private static List<RoomApplication> applications;
     private static List<User> users;
     
-    public void Data_Cache()
+    public Data_Cache()
     {
         halls = new ArrayList<Hall>();
         leases = new ArrayList<Lease>();
         rooms = new ArrayList<Room>();
         applications = new ArrayList<RoomApplication>();
         users = new ArrayList<User>();
+        
+        Hall.data_cache = this;
+        Lease.data_cache = this;
+        Room.data_cache = this;
+        RoomApplication.data_cache = this;
+        User.data_cache = this;
+        
     }
     
     // Adds an unique hall to the hall list
@@ -47,6 +54,12 @@ public class Data_Cache {
         }
     }
     
+    // Creates this entry in the database and updates with correct info from the db.
+    public void createHall(Hall hall)
+    {
+        
+    }
+    
     public void addLease(Lease lease)
     {
         if (leases.contains(lease) == false)
@@ -63,6 +76,11 @@ public class Data_Cache {
         }
     }
     
+    public void createLease(Lease lease)
+    {
+        
+    }
+    
     public void addRoom(Room room)
     {
         if (rooms.contains(room) == false)
@@ -77,6 +95,11 @@ public class Data_Cache {
         {
             rooms.remove(room);
         }
+    }
+    
+    public void createRoom(Room room)
+    {
+        
     }
     
     // Adds an unique user to the user list
@@ -97,6 +120,11 @@ public class Data_Cache {
         }
     }
     
+    public void createUser(User user)
+    {
+        
+    }
+    
     // Adds an unique application to the application list
     public void addApplication(RoomApplication application)
     {
@@ -113,6 +141,11 @@ public class Data_Cache {
         {
             applications.remove(application);
         }
+    }
+    
+    public void createApplication(RoomApplication application)
+    {
+        
     }
     
     // Returns byref the hall list

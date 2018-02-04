@@ -1,5 +1,6 @@
 package uwe.as;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,8 +16,9 @@ public class Hall {
     private String address;
     private String telephoneNumber;
     private List<Integer> roomUIDs;
+    public static Data_Cache data_cache;
     
-    public void Hall(String name, String number)
+    public Hall(String name, String number)
     {
         if (name != null)
         {
@@ -34,6 +36,54 @@ public class Hall {
         {
             this.number = "";
         }
+        data_cache.createHall(this);
+    }
+    
+    public Hall(int UID, int wardenUID, String name, String number, String address, String telephoneNumber)
+    {
+        this.UID = UID;
+        this.wardenUID = wardenUID;
+        this.name = name;
+        this.number = number;
+        this.address = address;
+        this.telephoneNumber = telephoneNumber;
+        this.roomUIDs = new ArrayList<Integer>();
+        data_cache.addHall(this);
+    }
+    
+    public int getUID()
+    {
+        return this.UID;
+    }
+    
+    public int getWardenUID()
+    {
+        return this.wardenUID;
+    }
+    
+    public String getName()
+    {
+        return this.name;
+    }
+    
+    public String getNumber()
+    {
+        return this.number;
+    }
+    
+    public String getAddress()
+    {
+        return this.address;
+    }
+    
+    public String getTelephoneNumber()
+    {
+        return this.telephoneNumber;
+    }
+    
+    public List<Integer> getRooms()
+    {
+        return roomUIDs;
     }
     
     public void addRoom(int room)
@@ -99,37 +149,6 @@ public class Hall {
                 this.number = newNumber;
             }
         }
-    }
-    
-    public String getName()
-    {
-        return this.name;
-    }
-    
-    public String getNumber()
-    {
-        return this.number;
-    }
-    
-    public String getAddress()
-    {
-        return this.address;
-    }
-    
-    public String getTelephoneNumber()
-    {
-        return this.telephoneNumber;
-    }
-    
-    public List<Integer> getRooms()
-    {
-        return roomUIDs;
-    }
-    
-    public String toString()
-    {
-        // TODO
-        return "";
     }
 }
 
