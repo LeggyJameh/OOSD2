@@ -46,34 +46,38 @@ public class Login extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel2.setBackground(new java.awt.Color(247, 245, 242));
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
-        lgn_username_text.setBackground(new java.awt.Color(16, 27, 40));
+        lgn_username_text.setBackground(new java.awt.Color(255, 255, 255));
         lgn_username_text.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        lgn_username_text.setForeground(new java.awt.Color(204, 204, 204));
+        lgn_username_text.setForeground(new java.awt.Color(0, 0, 0));
         lgn_username_text.setText("Username");
 
-        lgn_seperator.setForeground(new java.awt.Color(204, 204, 204));
+        lgn_seperator.setBackground(new java.awt.Color(255, 0, 0));
+        lgn_seperator.setForeground(new java.awt.Color(255, 0, 0));
         lgn_seperator.setToolTipText("");
 
-        lgn_password_text.setBackground(new java.awt.Color(16, 27, 40));
+        lgn_password_text.setBackground(new java.awt.Color(255, 255, 255));
         lgn_password_text.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        lgn_password_text.setForeground(new java.awt.Color(204, 204, 204));
+        lgn_password_text.setForeground(new java.awt.Color(0, 0, 0));
         lgn_password_text.setText("Password");
 
-        lgn_password_field.setBackground(new java.awt.Color(247, 245, 242));
-        lgn_password_field.setForeground(new java.awt.Color(204, 204, 204));
+        lgn_password_field.setBackground(new java.awt.Color(255, 255, 255));
+        lgn_password_field.setForeground(new java.awt.Color(0, 0, 0));
         lgn_password_field.setText("jPasswordField1");
         lgn_password_field.setBorder(null);
 
-        lgn_seperator2.setForeground(new java.awt.Color(204, 204, 204));
+        lgn_seperator2.setBackground(new java.awt.Color(255, 0, 0));
+        lgn_seperator2.setForeground(new java.awt.Color(255, 0, 0));
 
-        lgn_signIn_text.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        lgn_signIn_text.setBackground(new java.awt.Color(255, 255, 255));
+        lgn_signIn_text.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lgn_signIn_text.setForeground(new java.awt.Color(0, 0, 0));
         lgn_signIn_text.setText("Sign in");
 
-        lgn_username_textfield.setBackground(new java.awt.Color(247, 245, 242));
+        lgn_username_textfield.setBackground(new java.awt.Color(255, 255, 255));
         lgn_username_textfield.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lgn_username_textfield.setForeground(new java.awt.Color(0, 0, 0));
         lgn_username_textfield.setText("jTextField1");
         lgn_username_textfield.setBorder(null);
         lgn_username_textfield.addActionListener(new java.awt.event.ActionListener() {
@@ -82,9 +86,12 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        lgn_signin_button.setBackground(new java.awt.Color(247, 245, 242));
+        lgn_signin_button.setBackground(new java.awt.Color(255, 0, 0));
         lgn_signin_button.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lgn_signin_button.setForeground(new java.awt.Color(255, 255, 255));
         lgn_signin_button.setText("SIGN IN");
+        lgn_signin_button.setBorder(null);
+        lgn_signin_button.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         lgn_signin_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 lgn_signin_buttonActionPerformed(evt);
@@ -99,20 +106,17 @@ public class Login extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(229, 229, 229)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                        .addComponent(lgn_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lgn_signIn_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lgn_username_text)
-                        .addComponent(lgn_seperator, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lgn_password_text)
-                        .addComponent(lgn_password_field, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lgn_signin_button, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                            .addGap(4, 4, 4)
-                            .addComponent(lgn_username_textfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(lgn_seperator2, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(233, 233, 233)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(lgn_username_text)
+                    .addComponent(lgn_seperator, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lgn_password_text)
+                    .addComponent(lgn_password_field, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lgn_seperator2, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lgn_signIn_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lgn_username_textfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lgn_signin_button, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lgn_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(229, 229, 229))
         );
         jPanel2Layout.setVerticalGroup(

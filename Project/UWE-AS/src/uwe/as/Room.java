@@ -1,93 +1,92 @@
 package uwe.as;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
  *
- * @author 
- * (WIP 31/01/2018)
+ * @author (WIP 31/01/2018)
  */
 public class Room {
+
     private int UID;
+    private int hallUID;
     private String number;
     private int rentRate;
     private CleanState cleanliness;
     private List<Integer> leases;
-    
-    public void Room(String number, int rate)
-    {
-        if (number != null)
-        {
+    private String description;
+    public static Data_Cache data_cache;
+
+    public Room(String number, int rate) {
+        if (number != null) {
             this.number = number;
-        }
-        else
-        {
+        } else {
             this.number = "";
         }
         this.rentRate = rate;
+        data_cache.createRoom(this);
     }
-    
-    public void changeCleaninessState(CleanState newState)
-    {
-        this.cleanliness = newState;
+
+    public Room(int UID, int hallUID, String number, int rentRate, CleanState cleaniness, String description) {
+        this.UID = UID;
+        this.hallUID = hallUID;
+        this.number = number;
+        this.rentRate = rentRate;
+        this.cleanliness = cleaniness;
+        this.leases = new ArrayList<Integer>();
+        this.description = description;
+        data_cache.addRoom(this);
     }
-    
-    public void modifyRate(int newRate)
-    {
-        this.rentRate = newRate;
+
+    public int getUID() {
+        return this.UID;
     }
-    
-    public boolean addLease(int lease)
-    {
-       // TODO add calculation logic
-        // Return false if cannot fit in lease due to another being in that time slot
-        // return true if added successfully.
-        return false;
-    }
-    
-    public boolean removeLease(int lease)
-    {
-        // TODO
-        return false;
-    }
-    
-    public String getNumber()
-    {
+
+    public String getNumber() {
         return this.number;
     }
-    
-    public int getRate()
-    {
+
+    public int getRate() {
         return this.rentRate;
     }
-    
-    public CleanState getCleaniness()
-    {
+
+    public CleanState getCleaniness() {
         return this.cleanliness;
     }
-    
-    public List<Integer> getLeases()
-    {
+
+    public List<Integer> getLeases() {
         return this.leases;
     }
-    
-    public Lease getLeaseForDate(Date date)
-    {
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void changeCleaninessState(CleanState newState) {
+        this.cleanliness = newState;
+    }
+
+    public void modifyRate(int newRate) {
+        this.rentRate = newRate;
+    }
+
+    public void addLease(int lease) {
+        leases.add(lease);
+    }
+
+    public void removeLease(int lease) {
+        leases.remove(lease);
+    }
+
+    public Lease getLeaseForDate(Date date) {
         // TODO
         return null;
     }
-    
-    public Lease getLeaseForStudent(User student)
-    {
+
+    public Lease getLeaseForStudent(User student) {
         // TODO
         return null;
-    }
-    
-    public String toString()
-    {
-        // TODO
-        return "";
     }
 }
-

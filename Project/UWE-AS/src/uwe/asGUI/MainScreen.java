@@ -11,8 +11,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 /**
@@ -41,23 +39,27 @@ public class MainScreen extends javax.swing.JFrame {
         jMenu5 = new javax.swing.JMenu();
         jMenu6 = new javax.swing.JMenu();
         jMenu7 = new javax.swing.JMenu();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        ms_seperator = new javax.swing.JPanel();
+        ms_panel = new javax.swing.JPanel();
         ms_uwe_text = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
+        ms_seperator = new javax.swing.JSeparator();
         ms_btn_hallmanager = new javax.swing.JPanel();
         ms_ind_hallmanager = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        ms_hallmanager_text = new javax.swing.JLabel();
         ms_btn_warden = new javax.swing.JPanel();
         ms_ind_warden = new javax.swing.JPanel();
         ms_warden_text = new javax.swing.JLabel();
         ms_btn_all = new javax.swing.JPanel();
         ms_ind_all = new javax.swing.JPanel();
         ms_btn_all_text = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        ms_database_table = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
 
         jMenu1.setText("jMenu1");
 
@@ -68,26 +70,17 @@ public class MainScreen extends javax.swing.JFrame {
         jMenu7.setText("jMenu7");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(197, 196, 193));
+        setBackground(new java.awt.Color(247, 245, 242));
         setLocationByPlatform(true);
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
+        ms_panel.setBackground(new java.awt.Color(5, 102, 141));
 
-        jButton2.setText("jButton2");
+        ms_uwe_text.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        ms_uwe_text.setText("UWE Accomodation");
 
         ms_seperator.setBackground(new java.awt.Color(247, 245, 242));
 
-        ms_uwe_text.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        ms_uwe_text.setText("UWE Accomodation");
-
-        jSeparator1.setBackground(new java.awt.Color(247, 245, 242));
-
-        ms_btn_hallmanager.setBackground(new java.awt.Color(247, 245, 242));
+        ms_btn_hallmanager.setBackground(new java.awt.Color(5, 102, 141));
         ms_btn_hallmanager.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 ms_btn_hallmanagerMousePressed(evt);
@@ -108,11 +101,11 @@ public class MainScreen extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        jLabel2.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        jLabel2.setText("Hall Manager");
-        jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
+        ms_hallmanager_text.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        ms_hallmanager_text.setText("Hall Manager");
+        ms_hallmanager_text.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                jLabel2MousePressed(evt);
+                ms_hallmanager_textMousePressed(evt);
             }
         });
 
@@ -123,7 +116,7 @@ public class MainScreen extends javax.swing.JFrame {
             .addGroup(ms_btn_hallmanagerLayout.createSequentialGroup()
                 .addComponent(ms_ind_hallmanager, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ms_hallmanager_text, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         ms_btn_hallmanagerLayout.setVerticalGroup(
@@ -131,11 +124,11 @@ public class MainScreen extends javax.swing.JFrame {
             .addComponent(ms_ind_hallmanager, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(ms_btn_hallmanagerLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2)
+                .addComponent(ms_hallmanager_text)
                 .addContainerGap(23, Short.MAX_VALUE))
         );
 
-        ms_btn_warden.setBackground(new java.awt.Color(247, 245, 242));
+        ms_btn_warden.setBackground(new java.awt.Color(5, 102, 141));
         ms_btn_warden.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 ms_btn_wardenMousePressed(evt);
@@ -156,7 +149,7 @@ public class MainScreen extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        ms_warden_text.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        ms_warden_text.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         ms_warden_text.setText("Warden");
 
         javax.swing.GroupLayout ms_btn_wardenLayout = new javax.swing.GroupLayout(ms_btn_warden);
@@ -178,7 +171,7 @@ public class MainScreen extends javax.swing.JFrame {
                 .addContainerGap(35, Short.MAX_VALUE))
         );
 
-        ms_btn_all.setBackground(new java.awt.Color(247, 245, 242));
+        ms_btn_all.setBackground(new java.awt.Color(5, 102, 141));
         ms_btn_all.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 ms_btn_allMousePressed(evt);
@@ -199,7 +192,7 @@ public class MainScreen extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        ms_btn_all_text.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        ms_btn_all_text.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         ms_btn_all_text.setText("All");
 
         javax.swing.GroupLayout ms_btn_allLayout = new javax.swing.GroupLayout(ms_btn_all);
@@ -221,30 +214,30 @@ public class MainScreen extends javax.swing.JFrame {
                 .addContainerGap(23, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout ms_seperatorLayout = new javax.swing.GroupLayout(ms_seperator);
-        ms_seperator.setLayout(ms_seperatorLayout);
-        ms_seperatorLayout.setHorizontalGroup(
-            ms_seperatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ms_seperatorLayout.createSequentialGroup()
-                .addGroup(ms_seperatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(ms_seperatorLayout.createSequentialGroup()
+        javax.swing.GroupLayout ms_panelLayout = new javax.swing.GroupLayout(ms_panel);
+        ms_panel.setLayout(ms_panelLayout);
+        ms_panelLayout.setHorizontalGroup(
+            ms_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ms_panelLayout.createSequentialGroup()
+                .addGroup(ms_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(ms_panelLayout.createSequentialGroup()
                         .addGap(19, 19, 19)
                         .addComponent(ms_uwe_text))
-                    .addGroup(ms_seperatorLayout.createSequentialGroup()
+                    .addGroup(ms_panelLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(ms_seperator, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(ms_btn_warden, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(ms_btn_hallmanager, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(ms_btn_all, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        ms_seperatorLayout.setVerticalGroup(
-            ms_seperatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ms_seperatorLayout.createSequentialGroup()
+        ms_panelLayout.setVerticalGroup(
+            ms_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ms_panelLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(ms_uwe_text)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ms_seperator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36)
                 .addComponent(ms_btn_hallmanager, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32)
@@ -265,20 +258,82 @@ public class MainScreen extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        ms_database_table.setViewportView(jTable1);
 
         jPanel2.setBackground(new java.awt.Color(247, 245, 242));
+        jPanel2.setLayout(new java.awt.CardLayout());
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+        jPanel1.setBackground(new java.awt.Color(247, 245, 242));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel1.setText("Lease Information");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addContainerGap(351, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addContainerGap(174, Short.MAX_VALUE))
         );
+
+        jPanel2.add(jPanel1, "card2");
+
+        jPanel3.setBackground(new java.awt.Color(247, 245, 242));
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel3.setText("Room Cleaning Status");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel3)
+                .addContainerGap(318, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel3)
+                .addContainerGap(174, Short.MAX_VALUE))
+        );
+
+        jPanel2.add(jPanel3, "card2");
+
+        jPanel4.setBackground(new java.awt.Color(5, 102, 141));
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel4.setText("Room Applicaitons");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel4)
+                .addContainerGap(344, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel4)
+                .addContainerGap(174, Short.MAX_VALUE))
+        );
+
+        jPanel2.add(jPanel4, "card2");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -286,67 +341,74 @@ public class MainScreen extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addComponent(ms_seperator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ms_panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
+                    .addComponent(ms_database_table)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(ms_seperator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ms_panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(ms_database_table, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void ms_hallmanager_textMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ms_hallmanager_textMousePressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jLabel2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MousePressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jLabel2MousePressed
+    }//GEN-LAST:event_ms_hallmanager_textMousePressed
 
     private void ms_btn_hallmanagerMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ms_btn_hallmanagerMousePressed
         // TODO add your handling code here:
         setColor(ms_btn_hallmanager);
         resetColor(ms_btn_all);
-            resetColor(ms_btn_warden);
-            ms_ind_hallmanager.setOpaque(true);
-            ms_ind_warden.setOpaque(false);
-            ms_ind_all.setOpaque(false);
-                
+        resetColor(ms_btn_warden);
+        ms_ind_hallmanager.setOpaque(true);
+        ms_ind_warden.setOpaque(false);
+        ms_ind_all.setOpaque(false);
+
+          jPanel1.setVisible(true);
+          jPanel3.setVisible(false);
+          jPanel4.setVisible(false);
                     
     }//GEN-LAST:event_ms_btn_hallmanagerMousePressed
 
     private void ms_btn_wardenMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ms_btn_wardenMousePressed
         // TODO add your handling code here:
-         setColor(ms_btn_warden);
+        setColor(ms_btn_warden);
         resetColor(ms_btn_all);
-            resetColor(ms_btn_hallmanager);
-            ms_ind_warden.setOpaque(true);
-            ms_ind_hallmanager.setOpaque(false);
-            ms_ind_all.setOpaque(false);
+        resetColor(ms_btn_hallmanager);
+        ms_ind_warden.setOpaque(true);
+        ms_ind_hallmanager.setOpaque(false);
+        ms_ind_all.setOpaque(false);
+
+          jPanel1.setVisible(false);
+          jPanel3.setVisible(true);
+          jPanel4.setVisible(false);
     }//GEN-LAST:event_ms_btn_wardenMousePressed
 
     private void ms_btn_allMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ms_btn_allMousePressed
         // TODO add your handling code here:
-         setColor(ms_btn_all);
+        setColor(ms_btn_all);
         resetColor(ms_btn_hallmanager);
-            resetColor(ms_btn_warden);
-            ms_ind_hallmanager.setOpaque(false);
-            ms_ind_warden.setOpaque(false);
-            ms_ind_all.setOpaque(true);
+        resetColor(ms_btn_warden);
+        ms_ind_hallmanager.setOpaque(false);
+        ms_ind_warden.setOpaque(false);
+        ms_ind_all.setOpaque(true);
+            
+          jPanel1.setVisible(false);
+          jPanel3.setVisible(false);
+          jPanel4.setVisible(true);
     }//GEN-LAST:event_ms_btn_allMousePressed
     
     // loading smaple data
@@ -411,25 +473,29 @@ public class MainScreen extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenu jMenu7;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JTable jTable1;
     private javax.swing.JPanel ms_btn_all;
     private javax.swing.JLabel ms_btn_all_text;
     private javax.swing.JPanel ms_btn_hallmanager;
     private javax.swing.JPanel ms_btn_warden;
+    private javax.swing.JScrollPane ms_database_table;
+    private javax.swing.JLabel ms_hallmanager_text;
     private javax.swing.JPanel ms_ind_all;
     private javax.swing.JPanel ms_ind_hallmanager;
     private javax.swing.JPanel ms_ind_warden;
-    private javax.swing.JPanel ms_seperator;
+    private javax.swing.JPanel ms_panel;
+    private javax.swing.JSeparator ms_seperator;
     private javax.swing.JLabel ms_uwe_text;
     private javax.swing.JLabel ms_warden_text;
     // End of variables declaration//GEN-END:variables
