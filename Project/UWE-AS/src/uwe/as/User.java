@@ -5,9 +5,8 @@ package uwe.as;
  * @author Jamie Mills (16004255) (Completed 31/01/2018)
  */
 public class User {
-
-    private String name;
     private int UID;
+    private String name;
     private String passwordHash;
     private String realName;
     private String emailAddress;

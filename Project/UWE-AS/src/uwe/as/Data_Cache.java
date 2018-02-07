@@ -22,18 +22,23 @@ public class Data_Cache {
     private static List<User> users;
 
     public Data_Cache() {
-        halls = new ArrayList<Hall>();
-        leases = new ArrayList<Lease>();
-        rooms = new ArrayList<Room>();
-        applications = new ArrayList<RoomApplication>();
-        users = new ArrayList<User>();
+        halls = new ArrayList<>();
+        leases = new ArrayList<>();
+        rooms = new ArrayList<>();
+        applications = new ArrayList<>();
+        users = new ArrayList<>();
 
+        setupReferences();
+    }
+
+    private void setupReferences() {
         Hall.data_cache = this;
         Lease.data_cache = this;
         Room.data_cache = this;
         RoomApplication.data_cache = this;
         User.data_cache = this;
-
+        uwe.asGUI.Login.data_cache = this;
+        uwe.asGUI.MainScreen.data_cache = this;
     }
 
     // Adds an unique hall to the hall list
@@ -162,6 +167,18 @@ public class Data_Cache {
         return null;
     }
 
+    public User getUser(String username) {
+        if (users != null) {
+            List<User> filteredUsers = users.stream().filter(u -> u.getName() == username).collect(Collectors.toList());
+            if (filteredUsers != null) {
+                if (!filteredUsers.isEmpty()) {
+                    return filteredUsers.get(0);
+                }
+            }
+        }
+        return null;
+    }
+
     // Returns byref the application list
     public List<RoomApplication> getApplications() {
         return applications;
@@ -229,5 +246,16 @@ public class Data_Cache {
 
     public void updateRoomApplication(RoomApplication application) {
         DB_Controller.updateApplication(application);
+    }
+
+    public boolean authenticate(String username, String passwordAttempt) {
+        User currentUser = this.getUser(username);
+
+        if (currentUser != null) {
+            if (PasswordStorage.ValidatePassword(passwordAttempt, currentUser.getPasswordHash())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

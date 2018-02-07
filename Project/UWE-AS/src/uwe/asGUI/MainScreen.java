@@ -19,6 +19,7 @@ import javax.swing.JPanel;
  */
 public class MainScreen extends javax.swing.JFrame {
 
+    public static uwe.as.Data_Cache data_cache;
     /**
      * Creates new form MainScreen
      */

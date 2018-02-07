@@ -63,7 +63,7 @@ public class DB_Controller {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("getUsers() produced the following error:");
+            System.out.println("DB_Controller.getUsers() produced the following error:");
             System.out.println(e);
         }
     }
@@ -84,7 +84,7 @@ public class DB_Controller {
                 getHallRooms(h);
             }
         } catch (SQLException e) {
-            System.out.println("getHalls() produced the following error:");
+            System.out.println("DB_Controller.getHalls() produced the following error:");
             System.out.println(e);
         }
     }
@@ -105,7 +105,7 @@ public class DB_Controller {
                 getRoomLeases(r);
             }
         } catch (SQLException e) {
-            System.out.println("getRooms() produced the following error:");
+            System.out.println("DB_Controller.getRooms() produced the following error:");
             System.out.println(e);
         }
     }
@@ -122,7 +122,7 @@ public class DB_Controller {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("getLeases() produced the following error:");
+            System.out.println("DB_Controller.getLeases() produced the following error:");
             System.out.println(e);
         }
     }
@@ -141,7 +141,7 @@ public class DB_Controller {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("getApplications() produced the following error:");
+            System.out.println("DB_Controller.getApplications() produced the following error:");
             System.out.println(e);
         }
     }
@@ -157,7 +157,7 @@ public class DB_Controller {
                 }
             }
         } catch (SQLException ex) {
-            System.out.println("getUser() produced the following error:");
+            System.out.println("DB_Controller.getUser() produced the following error:");
             System.out.println(ex);
         }
     }
@@ -178,7 +178,7 @@ public class DB_Controller {
                 getHallRooms(hall);
             }
         } catch (SQLException ex) {
-            System.out.println("getHall() produced the following error:");
+            System.out.println("DB_Controller.getHall() produced the following error:");
             System.out.println(ex);
         }
     }
@@ -198,7 +198,7 @@ public class DB_Controller {
                 getRoomLeases(room);
             }
         } catch (SQLException ex) {
-            System.out.println("getRoom() produced the following error:");
+            System.out.println("DB_Controller.getRoom() produced the following error:");
             System.out.println(ex);
         }
     }
@@ -214,7 +214,7 @@ public class DB_Controller {
                 }
             }
         } catch (SQLException ex) {
-            System.out.println("getLease() produced the following error:");
+            System.out.println("DB_Controller.getLease() produced the following error:");
             System.out.println(ex);
         }
     }
@@ -230,7 +230,7 @@ public class DB_Controller {
                 }
             }
         } catch (SQLException ex) {
-            System.out.println("getApplication() produced the following error:");
+            System.out.println("DB_Controller.getApplication() produced the following error:");
             System.out.println(ex);
         }
     }
@@ -242,6 +242,7 @@ public class DB_Controller {
                 + "', `StudentNumber`='" + user.getStudentNumber()
                 + "', `AccountLevel`='" + Integer.toString(user.getAccountLevel())
                 + "') WHERE `UID`='" + Integer.toString(user.getUID()) + "';";
+        
         executeNonQuery(query);
     }
 
@@ -253,6 +254,7 @@ public class DB_Controller {
                 + "', `Address`='" + hall.getAddress()
                 + "', `TelephoneNumber`='" + hall.getTelephoneNumber()
                 + "') WHERE `UID`='" + Integer.toString(hall.getUID()) + "';";
+        
         executeNonQuery(query);
     }
 
@@ -273,6 +275,7 @@ public class DB_Controller {
                 + "', `RentRate`='" + Integer.toString(room.getRate())
                 + "', `Cleaniness`='" + Integer.toString(cleanliness)
                 + "') WHERE `UID`='" + Integer.toString(room.getUID()) + "';";
+        
         executeNonQuery(query);
     }
 
@@ -284,6 +287,7 @@ public class DB_Controller {
                 + "', `StudentUID`='" + Integer.toString(lease.getStudentUID())
                 + "', `StartDate`='" + date
                 + "') WHERE `UID`='" + Integer.toString(lease.getUID()) + "';";
+        
         executeNonQuery(query);
     }
 
@@ -295,6 +299,7 @@ public class DB_Controller {
                 + "', `Duration`='" + Integer.toString(application.getDuration())
                 + "', `StudentUID`='" + Integer.toString(application.getStudentUID())
                 + "') WHERE `UID`='" + Integer.toString(application.getUID()) + "';";
+        
         executeNonQuery(query);
     }
 
@@ -309,6 +314,7 @@ public class DB_Controller {
                 + user.getEmailAddress() + "', '"
                 + user.getStudentNumber() + "', '"
                 + "0')";
+        
         executeNonQuery(query);
 
         return getLastInsertID();
@@ -330,6 +336,7 @@ public class DB_Controller {
                 + "(`Number`, `RentRate`) VALUES ('"
                 + room.getNumber() + "', '"
                 + room.getRate() + "')";
+        
         executeNonQuery(query);
 
         return getLastInsertID();
@@ -340,6 +347,7 @@ public class DB_Controller {
                 + "(`LeaseNumber`, `StudentUID`) VALUES ('"
                 + lease.getLeaseNumber() + "', '"
                 + lease.getStudentUID() + "')";
+        
         executeNonQuery(query);
 
         return getLastInsertID();
@@ -355,29 +363,40 @@ public class DB_Controller {
                 + date + "', '"
                 + application.getDuration() + "', '"
                 + application.getStudentUID() + "')";
+        
         executeNonQuery(query);
 
         return getLastInsertID();
     }
 
     public static void removeUser(User user) {
-
+        String query = "DELETE FROM `users` WHERE `UID`='" + user.getUID() + "';";
+        
+        executeNonQuery(query);
     }
 
     public static void removeHall(Hall hall) {
-
+        String query = "DELETE FROM `halls` WHERE `UID`='" + hall.getUID() + "';";
+        
+        executeNonQuery(query);
     }
 
     public static void removeRoom(Room room) {
-
+        String query = "DELETE FROM `rooms` WHERE `UID`='" + room.getUID() + "';";
+        
+        executeNonQuery(query);
     }
 
     public static void removeLease(Lease lease) {
-
+        String query = "DELETE FROM `leases` WHERE `UID`='" + lease.getUID() + "';";
+        
+        executeNonQuery(query);
     }
 
     public static void removeApplication(RoomApplication application) {
-
+        String query = "DELETE FROM `applications` WHERE `UID`='" + application.getUID() + "';";
+        
+        executeNonQuery(query);
     }
 
     private static void executeNonQuery(String query) {
@@ -386,7 +405,7 @@ public class DB_Controller {
                 statement.executeUpdate(query);
             }
         } catch (SQLException ex) {
-            System.out.println("executeNonQuery() produced the following error:");
+            System.out.println("DB_Controller.executeNonQuery() produced the following error:");
             System.out.println(ex);
         }
     }
@@ -403,7 +422,7 @@ public class DB_Controller {
                 return result.getInt(0);
             }
         } catch (SQLException ex) {
-            System.out.println("getLastInsertID() produced the following error:");
+            System.out.println("DB_Controller.getLastInsertID() produced the following error:");
             System.out.println(ex);
         }
         return -1;
@@ -420,7 +439,7 @@ public class DB_Controller {
                     result.getInt("AccountLevel"),
                     result.getString("StudentNumber"));
         } catch (SQLException ex) {
-            System.out.println("getUserFromResult() produced the following error:");
+            System.out.println("DB_Controller.getUserFromResult() produced the following error:");
             System.out.println(ex);
         }
         return null;
@@ -437,7 +456,7 @@ public class DB_Controller {
                     result.getString("TelephoneNumber"));
 
         } catch (SQLException ex) {
-            System.out.println("getHallFromResult() produced the following error:");
+            System.out.println("DB_Controller.getHallFromResult() produced the following error:");
             System.out.println(ex);
         }
         return null;
@@ -456,7 +475,7 @@ public class DB_Controller {
                 }
             }
         } catch (SQLException ex) {
-            System.out.println("getHallRooms() produced the following error:");
+            System.out.println("DB_Controller.getHallRooms() produced the following error:");
             System.out.println(ex);
         }
     }
@@ -485,7 +504,7 @@ public class DB_Controller {
                     result.getString("Description"));
 
         } catch (SQLException ex) {
-            System.out.println("getRoomFromResult() produced the following error:");
+            System.out.println("DB_Controller.getRoomFromResult() produced the following error:");
             System.out.println(ex);
         }
         return null;
@@ -504,7 +523,7 @@ public class DB_Controller {
                 }
             }
         } catch (SQLException ex) {
-            System.out.println("getRoomLeases() produced the following error:");
+            System.out.println("DB_Controller.getRoomLeases() produced the following error:");
             System.out.println(ex);
         }
     }
@@ -520,7 +539,7 @@ public class DB_Controller {
                     result.getDate("StartDate")
             );
         } catch (SQLException ex) {
-            System.out.println("getLeaseFromResult() produced the following error:");
+            System.out.println("DB_Controller.getLeaseFromResult() produced the following error:");
             System.out.println(ex);
         }
         return null;
@@ -536,7 +555,7 @@ public class DB_Controller {
                     result.getInt("StudentUID")
             );
         } catch (SQLException ex) {
-            System.out.println("getApplicationFromResult() produced the following error:");
+            System.out.println("DB_Controller.getApplicationFromResult() produced the following error:");
             System.out.println(ex);
         }
         return null;

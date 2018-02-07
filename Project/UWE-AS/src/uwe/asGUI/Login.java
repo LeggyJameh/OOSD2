@@ -7,9 +7,11 @@ package uwe.asGUI;
 
 /**
  *
- * @author adw8
+ * @author Adwait
  */
 public class Login extends javax.swing.JFrame {
+
+    public static uwe.as.Data_Cache data_cache;
 
     /**
      * Creates new form PractiseUI
@@ -34,72 +36,62 @@ public class Login extends javax.swing.JFrame {
         jSeparator3 = new javax.swing.JSeparator();
         jSeparator4 = new javax.swing.JSeparator();
         jPanel2 = new javax.swing.JPanel();
-        lgn_username_text = new javax.swing.JLabel();
-        lgn_seperator = new javax.swing.JSeparator();
-        lgn_password_text = new javax.swing.JLabel();
-        lgn_password_field = new javax.swing.JPasswordField();
-        lgn_seperator2 = new javax.swing.JSeparator();
-        lgn_signIn_text = new java.awt.Label();
-        lgn_username_textfield = new javax.swing.JTextField();
-        lgn_signin_button = new javax.swing.JButton();
-        lgn_icon = new javax.swing.JLabel();
+        label_username = new javax.swing.JLabel();
+        seperator_line_1 = new javax.swing.JSeparator();
+        label_password = new javax.swing.JLabel();
+        textfield_password = new javax.swing.JPasswordField();
+        seperator_line_2 = new javax.swing.JSeparator();
+        label_signin = new java.awt.Label();
+        textfield_username = new javax.swing.JTextField();
+        button_signin = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
-        lgn_username_text.setBackground(new java.awt.Color(255, 255, 255));
-        lgn_username_text.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        lgn_username_text.setForeground(new java.awt.Color(0, 0, 0));
-        lgn_username_text.setText("Username");
+        label_username.setBackground(new java.awt.Color(255, 255, 255));
+        label_username.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        label_username.setText("Username");
 
-        lgn_seperator.setBackground(new java.awt.Color(255, 0, 0));
-        lgn_seperator.setForeground(new java.awt.Color(255, 0, 0));
-        lgn_seperator.setToolTipText("");
+        seperator_line_1.setBackground(new java.awt.Color(255, 0, 0));
+        seperator_line_1.setForeground(new java.awt.Color(255, 0, 0));
+        seperator_line_1.setToolTipText("");
 
-        lgn_password_text.setBackground(new java.awt.Color(255, 255, 255));
-        lgn_password_text.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        lgn_password_text.setForeground(new java.awt.Color(0, 0, 0));
-        lgn_password_text.setText("Password");
+        label_password.setBackground(new java.awt.Color(255, 255, 255));
+        label_password.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        label_password.setText("Password");
 
-        lgn_password_field.setBackground(new java.awt.Color(255, 255, 255));
-        lgn_password_field.setForeground(new java.awt.Color(0, 0, 0));
-        lgn_password_field.setText("jPasswordField1");
-        lgn_password_field.setBorder(null);
+        textfield_password.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        textfield_password.setBorder(null);
 
-        lgn_seperator2.setBackground(new java.awt.Color(255, 0, 0));
-        lgn_seperator2.setForeground(new java.awt.Color(255, 0, 0));
+        seperator_line_2.setBackground(new java.awt.Color(255, 0, 0));
+        seperator_line_2.setForeground(new java.awt.Color(255, 0, 0));
 
-        lgn_signIn_text.setBackground(new java.awt.Color(255, 255, 255));
-        lgn_signIn_text.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        lgn_signIn_text.setForeground(new java.awt.Color(0, 0, 0));
-        lgn_signIn_text.setText("Sign in");
+        label_signin.setBackground(new java.awt.Color(255, 255, 255));
+        label_signin.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        label_signin.setForeground(new java.awt.Color(0, 0, 0));
+        label_signin.setText("Sign in");
 
-        lgn_username_textfield.setBackground(new java.awt.Color(255, 255, 255));
-        lgn_username_textfield.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        lgn_username_textfield.setForeground(new java.awt.Color(0, 0, 0));
-        lgn_username_textfield.setText("jTextField1");
-        lgn_username_textfield.setBorder(null);
-        lgn_username_textfield.addActionListener(new java.awt.event.ActionListener() {
+        textfield_username.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        textfield_username.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        textfield_username.setBorder(null);
+        textfield_username.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lgn_username_textfieldActionPerformed(evt);
+                textfield_usernameActionPerformed(evt);
             }
         });
 
-        lgn_signin_button.setBackground(new java.awt.Color(255, 0, 0));
-        lgn_signin_button.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        lgn_signin_button.setForeground(new java.awt.Color(255, 255, 255));
-        lgn_signin_button.setText("SIGN IN");
-        lgn_signin_button.setBorder(null);
-        lgn_signin_button.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        lgn_signin_button.addActionListener(new java.awt.event.ActionListener() {
+        button_signin.setBackground(new java.awt.Color(255, 0, 0));
+        button_signin.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        button_signin.setForeground(new java.awt.Color(255, 255, 255));
+        button_signin.setText("SIGN IN");
+        button_signin.setBorder(null);
+        button_signin.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        button_signin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lgn_signin_buttonActionPerformed(evt);
+                button_signinActionPerformed(evt);
             }
         });
-
-        lgn_icon.setIcon(new javax.swing.ImageIcon("C:\\Users\\adw8\\Downloads\\cityscape.png")); // NOI18N
-        lgn_icon.setText("jLabel5");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -108,39 +100,36 @@ public class Login extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(233, 233, 233)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(lgn_username_text)
-                    .addComponent(lgn_seperator, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lgn_password_text)
-                    .addComponent(lgn_password_field, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lgn_seperator2, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lgn_signIn_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lgn_username_textfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lgn_signin_button, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lgn_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(label_username)
+                    .addComponent(seperator_line_1, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(label_password)
+                    .addComponent(textfield_password, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(seperator_line_2, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(label_signin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(button_signin, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textfield_username, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(229, 229, 229))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(lgn_icon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(35, 35, 35)
-                .addComponent(lgn_signIn_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lgn_username_text)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lgn_username_textfield)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lgn_seperator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(49, 49, 49)
+                .addComponent(label_signin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19)
+                .addComponent(label_username)
                 .addGap(18, 18, 18)
-                .addComponent(lgn_password_text)
+                .addComponent(textfield_username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(seperator_line_1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(label_password)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lgn_password_field, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(textfield_password, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lgn_seperator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(seperator_line_2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lgn_signin_button, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(60, 60, 60))
+                .addComponent(button_signin, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(60, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -157,13 +146,20 @@ public class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void lgn_signin_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lgn_signin_buttonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_lgn_signin_buttonActionPerformed
+    private void button_signinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_signinActionPerformed
+        String username = textfield_username.getText();
+        String password = this.textfield_password.getPassword().toString();
+        if (data_cache.authenticate(username, password)) {
+            uwe.as.User currentUser = data_cache.getUser(username);
+            if (currentUser != null) {
+                uwe.as.UWEAS.currentUser = currentUser;
+            }
+        }
+    }//GEN-LAST:event_button_signinActionPerformed
 
-    private void lgn_username_textfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lgn_username_textfieldActionPerformed
+    private void textfield_usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textfield_usernameActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_lgn_username_textfieldActionPerformed
+    }//GEN-LAST:event_textfield_usernameActionPerformed
 
     /**
      * @param args the command line arguments
@@ -202,6 +198,7 @@ public class Login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton button_signin;
     private javax.swing.JColorChooser jColorChooser1;
     private javax.swing.JColorChooser jColorChooser2;
     private javax.swing.JColorChooser jColorChooser3;
@@ -209,14 +206,12 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
-    private javax.swing.JLabel lgn_icon;
-    private javax.swing.JPasswordField lgn_password_field;
-    private javax.swing.JLabel lgn_password_text;
-    private javax.swing.JSeparator lgn_seperator;
-    private javax.swing.JSeparator lgn_seperator2;
-    private java.awt.Label lgn_signIn_text;
-    private javax.swing.JButton lgn_signin_button;
-    private javax.swing.JLabel lgn_username_text;
-    private javax.swing.JTextField lgn_username_textfield;
+    private javax.swing.JLabel label_password;
+    private java.awt.Label label_signin;
+    private javax.swing.JLabel label_username;
+    private javax.swing.JSeparator seperator_line_1;
+    private javax.swing.JSeparator seperator_line_2;
+    private javax.swing.JPasswordField textfield_password;
+    private javax.swing.JTextField textfield_username;
     // End of variables declaration//GEN-END:variables
 }

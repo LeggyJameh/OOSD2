@@ -17,6 +17,7 @@ public class UWEAS {
 
     private static Data_Cache data_cache;
     private static Properties properties;
+    public static User currentUser;
 
     /**
      * @param args the command line arguments
@@ -24,6 +25,7 @@ public class UWEAS {
     public static void main(String[] args) {
         data_cache = new Data_Cache();
         DB_Controller.data_cache = data_cache;
+        currentUser = null;
 
         try {
             DB_Controller.OpenConnection();
@@ -32,8 +34,9 @@ public class UWEAS {
             DB_Controller.getLeases();
             DB_Controller.getRooms();
             DB_Controller.getUsers();
-        } catch (SQLException e) {
-
+        } catch (SQLException ex) {
+            System.out.print("UWEAS.main() produced the following error:");
+            System.out.print(ex);
         }
 
         // Examples for gathering data
