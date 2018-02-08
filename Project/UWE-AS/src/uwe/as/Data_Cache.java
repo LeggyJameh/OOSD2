@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package uwe.as;
 
 import java.util.ArrayList;
@@ -248,14 +243,19 @@ public class Data_Cache {
         DB_Controller.updateApplication(application);
     }
 
-    public boolean authenticate(String username, String passwordAttempt) {
-        User currentUser = this.getUser(username);
-
-        if (currentUser != null) {
-            if (PasswordStorage.ValidatePassword(passwordAttempt, currentUser.getPasswordHash())) {
+    public boolean authenticate(User user, char[] passwordAttempt) {
+        try {
+        if (user != null) {
+            if (PasswordStorage.verifyPassword(passwordAttempt, user.getPasswordHash())) {
                 return true;
             }
         }
+        }
+        catch (Exception ex) {
+            System.out.println("Data_Cache.authenticate() produced the following error");
+            System.out.println(ex);
+        }
+            
         return false;
     }
 }

@@ -23,7 +23,7 @@ public class UWEAS {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        data_cache = new Data_Cache();
+        data_cache = new Data_Cache();      
         DB_Controller.data_cache = data_cache;
         currentUser = null;
 
