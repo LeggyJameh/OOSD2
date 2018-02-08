@@ -37,10 +37,8 @@ public class Login extends javax.swing.JFrame {
         jSeparator4 = new javax.swing.JSeparator();
         jPanel2 = new javax.swing.JPanel();
         label_username = new javax.swing.JLabel();
-        seperator_line_1 = new javax.swing.JSeparator();
         label_password = new javax.swing.JLabel();
         textfield_password = new javax.swing.JPasswordField();
-        seperator_line_2 = new javax.swing.JSeparator();
         label_signin = new java.awt.Label();
         textfield_username = new javax.swing.JTextField();
         button_signin = new javax.swing.JButton();
@@ -53,28 +51,28 @@ public class Login extends javax.swing.JFrame {
         label_username.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         label_username.setText("Username");
 
-        seperator_line_1.setBackground(new java.awt.Color(255, 0, 0));
-        seperator_line_1.setForeground(new java.awt.Color(255, 0, 0));
-        seperator_line_1.setToolTipText("");
-
         label_password.setBackground(new java.awt.Color(255, 255, 255));
         label_password.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         label_password.setText("Password");
 
+        textfield_password.setBackground(new java.awt.Color(255, 255, 255));
         textfield_password.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        textfield_password.setBorder(null);
-
-        seperator_line_2.setBackground(new java.awt.Color(255, 0, 0));
-        seperator_line_2.setForeground(new java.awt.Color(255, 0, 0));
+        textfield_password.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        textfield_password.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textfield_passwordActionPerformed(evt);
+            }
+        });
 
         label_signin.setBackground(new java.awt.Color(255, 255, 255));
         label_signin.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         label_signin.setForeground(new java.awt.Color(0, 0, 0));
         label_signin.setText("Sign in");
 
+        textfield_username.setBackground(new java.awt.Color(255, 255, 255));
         textfield_username.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         textfield_username.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        textfield_username.setBorder(null);
+        textfield_username.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         textfield_username.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textfield_usernameActionPerformed(evt);
@@ -100,43 +98,43 @@ public class Login extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(233, 233, 233)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(label_username)
-                    .addComponent(seperator_line_1, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(label_password)
-                    .addComponent(textfield_password, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(seperator_line_2, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label_signin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textfield_password, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(button_signin, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(textfield_username, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(textfield_username, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(label_signin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(120, 120, 120))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addGap(112, 112, 112)
+                        .addComponent(label_username)))
                 .addGap(229, 229, 229))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(49, 49, 49)
+                .addGap(57, 57, 57)
                 .addComponent(label_signin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19)
+                .addGap(35, 35, 35)
                 .addComponent(label_username)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(textfield_username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(seperator_line_1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(56, 56, 56)
                 .addComponent(label_password)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(textfield_password, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(seperator_line_2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(textfield_password, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22)
                 .addComponent(button_signin, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(60, Short.MAX_VALUE))
+                .addContainerGap(103, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -160,6 +158,10 @@ public class Login extends javax.swing.JFrame {
     private void textfield_usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textfield_usernameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_textfield_usernameActionPerformed
+
+    private void textfield_passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textfield_passwordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textfield_passwordActionPerformed
 
     /**
      * @param args the command line arguments
@@ -209,8 +211,6 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel label_password;
     private java.awt.Label label_signin;
     private javax.swing.JLabel label_username;
-    private javax.swing.JSeparator seperator_line_1;
-    private javax.swing.JSeparator seperator_line_2;
     private javax.swing.JPasswordField textfield_password;
     private javax.swing.JTextField textfield_username;
     // End of variables declaration//GEN-END:variables
