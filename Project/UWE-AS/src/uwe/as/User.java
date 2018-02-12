@@ -93,8 +93,7 @@ public class User {
         return this.accountLevel;
     }
 
-    public boolean authenticate(String hash) {
-        // TODO
-        return false;
+    public void authenticate(char[] password) {
+        data_cache.authenticate(this, password);
     }
 }
