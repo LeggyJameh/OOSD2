@@ -242,19 +242,7 @@ public class Data_Cache {
     public void updateRoomApplication(RoomApplication application) {
         DB_Controller.updateApplication(application);
     }
-
-<<<<<<< HEAD
-//    public boolean authenticate(String username, String passwordAttempt) {
-//        User currentUser = this.getUser(username);
-//
-//        if (currentUser != null) {
-//            if (PasswordStorage.ValidatePassword(passwordAttempt, currentUser.getPasswordHash())) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-=======
+    
     public boolean authenticate(User user, char[] passwordAttempt) {
         try {
         if (user != null) {
@@ -270,5 +258,4 @@ public class Data_Cache {
             
         return false;
     }
->>>>>>> da55c11afb108c33b84b602fcba5040848188e75
 }
