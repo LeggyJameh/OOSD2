@@ -248,14 +248,14 @@ public class Data_Cache {
         DB_Controller.updateApplication(application);
     }
 
-    public boolean authenticate(String username, String passwordAttempt) {
-        User currentUser = this.getUser(username);
-
-        if (currentUser != null) {
-            if (PasswordStorage.ValidatePassword(passwordAttempt, currentUser.getPasswordHash())) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    public boolean authenticate(String username, String passwordAttempt) {
+//        User currentUser = this.getUser(username);
+//
+//        if (currentUser != null) {
+//            if (PasswordStorage.ValidatePassword(passwordAttempt, currentUser.getPasswordHash())) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 }

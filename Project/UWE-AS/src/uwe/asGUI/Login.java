@@ -45,7 +45,7 @@ public class Login extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBackground(new java.awt.Color(247, 245, 242));
 
         label_username.setBackground(new java.awt.Color(255, 255, 255));
         label_username.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
@@ -55,7 +55,7 @@ public class Login extends javax.swing.JFrame {
         label_password.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         label_password.setText("Password");
 
-        textfield_password.setBackground(new java.awt.Color(255, 255, 255));
+        textfield_password.setBackground(new java.awt.Color(247, 245, 242));
         textfield_password.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         textfield_password.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         textfield_password.addActionListener(new java.awt.event.ActionListener() {
@@ -64,12 +64,12 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        label_signin.setBackground(new java.awt.Color(255, 255, 255));
+        label_signin.setBackground(new java.awt.Color(247, 245, 242));
         label_signin.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         label_signin.setForeground(new java.awt.Color(0, 0, 0));
         label_signin.setText("Sign in");
 
-        textfield_username.setBackground(new java.awt.Color(255, 255, 255));
+        textfield_username.setBackground(new java.awt.Color(247, 245, 242));
         textfield_username.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         textfield_username.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         textfield_username.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -145,14 +145,14 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void button_signinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_signinActionPerformed
-        String username = textfield_username.getText();
-        String password = this.textfield_password.getPassword().toString();
-        if (data_cache.authenticate(username, password)) {
-            uwe.as.User currentUser = data_cache.getUser(username);
-            if (currentUser != null) {
-                uwe.as.UWEAS.currentUser = currentUser;
-            }
-        }
+//        String username = textfield_username.getText();
+//        String password = this.textfield_password.getPassword().toString();
+//        if (data_cache.authenticate(username, password)) {
+//            uwe.as.User currentUser = data_cache.getUser(username);
+//            if (currentUser != null) {
+//                uwe.as.UWEAS.currentUser = currentUser;
+//            }
+//        }
     }//GEN-LAST:event_button_signinActionPerformed
 
     private void textfield_usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textfield_usernameActionPerformed

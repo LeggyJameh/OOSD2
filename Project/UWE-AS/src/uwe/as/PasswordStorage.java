@@ -1,3 +1,4 @@
+package uwe.as;
 
 import java.security.SecureRandom;
 import javax.crypto.spec.PBEKeySpec;
