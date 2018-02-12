@@ -145,6 +145,7 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void button_signinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_signinActionPerformed
+<<<<<<< HEAD
 //        String username = textfield_username.getText();
 //        String password = this.textfield_password.getPassword().toString();
 //        if (data_cache.authenticate(username, password)) {
@@ -153,6 +154,21 @@ public class Login extends javax.swing.JFrame {
 //                uwe.as.UWEAS.currentUser = currentUser;
 //            }
 //        }
+=======
+        String username = textfield_username.getText();
+        char[] password = this.textfield_password.getPassword();
+        
+        uwe.as.User currentUser = data_cache.getUser(username);
+        
+        if (currentUser != null)
+        {
+            if (data_cache.authenticate(currentUser, password)) {
+                if (currentUser != null) {
+                    uwe.as.UWEAS.currentUser = currentUser;
+                }
+            }
+        }
+>>>>>>> da55c11afb108c33b84b602fcba5040848188e75
     }//GEN-LAST:event_button_signinActionPerformed
 
     private void textfield_usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textfield_usernameActionPerformed
