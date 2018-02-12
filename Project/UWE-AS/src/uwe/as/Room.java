@@ -3,6 +3,7 @@ package uwe.as;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import static uwe.as.Lease.data_cache;
 
 /**
  *
@@ -66,10 +67,12 @@ public class Room {
 
     public void changeCleaninessState(CleanState newState) {
         this.cleanliness = newState;
+        data_cache.updateRoom(this);
     }
 
     public void modifyRate(int newRate) {
         this.rentRate = newRate;
+        data_cache.updateRoom(this);
     }
 
     public void addLease(int lease) {

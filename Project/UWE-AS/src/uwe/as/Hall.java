@@ -85,6 +85,7 @@ public class Hall {
 
     public void modifyWarden(int warden) {
         this.wardenUID = warden;
+        data_cache.updateHall(this);
     }
 
     public void modifyAddress(String address) {
@@ -93,6 +94,7 @@ public class Hall {
                 this.address = address;
             }
         }
+        data_cache.updateHall(this);
     }
 
     public void modifyTelephone(String newNumber) {
@@ -101,6 +103,7 @@ public class Hall {
                 this.telephoneNumber = newNumber;
             }
         }
+        data_cache.updateHall(this);
     }
 
     public void modifyName(String newName) {
@@ -109,6 +112,7 @@ public class Hall {
                 this.name = newName;
             }
         }
+        data_cache.updateHall(this);
     }
 
     public void modifyNumber(String newNumber) {
@@ -117,5 +121,6 @@ public class Hall {
                 this.number = newNumber;
             }
         }
+        data_cache.updateHall(this);
     }
 }

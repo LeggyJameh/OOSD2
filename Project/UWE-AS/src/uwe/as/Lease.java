@@ -59,9 +59,11 @@ public class Lease {
 
     public void modifyDuration(int newDuration) {
         this.duration = newDuration;
+        data_cache.updateLease(this);
     }
 
     public void modifyStartDate(Date newDate) {
         this.startDate = newDate;
+        data_cache.updateLease(this);
     }
 }
