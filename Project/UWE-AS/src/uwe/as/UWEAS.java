@@ -10,7 +10,7 @@ import java.util.Properties;
 
 /**
  *
- * @author Adwait Chhetri (STUDENT NUMBER), George Jones (STUDENT NUMBER), Jamie
+ * @author Adwait Chhetri (15021047), George Jones (STUDENT NUMBER), Jamie
  * Mills (16004255)
  */
 public class UWEAS {

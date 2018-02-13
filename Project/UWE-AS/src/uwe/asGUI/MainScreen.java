@@ -6,17 +6,26 @@
 package uwe.asGUI;
 
 import java.awt.Color;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import uwe.as.DB_Controller;
+import uwe.as.Data_Cache;
 import uwe.as.Hall;
+import uwe.as.Lease;
+import uwe.as.Room;
+import static uwe.as.UWEAS.currentUser;
+import uwe.as.User;
 
 /**
  *
  * @author adw8
  */
 public class MainScreen extends javax.swing.JFrame {
-    
-    
 
     public static uwe.as.Data_Cache data_cache;
 
@@ -25,6 +34,80 @@ public class MainScreen extends javax.swing.JFrame {
      */
     public MainScreen() {
         initComponents();
+        show_users_in_jtable();
+    }
+    
+    public void connect_to_db(){
+        data_cache = new Data_Cache();
+        DB_Controller.data_cache = data_cache;
+        currentUser = null;
+
+        try {
+            DB_Controller.OpenConnection();
+            DB_Controller.getApplications();
+            DB_Controller.getHalls();
+            DB_Controller.getLeases();
+            DB_Controller.getRooms();
+            DB_Controller.getUsers();
+        } catch (SQLException ex) {
+            System.out.print("UWEAS.main() produced the following error:");
+            System.out.print(ex);
+        }
+        
+    }
+
+    public void show_users_in_jtable() {
+        connect_to_db();    
+
+        // Examples for gathering data
+        List<Room> rooms = data_cache.getRooms();
+        List<Lease> leases = data_cache.getLeases();
+        List<Hall> halls = data_cache.getHalls();
+        List<User> users = data_cache.getUsers();
+
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        Object[] row = new Object[7];
+
+        if (halls != null) {
+            Hall currentHall = halls.get(0);
+            System.out.println(currentHall);
+
+            if (rooms != null && leases != null) {
+                if (!rooms.isEmpty() && !leases.isEmpty()) {
+                    for (int i = 0; i < rooms.size(); i++){
+                        row[3] = rooms.get(i).getNumber();
+                          model.addRow(row);
+                    }
+                    Room currentRoom = rooms.get(0);
+                    System.out.println(currentRoom);
+
+                    for (Lease l : leases) {
+                        if (currentRoom.getLeases().contains(l.getUID())) {
+                            User currentUser = data_cache.getUser(l.getStudentUID());
+
+                            if (currentUser != null) {
+                                row[0] = l.getLeaseNumber();
+                                row[1] = currentHall.getName();
+                                row[2] = currentHall.getNumber();
+                                row[3] = currentRoom.getNumber();
+                                row[4] = currentUser.getName();
+                                row[6] = currentRoom.getCleaniness();
+                                model.addRow(row);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    
+    public void update_SQL(String query){ 
+        
+        
+        
+        
     }
 
     /**
@@ -56,14 +139,14 @@ public class MainScreen extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
-        jTextField7 = new javax.swing.JTextField();
-        jTextField8 = new javax.swing.JTextField();
-        jTextField9 = new javax.swing.JTextField();
+        room_number_tf = new javax.swing.JTextField();
+        hall_number_tf = new javax.swing.JTextField();
+        hall_name_tf = new javax.swing.JTextField();
+        lease_number_tf = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
-        jTextField10 = new javax.swing.JTextField();
+        student_name_tf = new javax.swing.JTextField();
         jComboBox2 = new javax.swing.JComboBox<>();
         jLabel16 = new javax.swing.JLabel();
         jComboBox3 = new javax.swing.JComboBox<>();
@@ -78,11 +161,11 @@ public class MainScreen extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        chng_hall_no_tf = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
+        l_hall_number_tf = new javax.swing.JTextField();
+        l_hall_name_tf = new javax.swing.JTextField();
+        l_room_number_tf = new javax.swing.JTextField();
+        l_lease_number_tf = new javax.swing.JTextField();
+        l_student_name_tf = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         btn_update = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
@@ -268,15 +351,18 @@ public class MainScreen extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Lease Number", "Hall Name", "Hall Number ", "Room Number", "Student Name", "Occupancy Status", "Cleaning Status"
             }
         ));
+        jTable1.getTableHeader().setReorderingAllowed(false);
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         ms_database_table.setViewportView(jTable1);
 
         jPanel2.setBackground(new java.awt.Color(247, 245, 242));
@@ -296,26 +382,26 @@ public class MainScreen extends javax.swing.JFrame {
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel12.setText("Room Number");
 
-        jTextField6.setBackground(new java.awt.Color(247, 245, 242));
-        jTextField6.setText("jTextField1");
-        jTextField6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        room_number_tf.setBackground(new java.awt.Color(247, 245, 242));
+        room_number_tf.setText("jTextField1");
+        room_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jTextField7.setBackground(new java.awt.Color(247, 245, 242));
-        jTextField7.setText("jTextField1");
-        jTextField7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        hall_number_tf.setBackground(new java.awt.Color(247, 245, 242));
+        hall_number_tf.setText("jTextField1");
+        hall_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jTextField8.setBackground(new java.awt.Color(247, 245, 242));
-        jTextField8.setText("jTextField1");
-        jTextField8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jTextField8.addActionListener(new java.awt.event.ActionListener() {
+        hall_name_tf.setBackground(new java.awt.Color(247, 245, 242));
+        hall_name_tf.setText("jTextField1");
+        hall_name_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        hall_name_tf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField8ActionPerformed(evt);
+                hall_name_tfActionPerformed(evt);
             }
         });
 
-        jTextField9.setBackground(new java.awt.Color(247, 245, 242));
-        jTextField9.setText("jTextField1");
-        jTextField9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lease_number_tf.setBackground(new java.awt.Color(247, 245, 242));
+        lease_number_tf.setText("jTextField1");
+        lease_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel13.setText("Lease Number");
@@ -326,13 +412,13 @@ public class MainScreen extends javax.swing.JFrame {
         jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel15.setText("Occupancy");
 
-        jTextField10.setBackground(new java.awt.Color(247, 245, 242));
-        jTextField10.setText("jTextField1");
-        jTextField10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        student_name_tf.setBackground(new java.awt.Color(247, 245, 242));
+        student_name_tf.setText("jTextField1");
+        student_name_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jComboBox2.setBackground(new java.awt.Color(247, 245, 242));
         jComboBox2.setEditable(true);
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Clean", "Dirty" }));
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Clean", "Dirty", "Offline" }));
         jComboBox2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel16.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -374,9 +460,9 @@ public class MainScreen extends javax.swing.JFrame {
                         .addComponent(jLabel12))
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(room_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(hall_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(hall_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -388,8 +474,8 @@ public class MainScreen extends javax.swing.JFrame {
                                 .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING))))
                     .addGap(18, 18, 18)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lease_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(student_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addContainerGap(10, Short.MAX_VALUE)))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
@@ -415,22 +501,22 @@ public class MainScreen extends javax.swing.JFrame {
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel10)
-                                .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(hall_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel13))
                             .addGap(35, 35, 35)
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel11)
-                                .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(hall_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel14))
                             .addGap(38, 38, 38)
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel12)
-                                .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(room_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel15)))
                         .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lease_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(35, 35, 35)
-                            .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(student_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addContainerGap(56, Short.MAX_VALUE)))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
@@ -488,30 +574,30 @@ public class MainScreen extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel9.setText("Occupancy");
 
-        jTextField1.setBackground(new java.awt.Color(247, 245, 242));
-        jTextField1.setText("jTextField1");
-        jTextField1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        l_hall_number_tf.setBackground(new java.awt.Color(247, 245, 242));
+        l_hall_number_tf.setText("jTextField1");
+        l_hall_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        chng_hall_no_tf.setBackground(new java.awt.Color(247, 245, 242));
-        chng_hall_no_tf.setText("jTextField1");
-        chng_hall_no_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        chng_hall_no_tf.addActionListener(new java.awt.event.ActionListener() {
+        l_hall_name_tf.setBackground(new java.awt.Color(247, 245, 242));
+        l_hall_name_tf.setText("jTextField1");
+        l_hall_name_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        l_hall_name_tf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chng_hall_no_tfActionPerformed(evt);
+                l_hall_name_tfActionPerformed(evt);
             }
         });
 
-        jTextField3.setBackground(new java.awt.Color(247, 245, 242));
-        jTextField3.setText("jTextField1");
-        jTextField3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        l_room_number_tf.setBackground(new java.awt.Color(247, 245, 242));
+        l_room_number_tf.setText("jTextField1");
+        l_room_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jTextField4.setBackground(new java.awt.Color(247, 245, 242));
-        jTextField4.setText("jTextField1");
-        jTextField4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        l_lease_number_tf.setBackground(new java.awt.Color(247, 245, 242));
+        l_lease_number_tf.setText("jTextField1");
+        l_lease_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jTextField5.setBackground(new java.awt.Color(247, 245, 242));
-        jTextField5.setText("jTextField1");
-        jTextField5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        l_student_name_tf.setBackground(new java.awt.Color(247, 245, 242));
+        l_student_name_tf.setText("jTextField1");
+        l_student_name_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jButton1.setText("Delete");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -549,9 +635,9 @@ public class MainScreen extends javax.swing.JFrame {
                             .addComponent(jLabel6))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(chng_hall_no_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(l_room_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(l_hall_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(l_hall_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -566,8 +652,8 @@ public class MainScreen extends javax.swing.JFrame {
                             .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(l_lease_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(l_student_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -587,23 +673,23 @@ public class MainScreen extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
-                            .addComponent(chng_hall_no_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(l_hall_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7))
                         .addGap(35, 35, 35)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(l_hall_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel8))
                         .addGap(36, 36, 36)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(l_room_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel9)
                             .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(l_lease_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(35, 35, 35)
-                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(l_student_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btn_update)
@@ -622,8 +708,8 @@ public class MainScreen extends javax.swing.JFrame {
                 .addComponent(ms_panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(ms_database_table)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(ms_database_table))
                 .addContainerGap(19, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -689,21 +775,18 @@ public class MainScreen extends javax.swing.JFrame {
         jPanel4.setVisible(true);
     }//GEN-LAST:event_ms_btn_allMousePressed
 
-    private void chng_hall_no_tfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chng_hall_no_tfActionPerformed
-        // TODO add your handling code here:
-        // get selected hall number 
-        // change hall number 
-        // display results in table 
+    private void l_hall_name_tfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_l_hall_name_tfActionPerformed
+      
 
-    }//GEN-LAST:event_chng_hall_no_tfActionPerformed
+    }//GEN-LAST:event_l_hall_name_tfActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jTextField8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField8ActionPerformed
+    private void hall_name_tfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hall_name_tfActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField8ActionPerformed
+    }//GEN-LAST:event_hall_name_tfActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
@@ -711,16 +794,29 @@ public class MainScreen extends javax.swing.JFrame {
 
     private void btn_updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_updateActionPerformed
         // TODO add your handling code here:
-        // get hall number from text field
-        chng_hall_no_tf.setText("1001");
-        List<Hall> halls = null;
-        // call data_cache for the hall number wanted to change 
-        // if empty do nothing 
-        // update hall number 
-        
-        Uwe_as_tablemodel model = new Uwe_as_tablemodel(halls);
-        jTable1.setModel(model);
+
     }//GEN-LAST:event_btn_updateActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+        int i = jTable1.getSelectedRow();
+        TableModel model = jTable1.getModel();
+        // Warden: Room cleaning info
+        lease_number_tf.setText(model.getValueAt(i, 0).toString());
+        hall_name_tf.setText(model.getValueAt(i, 1).toString());
+        hall_number_tf.setText(model.getValueAt(i, 2).toString());
+        room_number_tf.setText(model.getValueAt(i, 3).toString());
+        student_name_tf.setText(model.getValueAt(i, 4).toString());
+
+        //Hall manager: Lease information
+        l_lease_number_tf.setText(model.getValueAt(i, 0).toString());
+        l_hall_name_tf.setText(model.getValueAt(i, 1).toString());
+        l_hall_number_tf.setText(model.getValueAt(i, 2).toString());
+        l_room_number_tf.setText(model.getValueAt(i, 3).toString());
+        l_student_name_tf.setText(model.getValueAt(i, 4).toString());
+
+
+    }//GEN-LAST:event_jTable1MouseClicked
 
     // loading smaple data
     void setColor(JPanel panel) {
@@ -768,7 +864,8 @@ public class MainScreen extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_update;
-    private javax.swing.JTextField chng_hall_no_tf;
+    private javax.swing.JTextField hall_name_tf;
+    private javax.swing.JTextField hall_number_tf;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
     private javax.swing.JComboBox<String> jComboBox1;
@@ -795,15 +892,12 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField10;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
-    private javax.swing.JTextField jTextField8;
-    private javax.swing.JTextField jTextField9;
+    private javax.swing.JTextField l_hall_name_tf;
+    private javax.swing.JTextField l_hall_number_tf;
+    private javax.swing.JTextField l_lease_number_tf;
+    private javax.swing.JTextField l_room_number_tf;
+    private javax.swing.JTextField l_student_name_tf;
+    private javax.swing.JTextField lease_number_tf;
     private javax.swing.JPanel ms_btn_all;
     private javax.swing.JLabel ms_btn_all_text;
     private javax.swing.JPanel ms_btn_hallmanager;
@@ -817,5 +911,7 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JSeparator ms_seperator;
     private javax.swing.JLabel ms_uwe_text;
     private javax.swing.JLabel ms_warden_text;
+    private javax.swing.JTextField room_number_tf;
+    private javax.swing.JTextField student_name_tf;
     // End of variables declaration//GEN-END:variables
 }
