@@ -125,12 +125,9 @@
         </Component>
         <Component class="javax.swing.JPasswordField" name="textfield_password">
           <Properties>
-<<<<<<< HEAD
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="f2" green="f5" red="f7" type="rgb"/>
             </Property>
-=======
->>>>>>> da55c11afb108c33b84b602fcba5040848188e75
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -158,12 +155,9 @@
         </Component>
         <Component class="javax.swing.JTextField" name="textfield_username">
           <Properties>
-<<<<<<< HEAD
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="f2" green="f5" red="f7" type="rgb"/>
             </Property>
-=======
->>>>>>> da55c11afb108c33b84b602fcba5040848188e75
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Century Gothic" size="14" style="0"/>
             </Property>
