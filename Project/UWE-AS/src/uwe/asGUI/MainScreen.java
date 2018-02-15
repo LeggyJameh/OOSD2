@@ -36,8 +36,8 @@ public class MainScreen extends javax.swing.JFrame {
         initComponents();
         show_users_in_jtable();
     }
-    
-    public void connect_to_db(){
+
+    public void connect_to_db() {
         data_cache = new Data_Cache();
         DB_Controller.data_cache = data_cache;
         currentUser = null;
@@ -53,13 +53,13 @@ public class MainScreen extends javax.swing.JFrame {
             System.out.print("UWEAS.main() produced the following error:");
             System.out.print(ex);
         }
-        
+
     }
 
     public void show_users_in_jtable() {
-        connect_to_db();    
+        connect_to_db();
 
-        // Examples for gathering data
+        // gathering database data to display in jtable
         List<Room> rooms = data_cache.getRooms();
         List<Lease> leases = data_cache.getLeases();
         List<Hall> halls = data_cache.getHalls();
@@ -68,46 +68,43 @@ public class MainScreen extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         Object[] row = new Object[7];
 
-        if (halls != null) {
-            Hall currentHall = halls.get(0);
-            System.out.println(currentHall);
+        for (int j = 0; j < halls.size(); j++) {
+            for (int i = 0; i < rooms.size(); i++) {
 
-            if (rooms != null && leases != null) {
-                if (!rooms.isEmpty() && !leases.isEmpty()) {
-                    for (int i = 0; i < rooms.size(); i++){
-                        row[3] = rooms.get(i).getNumber();
-                          model.addRow(row);
-                    }
-                    Room currentRoom = rooms.get(0);
-                    System.out.println(currentRoom);
+                if (halls != null) {
+                    Hall currentHall = halls.get(j);
+                    System.out.println(currentHall);
 
-                    for (Lease l : leases) {
-                        if (currentRoom.getLeases().contains(l.getUID())) {
-                            User currentUser = data_cache.getUser(l.getStudentUID());
+                    if (rooms != null && leases != null) {
+                        if (!rooms.isEmpty() && !leases.isEmpty()) {
 
-                            if (currentUser != null) {
-                                row[0] = l.getLeaseNumber();
-                                row[1] = currentHall.getName();
-                                row[2] = currentHall.getNumber();
-                                row[3] = currentRoom.getNumber();
-                                row[4] = currentUser.getName();
-                                row[6] = currentRoom.getCleaniness();
-                                model.addRow(row);
+                            Room currentRoom = rooms.get(i);
+                            System.out.println(currentRoom);
+
+                            for (Lease l : leases) {
+                                if (currentRoom.getLeases().contains(l.getUID())) {
+                                    User currentUser = data_cache.getUser(l.getStudentUID());
+
+                                    if (currentUser != null) {
+                                        row[0] = l.getLeaseNumber();
+                                        row[1] = currentHall.getName();
+                                        row[2] = currentHall.getNumber();
+                                        row[3] = currentRoom.getNumber();
+                                        row[4] = currentUser.getName();
+                                        row[6] = currentRoom.getCleaniness();
+                                        model.addRow(row);
+                                        
+
+                                    }
+
+                                }
                             }
-
                         }
                     }
                 }
             }
         }
 
-    }
-    
-    public void update_SQL(String query){ 
-        
-        
-        
-        
     }
 
     /**
@@ -776,7 +773,7 @@ public class MainScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_ms_btn_allMousePressed
 
     private void l_hall_name_tfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_l_hall_name_tfActionPerformed
-      
+
 
     }//GEN-LAST:event_l_hall_name_tfActionPerformed
 
@@ -793,7 +790,10 @@ public class MainScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void btn_updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_updateActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here:   
+        
+        
+
 
     }//GEN-LAST:event_btn_updateActionPerformed
 
