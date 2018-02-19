@@ -12,12 +12,15 @@ package uwe.asGUI;
 public class Login extends javax.swing.JFrame {
 
     public static uwe.as.Data_Cache data_cache;
+    private Thread mainThread;
 
     /**
      * Creates new form PractiseUI
      */
-    public Login() {
+    public Login(Thread mainThread) {
         initComponents();
+        this.mainThread = mainThread;
+        this.setVisible(true);
     }
 
     /**
@@ -148,13 +151,16 @@ public class Login extends javax.swing.JFrame {
         String username = textfield_username.getText();
         char[] password = this.textfield_password.getPassword();
         
-        uwe.as.User currentUser = data_cache.getUser(username);
+        uwe.as.User currentUser = data_cache.getUser(username.toUpperCase());
         
         if (currentUser != null)
         {
+            System.out.println("User found!");
             if (data_cache.authenticate(currentUser, password)) {
-                if (currentUser != null) {
-                    uwe.as.UWEAS.currentUser = currentUser;
+                uwe.as.UWEAS.currentUser = currentUser;
+                synchronized(mainThread)
+                {
+                    mainThread.notify();
                 }
             }
         }
@@ -168,41 +174,6 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_textfield_passwordActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Login().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton button_signin;

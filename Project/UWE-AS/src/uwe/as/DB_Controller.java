@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  *
- * @author Jamie
+ * @author Jamie Mills (16004255)
  */
 
 /* If this is generating errors, make sure you have started the database with
@@ -26,6 +26,10 @@ public class DB_Controller {
     private static Connection connection;
     private static Statement statement;
 
+    /**
+     * <b>To only be used by the UWEAS class.</b>
+     * Open the database connection. Will throw exception if connection fails.
+     */
     public static boolean OpenConnection() throws SQLException {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -51,6 +55,10 @@ public class DB_Controller {
         return false;
     }
 
+    /**
+     * <b>To only be used by the UWEAS class.</b>
+     * Pull all of the users from the database, into the cache.
+     */
     public static void getUsers() {
         String query = "SELECT * FROM `users`;";
 
@@ -68,6 +76,10 @@ public class DB_Controller {
         }
     }
 
+    /**
+     * <b>To only be used by the UWEAS class.</b>
+     * Pull all of the halls from the database, into the cache.
+     */
     public static void getHalls() {
         String query = "SELECT * FROM `halls`;";
         List<Hall> halls = new ArrayList<Hall>();
@@ -89,6 +101,10 @@ public class DB_Controller {
         }
     }
 
+    /**
+     * <b>To only be used by the UWEAS class.</b>
+     * Pull all of the rooms from the database, into the cache.
+     */
     public static void getRooms() {
         String query = "SELECT * FROM `rooms`;";
         List<Room> rooms = new ArrayList<Room>();
@@ -110,6 +126,10 @@ public class DB_Controller {
         }
     }
 
+    /**
+     * <b>To only be used by the UWEAS class.</b>
+     * Pull all of the leases from the database, into the cache.
+     */
     public static void getLeases() {
         String query = "SELECT * FROM `leases`;";
 
@@ -127,6 +147,10 @@ public class DB_Controller {
         }
     }
 
+    /**
+     * <b>To only be used by the UWEAS class.</b>
+     * Pull all of the applications from the database, into the cache.
+     */
     public static void getApplications() {
         String query = "SELECT * FROM `applications`;";
 
@@ -146,6 +170,10 @@ public class DB_Controller {
         }
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Pull newly created user out of the database for DB-specific data.
+     */
     public static void getUser(int UID) {
         String query = "SELECT * FROM `Users` WHERE `UID`='" + UID + "';";
 
@@ -162,6 +190,10 @@ public class DB_Controller {
         }
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Pull newly created hall out of the database for DB-specific data.
+     */
     public static void getHall(int UID) {
         String query = "SELECT * FROM `Halls` WHERE `UID`='" + UID + "';";
         Hall hall = null;
@@ -183,6 +215,10 @@ public class DB_Controller {
         }
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Pull newly created room out of the database for DB-specific data.
+     */
     public static void getRoom(int UID) {
         String query = "SELECT * FROM `Rooms` WHERE `UID`='" + UID + "';";
         Room room = null;
@@ -203,6 +239,10 @@ public class DB_Controller {
         }
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Pull newly created lease out of the database for DB-specific data.
+     */
     public static void getLease(int UID) {
         String query = "SELECT * FROM `Leases` WHERE `UID`='" + UID + "';";
 
@@ -219,6 +259,10 @@ public class DB_Controller {
         }
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Pull newly created application out of the database for DB-specific data.
+     */
     public static void getApplication(int UID) {
         String query = "SELECT * FROM `Applications` WHERE `UID`='" + UID + "';";
 
@@ -235,6 +279,10 @@ public class DB_Controller {
         }
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Update the details of the user in the database.
+     */
     public static void updateUser(User user) {
         String query = "UPDATE `users` SET (`Name`='" + user.getName()
                 + "', `RealName`='" + user.getRealName()
@@ -246,6 +294,10 @@ public class DB_Controller {
         executeNonQuery(query);
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Update the details of the hall in the database.
+     */
     public static void updateHall(Hall hall) {
         String query
                 = "UPDATE `halls` SET (`WardenUID`='" + Integer.toString(hall.getWardenUID())
@@ -258,6 +310,10 @@ public class DB_Controller {
         executeNonQuery(query);
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Update the details of the room in the database.
+     */
     public static void updateRoom(Room room) {
         int cleanliness;
         switch (room.getCleaniness()) {
@@ -279,6 +335,10 @@ public class DB_Controller {
         executeNonQuery(query);
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Update the details of the lease in the database.
+     */
     public static void updateLease(Lease lease) {
         DateFormat df = new SimpleDateFormat();
         String date = df.format(lease.getStartDate());
@@ -291,6 +351,10 @@ public class DB_Controller {
         executeNonQuery(query);
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Update the details of the application in the database.
+     */
     public static void updateApplication(RoomApplication application) {
         DateFormat df = new SimpleDateFormat();
         String date = df.format(application.getDate());
@@ -303,6 +367,10 @@ public class DB_Controller {
         executeNonQuery(query);
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Create new user in the database.
+     */
     public static int createUser(User user) {
         String query = "INSERT INTO `users`"
                 + "(`Name`, `PasswordHash`, `RealName`,"
@@ -320,6 +388,10 @@ public class DB_Controller {
         return getLastInsertID();
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Create new hall in the database.
+     */
     public static int createHall(Hall hall) {
         String query = "INSERT INTO `halls`"
                 + "(`Name`, `Number`, VALUES ('"
@@ -331,6 +403,10 @@ public class DB_Controller {
         return getLastInsertID();
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Create new room in the database.
+     */
     public static int createRoom(Room room) {
         String query = "INSERT INTO `rooms`"
                 + "(`Number`, `RentRate`) VALUES ('"
@@ -342,6 +418,10 @@ public class DB_Controller {
         return getLastInsertID();
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Create new lease in the database.
+     */
     public static int createLease(Lease lease) {
         String query = "INSERT INTO `users`"
                 + "(`LeaseNumber`, `StudentUID`) VALUES ('"
@@ -353,6 +433,10 @@ public class DB_Controller {
         return getLastInsertID();
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Create new application in the database.
+     */
     public static int createApplication(RoomApplication application) {
         DateFormat df = new SimpleDateFormat();
         String date = df.format(application.getDate());
@@ -369,36 +453,64 @@ public class DB_Controller {
         return getLastInsertID();
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Remove existing user from the database. Note that this is permanent and
+     * <b> will result in data loss</b>
+     */
     public static void removeUser(User user) {
         String query = "DELETE FROM `users` WHERE `UID`='" + user.getUID() + "';";
         
         executeNonQuery(query);
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Remove existing hall from the database. Note that this is permanent and
+     * <b> will result in data loss</b>
+     */
     public static void removeHall(Hall hall) {
         String query = "DELETE FROM `halls` WHERE `UID`='" + hall.getUID() + "';";
         
         executeNonQuery(query);
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Remove existing room from the database. Note that this is permanent and
+     * <b> will result in data loss</b>
+     */
     public static void removeRoom(Room room) {
         String query = "DELETE FROM `rooms` WHERE `UID`='" + room.getUID() + "';";
         
         executeNonQuery(query);
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Remove existing lease from the database. Note that this is permanent and
+     * <b> will result in data loss</b>
+     */
     public static void removeLease(Lease lease) {
         String query = "DELETE FROM `leases` WHERE `UID`='" + lease.getUID() + "';";
         
         executeNonQuery(query);
     }
 
+    /**
+     * <b>To only be used by the cache class.</b>
+     * Remove existing application from the database. Note that this is permanent and
+     * <b> will result in data loss</b>
+     */
     public static void removeApplication(RoomApplication application) {
         String query = "DELETE FROM `applications` WHERE `UID`='" + application.getUID() + "';";
         
         executeNonQuery(query);
     }
 
+    /**
+     * Used to execute queries that require no return data.
+     */
     private static void executeNonQuery(String query) {
         try {
             if (!statement.isClosed()) {
@@ -410,6 +522,9 @@ public class DB_Controller {
         }
     }
 
+    /**
+     * Used to retrieve the last UID after creating a record.
+     */
     private static int getLastInsertID() {
         String query = "SELECT last_insert_id()";
 
@@ -428,6 +543,9 @@ public class DB_Controller {
         return -1;
     }
 
+    /**
+     * Creates user class from known user resultset.
+     */
     private static User getUserFromResult(ResultSet result) {
         try {
             return new User(
@@ -445,6 +563,9 @@ public class DB_Controller {
         return null;
     }
 
+    /**
+     * Creates hall class from known hall resultset.
+     */
     private static Hall getHallFromResult(ResultSet result) {
         try {
             return new Hall(
@@ -462,6 +583,9 @@ public class DB_Controller {
         return null;
     }
 
+    /**
+     * Get the list of UID's of rooms that are in the specified hall.
+     */
     private static void getHallRooms(Hall hall) {
         try {
             if (hall != null) {
@@ -480,6 +604,9 @@ public class DB_Controller {
         }
     }
 
+    /**
+     * Creates room class from known room resultset.
+     */
     private static Room getRoomFromResult(ResultSet result) {
         try {
             CleanState cleanState;
@@ -510,6 +637,9 @@ public class DB_Controller {
         return null;
     }
 
+    /**
+     * Get the list of UID's of leases that are in the specified room.
+     */
     private static void getRoomLeases(Room room) {
         try {
             if (room != null) {
@@ -528,6 +658,9 @@ public class DB_Controller {
         }
     }
 
+    /**
+     * Creates lease class from known lease resultset.
+     */
     private static Lease getLeaseFromResult(ResultSet result) {
         try {
             return new Lease(
@@ -545,6 +678,9 @@ public class DB_Controller {
         return null;
     }
 
+    /**
+     * Creates an application class from known application resultset.
+     */
     private static RoomApplication getApplicationFromResult(ResultSet result) {
         try {
             return new RoomApplication(

@@ -68,6 +68,14 @@ public class User {
     public String getName() {
         return name;
     }
+    
+    /**
+     * Used for authentication
+     */
+    public String getNameUpper() {
+        return name.toUpperCase();
+    }
+            
 
     public int getUID() {
         return UID;

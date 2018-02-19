@@ -35,8 +35,13 @@ public class MainScreen extends javax.swing.JFrame {
     public MainScreen() {
         initComponents();
         show_users_in_jtable();
+        this.setVisible(true);
     }
 
+    /**
+     * Temporary method for testing. When finished, should only call get functions
+     * From UWEAS at startup.
+     */
     public void connect_to_db() {
         data_cache = new Data_Cache();
         DB_Controller.data_cache = data_cache;
@@ -58,7 +63,6 @@ public class MainScreen extends javax.swing.JFrame {
 
     public void show_users_in_jtable() {
         connect_to_db();
-
         // gathering database data to display in jtable
         List<Room> rooms = data_cache.getRooms();
         List<Lease> leases = data_cache.getLeases();

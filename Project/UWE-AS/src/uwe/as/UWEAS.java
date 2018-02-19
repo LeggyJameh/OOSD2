@@ -7,6 +7,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Properties;
+import uwe.asGUI.Login;
+import uwe.asGUI.MainScreen;
 
 /**
  *
@@ -18,6 +20,8 @@ public class UWEAS {
     private static Data_Cache data_cache;
     private static Properties properties;
     public static User currentUser;
+    private Login loginScreen;
+    private MainScreen mainScreen;
 
     /**
      * @param args the command line arguments
@@ -63,11 +67,27 @@ public class UWEAS {
                 }
             }
         }
-        // TODO code application logic here
+        new UWEAS();
     }
 
     public UWEAS() {
-        loadPropertiesFile();
+        Thread currentThread = Thread.currentThread();
+        loginScreen = new Login(currentThread);
+        try
+        {
+            synchronized(currentThread)
+            {
+                currentThread.wait();
+            }
+        }
+        catch (InterruptedException ex)
+        {
+            System.out.println(ex);
+        }
+        loginScreen.dispose();
+        mainScreen = new MainScreen();
+        
+        //loadPropertiesFile();
     }
 
     public void loadPropertiesFile() {
