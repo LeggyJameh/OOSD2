@@ -7,7 +7,7 @@ import static uwe.as.Lease.data_cache;
 
 /**
  *
- * @author (WIP 31/01/2018)
+ * @author Jamie Mills (16004255)
  */
 public class Room {
 

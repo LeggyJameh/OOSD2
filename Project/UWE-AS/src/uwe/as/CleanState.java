@@ -7,7 +7,7 @@ package uwe.as;
 
 /**
  *
- * @author
+ * @author Jamie Mills (16004255)
  */
 public enum CleanState {
     CLEAN, DIRTY, OFFLINE;

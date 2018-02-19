@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  *
- * @author
+ * @author Jamie Mills (16004255)
  */
 public class Hall {
 

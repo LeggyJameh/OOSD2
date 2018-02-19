@@ -2,7 +2,7 @@ package uwe.as;
 
 /**
  *
- * @author Jamie Mills (16004255) (Completed 31/01/2018)
+ * @author Jamie Mills (16004255)
  */
 public class User {
     private int UID;

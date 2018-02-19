@@ -7,6 +7,15 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import javax.xml.bind.DatatypeConverter;
 
+/**
+ * https://crackstation.net/hashing-security.htm
+ * https://github.com/defuse/password-hashing
+ * 
+ * We did not code this class. This class is from a repository that contains
+ * peer-reviewed libraries for password storage. Passwords are "hashed" with
+ * PBKDF2 (64,000 iterations of SHA1 by default) using a
+ * cryptographically-random salt.
+ */
 public class PasswordStorage
 {
 

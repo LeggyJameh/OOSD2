@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package uwe.asGUI;
 
 import java.awt.Color;
@@ -40,7 +35,7 @@ public class MainScreen extends javax.swing.JFrame {
 
     /**
      * Temporary method for testing. When finished, should only call get functions
-     * From UWEAS at startup.
+     * From UWEAS at startup, and remove this method entirely.
      */
     public void connect_to_db() {
         data_cache = new Data_Cache();
