@@ -44,7 +44,11 @@ public class Room {
     public int getUID() {
         return this.UID;
     }
-
+    
+    public int getHallUID() {
+        return this.hallUID;
+    }
+            
     public String getNumber() {
         return this.number;
     }

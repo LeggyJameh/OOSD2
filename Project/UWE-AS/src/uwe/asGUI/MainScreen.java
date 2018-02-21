@@ -1,19 +1,13 @@
 package uwe.asGUI;
 
 import java.awt.Color;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import uwe.as.DB_Controller;
-import uwe.as.Data_Cache;
 import uwe.as.Hall;
 import uwe.as.Lease;
 import uwe.as.Room;
-import static uwe.as.UWEAS.currentUser;
 import uwe.as.User;
 
 /**
@@ -33,69 +27,37 @@ public class MainScreen extends javax.swing.JFrame {
         this.setVisible(true);
     }
 
-    /**
-     * Temporary method for testing. When finished, should only call get functions
-     * From UWEAS at startup, and remove this method entirely.
-     */
-    public void connect_to_db() {
-        data_cache = new Data_Cache();
-        DB_Controller.data_cache = data_cache;
-        currentUser = null;
-
-        try {
-            DB_Controller.OpenConnection();
-            DB_Controller.getApplications();
-            DB_Controller.getHalls();
-            DB_Controller.getLeases();
-            DB_Controller.getRooms();
-            DB_Controller.getUsers();
-        } catch (SQLException ex) {
-            System.out.print("UWEAS.main() produced the following error:");
-            System.out.print(ex);
-        }
-
-    }
-
     public void show_users_in_jtable() {
-        connect_to_db();
-        // gathering database data to display in jtable
+        // Pulling data lists from cache
         List<Room> rooms = data_cache.getRooms();
         List<Lease> leases = data_cache.getLeases();
         List<Hall> halls = data_cache.getHalls();
-        List<User> users = data_cache.getUsers();
 
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         Object[] row = new Object[7];
 
-        for (int j = 0; j < halls.size(); j++) {
-            for (int i = 0; i < rooms.size(); i++) {
+        if (halls != null && rooms != null && leases != null)
+        {
+            for (int j = 0; j < halls.size(); j++) {
+                Hall currentHall = halls.get(j);
+                System.out.println(currentHall);
+                
+                for (int i = 0; i < rooms.size(); i++) {
+                    Room currentRoom = rooms.get(i);
+                    if (currentRoom.getHallUID() == currentHall.getUID()) {
+                        System.out.println(currentRoom);
+                        for (Lease l : leases) {
+                            if (currentRoom.getLeases().contains(l.getUID())) {
+                                User currentUser = data_cache.getUser(l.getStudentUID());
 
-                if (halls != null) {
-                    Hall currentHall = halls.get(j);
-                    System.out.println(currentHall);
-
-                    if (rooms != null && leases != null) {
-                        if (!rooms.isEmpty() && !leases.isEmpty()) {
-
-                            Room currentRoom = rooms.get(i);
-                            System.out.println(currentRoom);
-
-                            for (Lease l : leases) {
-                                if (currentRoom.getLeases().contains(l.getUID())) {
-                                    User currentUser = data_cache.getUser(l.getStudentUID());
-
-                                    if (currentUser != null) {
-                                        row[0] = l.getLeaseNumber();
-                                        row[1] = currentHall.getName();
-                                        row[2] = currentHall.getNumber();
-                                        row[3] = currentRoom.getNumber();
-                                        row[4] = currentUser.getName();
-                                        row[6] = currentRoom.getCleaniness();
-                                        model.addRow(row);
-                                        
-
-                                    }
-
+                                if (currentUser != null) {
+                                    row[0] = l.getLeaseNumber();
+                                    row[1] = currentHall.getName();
+                                    row[2] = currentHall.getNumber();
+                                    row[3] = currentRoom.getNumber();
+                                    row[4] = currentUser.getName();
+                                    row[6] = currentRoom.getCleaniness();
+                                    model.addRow(row);
                                 }
                             }
                         }
@@ -103,7 +65,6 @@ public class MainScreen extends javax.swing.JFrame {
                 }
             }
         }
-
     }
 
     /**
