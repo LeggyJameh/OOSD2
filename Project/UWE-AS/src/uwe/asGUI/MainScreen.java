@@ -1,18 +1,14 @@
 package uwe.asGUI;
 
 import java.awt.Color;
-import java.sql.SQLException;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import uwe.as.DB_Controller;
-import uwe.as.Data_Cache;
 import uwe.as.Hall;
 import uwe.as.Lease;
 import uwe.as.Room;
-import static uwe.as.UWEAS.currentUser;
 import uwe.as.User;
 
 /**
@@ -22,6 +18,7 @@ import uwe.as.User;
 public class MainScreen extends javax.swing.JFrame {
 
     public static uwe.as.Data_Cache data_cache;
+    private CreateLease createLease = null;
 
     /**
      * Creates new form MainScreen
@@ -35,23 +32,7 @@ public class MainScreen extends javax.swing.JFrame {
     public void refresh_jtable() {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
-          data_cache = new Data_Cache();      
-        DB_Controller.data_cache = data_cache;
-        currentUser = null;
-
-        try {
-            DB_Controller.OpenConnection();
-            DB_Controller.getApplications();
-            DB_Controller.getHalls();
-            DB_Controller.getLeases();
-            DB_Controller.getRooms();
-            DB_Controller.getUsers();
-        } catch (SQLException ex) {
-            System.out.print("UWEAS.main() produced the following error:");
-            System.out.print(ex);
-        }
         show_users_in_jtable();
-
     }
 
     public void show_users_in_jtable() {
@@ -115,6 +96,11 @@ public class MainScreen extends javax.swing.JFrame {
             }
         }
     }
+    
+    public void createLeaseClosing()
+    {
+        this.createLease = null;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -173,7 +159,7 @@ public class MainScreen extends javax.swing.JFrame {
         l_lease_number_tf = new javax.swing.JTextField();
         l_student_name_tf = new javax.swing.JTextField();
         l_btn_delete = new javax.swing.JButton();
-        btn_update = new javax.swing.JButton();
+        buttonAddLease = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
         l_student_uid_tf = new javax.swing.JTextField();
         l_hall_uid_tf = new javax.swing.JTextField();
@@ -618,10 +604,10 @@ public class MainScreen extends javax.swing.JFrame {
             }
         });
 
-        btn_update.setText("Update");
-        btn_update.addActionListener(new java.awt.event.ActionListener() {
+        buttonAddLease.setText("Add Lease");
+        buttonAddLease.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_updateActionPerformed(evt);
+                buttonAddLeaseActionPerformed(evt);
             }
         });
 
@@ -686,7 +672,7 @@ public class MainScreen extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(l_btn_delete)
                         .addGap(37, 37, 37)
-                        .addComponent(btn_update)
+                        .addComponent(buttonAddLease)
                         .addGap(9, 9, 9)))
                 .addContainerGap())
         );
@@ -721,7 +707,7 @@ public class MainScreen extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btn_update)
+                            .addComponent(buttonAddLease)
                             .addComponent(l_btn_delete))
                         .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -845,47 +831,12 @@ public class MainScreen extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void btn_updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_updateActionPerformed
-        // TODO add your handling code here:       
-        User user = data_cache.getUser(Integer.parseInt(l_student_uid_tf.getText()));
-        Lease lease = data_cache.getLease(Integer.parseInt(l_lease_uid_tf.getText()));
-        Room room = data_cache.getRoom(Integer.parseInt(l_room_uid_tf.getText()));
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        Object[] row = new Object[9];
-
-        if (l_student_name_tf.getText() == null || l_student_name_tf.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Student Name Empty", "Inane warning", JOptionPane.WARNING_MESSAGE);
-        } else if (l_lease_number_tf.getText() == null || l_lease_number_tf.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Lease number Empty", "Inane warning", JOptionPane.WARNING_MESSAGE);
-        } else {
-
-            user.modifyName(l_student_name_tf.getText());
-            lease.modifyLeaseNumber(Integer.parseInt(l_lease_number_tf.getText()));
-            user.modifyRealName(l_student_name_tf.getText());
-
+    private void buttonAddLeaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddLeaseActionPerformed
+        if (createLease == null)
+        {
+            CreateLease createLease = new CreateLease(this);
         }
-        System.out.println("hi");
-        if (room.getLeases().isEmpty() || room.getLeases() == null){
-            System.out.println("hi");
-            User u = new User(l_student_name_tf.getText(),"pass",l_student_name_tf.getText(), l_student_name_tf.getText()+"@Larry.com");
-            Lease l = new Lease(Integer.parseInt(l_lease_number_tf.getText()),u.getUID(),Integer.parseInt(l_room_uid_tf.getText()));
-
-            row[0] = l.getLeaseNumber();
-            row[5] = u.getName();
-            row[7] = l.getUID();
-            model.addRow(row);     
-           refresh_jtable();
-            
-            
-            
-            
-            
-         
-        }
-        refresh_jtable();
-
-
-    }//GEN-LAST:event_btn_updateActionPerformed
+    }//GEN-LAST:event_buttonAddLeaseActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
@@ -966,7 +917,7 @@ public class MainScreen extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btn_update;
+    private javax.swing.JButton buttonAddLease;
     private javax.swing.JTextField hall_name_tf;
     private javax.swing.JTextField hall_number_tf;
     private javax.swing.JButton jButton3;

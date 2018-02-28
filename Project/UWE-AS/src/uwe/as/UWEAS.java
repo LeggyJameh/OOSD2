@@ -20,8 +20,8 @@ public class UWEAS {
     private static Data_Cache data_cache;
     private static Properties properties;
     public static User currentUser;
-    private Login loginScreen;
-    private MainScreen mainScreen;
+    private final Login loginScreen;
+    private final MainScreen mainScreen;
 
     /**
      * @param args the command line arguments
