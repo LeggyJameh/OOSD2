@@ -1,18 +1,23 @@
 package uwe.asGUI;
 
 import java.awt.Color;
+import java.sql.SQLException;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import uwe.as.DB_Controller;
+import uwe.as.Data_Cache;
 import uwe.as.Hall;
 import uwe.as.Lease;
 import uwe.as.Room;
+import static uwe.as.UWEAS.currentUser;
 import uwe.as.User;
 
 /**
  *
- * @author adw8
+ * @author Adwait
  */
 public class MainScreen extends javax.swing.JFrame {
 
@@ -27,6 +32,28 @@ public class MainScreen extends javax.swing.JFrame {
         this.setVisible(true);
     }
 
+    public void refresh_jtable() {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+          data_cache = new Data_Cache();      
+        DB_Controller.data_cache = data_cache;
+        currentUser = null;
+
+        try {
+            DB_Controller.OpenConnection();
+            DB_Controller.getApplications();
+            DB_Controller.getHalls();
+            DB_Controller.getLeases();
+            DB_Controller.getRooms();
+            DB_Controller.getUsers();
+        } catch (SQLException ex) {
+            System.out.print("UWEAS.main() produced the following error:");
+            System.out.print(ex);
+        }
+        show_users_in_jtable();
+
+    }
+
     public void show_users_in_jtable() {
         // Pulling data lists from cache
         List<Room> rooms = data_cache.getRooms();
@@ -34,20 +61,21 @@ public class MainScreen extends javax.swing.JFrame {
         List<Hall> halls = data_cache.getHalls();
 
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        Object[] row = new Object[7];
+        Object[] row = new Object[9];
 
-        if (halls != null && rooms != null && leases != null)
-        {
+        if (halls != null && rooms != null && leases != null) {
             for (int j = 0; j < halls.size(); j++) {
                 Hall currentHall = halls.get(j);
-                System.out.println(currentHall);
-                
+                //System.out.println(currentHall);
+
                 for (int i = 0; i < rooms.size(); i++) {
                     Room currentRoom = rooms.get(i);
+
                     if (currentRoom.getHallUID() == currentHall.getUID()) {
-                        System.out.println(currentRoom);
+
                         for (Lease l : leases) {
-                            if (currentRoom.getLeases().contains(l.getUID())) {
+                            
+                            if(currentRoom.getLeases().contains(l.getUID())) {
                                 User currentUser = data_cache.getUser(l.getStudentUID());
 
                                 if (currentUser != null) {
@@ -56,12 +84,33 @@ public class MainScreen extends javax.swing.JFrame {
                                     row[2] = currentHall.getNumber();
                                     row[3] = currentRoom.getNumber();
                                     row[4] = currentUser.getName();
+                                    row[5] = currentUser.getUID();
                                     row[6] = currentRoom.getCleaniness();
+                                    row[7] = l.getUID();
+                                    row[8] = currentRoom.getUID();
                                     model.addRow(row);
                                 }
+
                             }
+                            if (currentRoom.getLeases().isEmpty() || currentRoom.getLeases() == null) {
+                                System.out.println(currentRoom.getLeases());
+                                row[0] = "";
+                                row[1] = currentHall.getName();
+                                row[2] = currentHall.getNumber();
+                                row[3] = currentRoom.getNumber();
+                                row[4] = "";
+                                row[5] = "";
+                                row[6] = currentRoom.getCleaniness();
+                                row[7] = "";
+                                row[8] = currentRoom.getUID();
+                                model.addRow(row);
+                                break;
+                            }
+
                         }
+
                     }
+
                 }
             }
         }
@@ -123,9 +172,13 @@ public class MainScreen extends javax.swing.JFrame {
         l_room_number_tf = new javax.swing.JTextField();
         l_lease_number_tf = new javax.swing.JTextField();
         l_student_name_tf = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        l_btn_delete = new javax.swing.JButton();
         btn_update = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
+        l_student_uid_tf = new javax.swing.JTextField();
+        l_hall_uid_tf = new javax.swing.JTextField();
+        l_lease_uid_tf = new javax.swing.JTextField();
+        l_room_uid_tf = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("UWE Accomodation App");
@@ -311,9 +364,17 @@ public class MainScreen extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Lease Number", "Hall Name", "Hall Number ", "Room Number", "Student Name", "Occupancy Status", "Cleaning Status"
+                "Lease Number", "Hall Name", "Hall Number ", "Room Number", "Student Name", "Student ID", "Cleaning Status", "Lease ID", "RoomID"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jTable1.getTableHeader().setReorderingAllowed(false);
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -339,16 +400,16 @@ public class MainScreen extends javax.swing.JFrame {
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel12.setText("Room Number");
 
+        room_number_tf.setEditable(false);
         room_number_tf.setBackground(new java.awt.Color(247, 245, 242));
-        room_number_tf.setText("jTextField1");
         room_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        hall_number_tf.setEditable(false);
         hall_number_tf.setBackground(new java.awt.Color(247, 245, 242));
-        hall_number_tf.setText("jTextField1");
         hall_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        hall_name_tf.setEditable(false);
         hall_name_tf.setBackground(new java.awt.Color(247, 245, 242));
-        hall_name_tf.setText("jTextField1");
         hall_name_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         hall_name_tf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -356,8 +417,8 @@ public class MainScreen extends javax.swing.JFrame {
             }
         });
 
+        lease_number_tf.setEditable(false);
         lease_number_tf.setBackground(new java.awt.Color(247, 245, 242));
-        lease_number_tf.setText("jTextField1");
         lease_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -370,7 +431,6 @@ public class MainScreen extends javax.swing.JFrame {
         jLabel15.setText("Occupancy");
 
         student_name_tf.setBackground(new java.awt.Color(247, 245, 242));
-        student_name_tf.setText("jTextField1");
         student_name_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jComboBox2.setBackground(new java.awt.Color(247, 245, 242));
@@ -445,7 +505,7 @@ public class MainScreen extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 170, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 172, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16)
                     .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -474,10 +534,10 @@ public class MainScreen extends javax.swing.JFrame {
                             .addComponent(lease_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(35, 35, 35)
                             .addComponent(student_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addContainerGap(56, Short.MAX_VALUE)))
+                    .addContainerGap(58, Short.MAX_VALUE)))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                    .addContainerGap(172, Short.MAX_VALUE)
+                    .addContainerGap(174, Short.MAX_VALUE)
                     .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(42, 42, 42)))
         );
@@ -503,7 +563,7 @@ public class MainScreen extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel4)
-                .addContainerGap(209, Short.MAX_VALUE))
+                .addContainerGap(211, Short.MAX_VALUE))
         );
 
         jPanel2.add(jPanel4, "card2");
@@ -532,11 +592,9 @@ public class MainScreen extends javax.swing.JFrame {
         jLabel9.setText("Occupancy");
 
         l_hall_number_tf.setBackground(new java.awt.Color(247, 245, 242));
-        l_hall_number_tf.setText("jTextField1");
         l_hall_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         l_hall_name_tf.setBackground(new java.awt.Color(247, 245, 242));
-        l_hall_name_tf.setText("jTextField1");
         l_hall_name_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         l_hall_name_tf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -545,21 +603,18 @@ public class MainScreen extends javax.swing.JFrame {
         });
 
         l_room_number_tf.setBackground(new java.awt.Color(247, 245, 242));
-        l_room_number_tf.setText("jTextField1");
         l_room_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         l_lease_number_tf.setBackground(new java.awt.Color(247, 245, 242));
-        l_lease_number_tf.setText("jTextField1");
         l_lease_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         l_student_name_tf.setBackground(new java.awt.Color(247, 245, 242));
-        l_student_name_tf.setText("jTextField1");
         l_student_name_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jButton1.setText("Delete");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        l_btn_delete.setText("Delete");
+        l_btn_delete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                l_btn_deleteActionPerformed(evt);
             }
         });
 
@@ -574,6 +629,14 @@ public class MainScreen extends javax.swing.JFrame {
         jComboBox1.setEditable(true);
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Unoccupied", "Occupied" }));
         jComboBox1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        l_student_uid_tf.setText("jTextField1");
+
+        l_hall_uid_tf.setText("jTextField1");
+
+        l_lease_uid_tf.setText("jTextField2");
+
+        l_room_uid_tf.setText("jTextField3");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -613,8 +676,15 @@ public class MainScreen extends javax.swing.JFrame {
                                     .addComponent(l_student_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)
+                        .addComponent(l_student_uid_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_hall_uid_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_lease_uid_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_room_uid_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(l_btn_delete)
                         .addGap(37, 37, 37)
                         .addComponent(btn_update)
                         .addGap(9, 9, 9)))
@@ -647,11 +717,22 @@ public class MainScreen extends javax.swing.JFrame {
                         .addComponent(l_lease_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(35, 35, 35)
                         .addComponent(l_student_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btn_update)
-                    .addComponent(jButton1))
-                .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btn_update)
+                            .addComponent(l_btn_delete))
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(l_student_uid_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(l_hall_uid_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(l_lease_uid_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(l_room_uid_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(12, Short.MAX_VALUE))))
         );
 
         jPanel2.add(jPanel1, "card2");
@@ -679,7 +760,7 @@ public class MainScreen extends javax.swing.JFrame {
                         .addComponent(ms_database_table, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         pack();
@@ -737,9 +818,24 @@ public class MainScreen extends javax.swing.JFrame {
 
     }//GEN-LAST:event_l_hall_name_tfActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void l_btn_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_l_btn_deleteActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        Lease lease = data_cache.getLease(Integer.parseInt(l_lease_uid_tf.getText()));
+        Room room = data_cache.getRoom(Integer.parseInt(l_room_uid_tf.getText()));
+        User user = data_cache.getUser(Integer.parseInt(l_student_uid_tf.getText()));
+
+        if ((l_student_name_tf.getText() == null || l_student_name_tf.getText().trim().isEmpty()) && (l_lease_number_tf.getText() == null || l_lease_number_tf.getText().trim().isEmpty())) {
+            JOptionPane.showMessageDialog(null, "Lease already deleted", "Inane warning", JOptionPane.WARNING_MESSAGE);
+        } else if (room.getLeases().contains(lease.getUID())) {
+            data_cache.removeLease(lease);
+            refresh_jtable();
+            
+            
+            
+        }
+
+
+    }//GEN-LAST:event_l_btn_deleteActionPerformed
 
     private void hall_name_tfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hall_name_tfActionPerformed
         // TODO add your handling code here:
@@ -750,9 +846,43 @@ public class MainScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void btn_updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_updateActionPerformed
-        // TODO add your handling code here:   
-        
-        
+        // TODO add your handling code here:       
+        User user = data_cache.getUser(Integer.parseInt(l_student_uid_tf.getText()));
+        Lease lease = data_cache.getLease(Integer.parseInt(l_lease_uid_tf.getText()));
+        Room room = data_cache.getRoom(Integer.parseInt(l_room_uid_tf.getText()));
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        Object[] row = new Object[9];
+
+        if (l_student_name_tf.getText() == null || l_student_name_tf.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Student Name Empty", "Inane warning", JOptionPane.WARNING_MESSAGE);
+        } else if (l_lease_number_tf.getText() == null || l_lease_number_tf.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Lease number Empty", "Inane warning", JOptionPane.WARNING_MESSAGE);
+        } else {
+
+            user.modifyName(l_student_name_tf.getText());
+            lease.modifyLeaseNumber(Integer.parseInt(l_lease_number_tf.getText()));
+            user.modifyRealName(l_student_name_tf.getText());
+
+        }
+        System.out.println("hi");
+        if (room.getLeases().isEmpty() || room.getLeases() == null){
+            System.out.println("hi");
+            User u = new User(l_student_name_tf.getText(),"pass",l_student_name_tf.getText(), l_student_name_tf.getText()+"@Larry.com");
+            Lease l = new Lease(Integer.parseInt(l_lease_number_tf.getText()),u.getUID(),Integer.parseInt(l_room_uid_tf.getText()));
+
+            row[0] = l.getLeaseNumber();
+            row[5] = u.getName();
+            row[7] = l.getUID();
+            model.addRow(row);     
+           refresh_jtable();
+            
+            
+            
+            
+            
+         
+        }
+        refresh_jtable();
 
 
     }//GEN-LAST:event_btn_updateActionPerformed
@@ -769,12 +899,25 @@ public class MainScreen extends javax.swing.JFrame {
         student_name_tf.setText(model.getValueAt(i, 4).toString());
 
         //Hall manager: Lease information
+        if (l_lease_number_tf.getText() == null){
+            l_lease_number_tf.setText("");
+            l_hall_name_tf.setText(model.getValueAt(i, 1).toString());
+            l_hall_number_tf.setText(model.getValueAt(i, 2).toString());
+            l_room_number_tf.setText(model.getValueAt(i, 3).toString());
+            l_student_name_tf.setText(model.getValueAt(i, 4).toString());
+            l_student_uid_tf.setText("");
+            l_lease_uid_tf.setText("");
+            l_room_uid_tf.setText(model.getValueAt(i, 8).toString());
+        }else{        
         l_lease_number_tf.setText(model.getValueAt(i, 0).toString());
         l_hall_name_tf.setText(model.getValueAt(i, 1).toString());
         l_hall_number_tf.setText(model.getValueAt(i, 2).toString());
         l_room_number_tf.setText(model.getValueAt(i, 3).toString());
         l_student_name_tf.setText(model.getValueAt(i, 4).toString());
-
+        l_student_uid_tf.setText(model.getValueAt(i, 5).toString());
+        l_lease_uid_tf.setText(model.getValueAt(i, 7).toString());
+        l_room_uid_tf.setText(model.getValueAt(i, 8).toString());
+        }
 
     }//GEN-LAST:event_jTable1MouseClicked
 
@@ -826,7 +969,6 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JButton btn_update;
     private javax.swing.JTextField hall_name_tf;
     private javax.swing.JTextField hall_number_tf;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
@@ -852,11 +994,16 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JTable jTable1;
+    private javax.swing.JButton l_btn_delete;
     private javax.swing.JTextField l_hall_name_tf;
     private javax.swing.JTextField l_hall_number_tf;
+    private javax.swing.JTextField l_hall_uid_tf;
     private javax.swing.JTextField l_lease_number_tf;
+    private javax.swing.JTextField l_lease_uid_tf;
     private javax.swing.JTextField l_room_number_tf;
+    private javax.swing.JTextField l_room_uid_tf;
     private javax.swing.JTextField l_student_name_tf;
+    private javax.swing.JTextField l_student_uid_tf;
     private javax.swing.JTextField lease_number_tf;
     private javax.swing.JPanel ms_btn_all;
     private javax.swing.JLabel ms_btn_all_text;

@@ -48,6 +48,8 @@ public class Room {
     public int getHallUID() {
         return this.hallUID;
     }
+    
+   
             
     public String getNumber() {
         return this.number;
@@ -84,7 +86,9 @@ public class Room {
     }
 
     public void removeLease(int lease) {
-        leases.remove(lease);
+       leases.remove(lease);
+       
+        
     }
 
     public Lease getLeaseForDate(Date date) {

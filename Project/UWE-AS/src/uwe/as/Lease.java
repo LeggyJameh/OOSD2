@@ -56,13 +56,23 @@ public class Lease {
     public Date getStartDate() {
         return this.startDate;
     }
+    
+    public void modifyRoomUID(int newRoomUID){
+        this.roomUID = newRoomUID;
+        data_cache.updateLease(this);
+    }
 
     public void modifyDuration(int newDuration) {
         this.duration = newDuration;
         data_cache.updateLease(this);
     }
-
-    public void modifyStartDate(Date newDate) {
+    
+    public void modifyLeaseNumber(int newLeaseNumber){
+        this.leaseNumber = newLeaseNumber;
+        data_cache.updateLease(this);
+    }
+    
+      public void modifyStartDate(Date newDate) {
         this.startDate = newDate;
         data_cache.updateLease(this);
     }

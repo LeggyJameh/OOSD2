@@ -70,3 +70,242 @@
 2018-02-15 15:30:40 4600 [Note] InnoDB: Dumping buffer pool(s) not yet started
 2018-02-15 15:30:40 6404 [Note] Plugin 'FEEDBACK' is disabled.
 2018-02-15 15:30:40 6404 [Note] Server socket created on IP: '::'.
+2018-02-25 21:28:04 9336 [Note] InnoDB: innodb_empty_free_list_algorithm has been changed to legacy because of small buffer pool size. In order to use backoff, increase buffer pool at least up to 20MB.
+
+2018-02-25 21:28:04 9336 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+2018-02-25 21:28:04 9336 [Note] InnoDB: The InnoDB memory heap is disabled
+2018-02-25 21:28:04 9336 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2018-02-25 21:28:04 9336 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2018-02-25 21:28:04 9336 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2018-02-25 21:28:04 9336 [Note] InnoDB: Using generic crc32 instructions
+2018-02-25 21:28:04 9336 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2018-02-25 21:28:04 9336 [Note] InnoDB: Completed initialization of buffer pool
+2018-02-25 21:28:04 9336 [ERROR] InnoDB: .\ibdata1 can't be opened in read-write mode
+2018-02-25 21:28:04 9336 [ERROR] InnoDB: The system tablespace must be writable!
+2018-02-25 21:28:04 9336 [ERROR] Plugin 'InnoDB' init function returned error.
+2018-02-25 21:28:04 9336 [ERROR] Plugin 'InnoDB' registration as a STORAGE ENGINE failed.
+2018-02-25 21:28:04 9336 [Note] Plugin 'FEEDBACK' is disabled.
+2018-02-25 21:28:04 9336 [ERROR] Unknown/unsupported storage engine: InnoDB
+2018-02-25 21:28:04 9336 [ERROR] Aborting
+
+2018-02-25 21:28:30 7452 [Note] InnoDB: innodb_empty_free_list_algorithm has been changed to legacy because of small buffer pool size. In order to use backoff, increase buffer pool at least up to 20MB.
+
+2018-02-25 21:28:30 7452 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+2018-02-25 21:28:30 7452 [Note] InnoDB: The InnoDB memory heap is disabled
+2018-02-25 21:28:30 7452 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2018-02-25 21:28:30 7452 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2018-02-25 21:28:30 7452 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2018-02-25 21:28:30 7452 [Note] InnoDB: Using generic crc32 instructions
+2018-02-25 21:28:30 7452 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2018-02-25 21:28:30 7452 [Note] InnoDB: Completed initialization of buffer pool
+2018-02-25 21:28:30 7452 [ERROR] InnoDB: .\ibdata1 can't be opened in read-write mode
+2018-02-25 21:28:30 7452 [ERROR] InnoDB: The system tablespace must be writable!
+2018-02-25 21:28:30 7452 [ERROR] Plugin 'InnoDB' init function returned error.
+2018-02-25 21:28:30 7452 [ERROR] Plugin 'InnoDB' registration as a STORAGE ENGINE failed.
+2018-02-25 21:28:30 7452 [Note] Plugin 'FEEDBACK' is disabled.
+2018-02-25 21:28:30 7452 [ERROR] Unknown/unsupported storage engine: InnoDB
+2018-02-25 21:28:30 7452 [ERROR] Aborting
+
+2018-02-25 21:29:32 10512 [Note] InnoDB: innodb_empty_free_list_algorithm has been changed to legacy because of small buffer pool size. In order to use backoff, increase buffer pool at least up to 20MB.
+
+2018-02-25 21:29:33 10512 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+2018-02-25 21:29:33 10512 [Note] InnoDB: The InnoDB memory heap is disabled
+2018-02-25 21:29:33 10512 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2018-02-25 21:29:33 10512 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2018-02-25 21:29:33 10512 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2018-02-25 21:29:33 10512 [Note] InnoDB: Using generic crc32 instructions
+2018-02-25 21:29:33 10512 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2018-02-25 21:29:33 10512 [Note] InnoDB: Completed initialization of buffer pool
+2018-02-25 21:29:33 10512 [ERROR] InnoDB: .\ibdata1 can't be opened in read-write mode
+2018-02-25 21:29:33 10512 [ERROR] InnoDB: The system tablespace must be writable!
+2018-02-25 21:29:33 10512 [ERROR] Plugin 'InnoDB' init function returned error.
+2018-02-25 21:29:33 10512 [ERROR] Plugin 'InnoDB' registration as a STORAGE ENGINE failed.
+2018-02-25 21:29:33 10512 [Note] Plugin 'FEEDBACK' is disabled.
+2018-02-25 21:29:33 10512 [ERROR] Unknown/unsupported storage engine: InnoDB
+2018-02-25 21:29:33 10512 [ERROR] Aborting
+
+2018-02-25 21:33:02 13092 [Note] InnoDB: innodb_empty_free_list_algorithm has been changed to legacy because of small buffer pool size. In order to use backoff, increase buffer pool at least up to 20MB.
+
+2018-02-25 21:33:02 13092 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+2018-02-25 21:33:02 13092 [Note] InnoDB: The InnoDB memory heap is disabled
+2018-02-25 21:33:02 13092 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2018-02-25 21:33:02 13092 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2018-02-25 21:33:02 13092 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2018-02-25 21:33:02 13092 [Note] InnoDB: Using generic crc32 instructions
+2018-02-25 21:33:02 13092 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2018-02-25 21:33:02 13092 [Note] InnoDB: Completed initialization of buffer pool
+2018-02-25 21:33:02 13092 [ERROR] InnoDB: .\ibdata1 can't be opened in read-write mode
+2018-02-25 21:33:02 13092 [ERROR] InnoDB: The system tablespace must be writable!
+2018-02-25 21:33:02 13092 [ERROR] Plugin 'InnoDB' init function returned error.
+2018-02-25 21:33:02 13092 [ERROR] Plugin 'InnoDB' registration as a STORAGE ENGINE failed.
+2018-02-25 21:33:02 13092 [Note] Plugin 'FEEDBACK' is disabled.
+2018-02-25 21:33:02 13092 [ERROR] Unknown/unsupported storage engine: InnoDB
+2018-02-25 21:33:02 13092 [ERROR] Aborting
+
+2018-02-25 21:36:27 12780 [Note] InnoDB: innodb_empty_free_list_algorithm has been changed to legacy because of small buffer pool size. In order to use backoff, increase buffer pool at least up to 20MB.
+
+2018-02-25 21:36:27 12780 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+2018-02-25 21:36:27 12780 [Note] InnoDB: The InnoDB memory heap is disabled
+2018-02-25 21:36:27 12780 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2018-02-25 21:36:27 12780 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2018-02-25 21:36:27 12780 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2018-02-25 21:36:27 12780 [Note] InnoDB: Using generic crc32 instructions
+2018-02-25 21:36:27 12780 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2018-02-25 21:36:27 12780 [Note] InnoDB: Completed initialization of buffer pool
+2018-02-25 21:36:27 12780 [ERROR] InnoDB: .\ibdata1 can't be opened in read-write mode
+2018-02-25 21:36:27 12780 [ERROR] InnoDB: The system tablespace must be writable!
+2018-02-25 21:36:27 12780 [ERROR] Plugin 'InnoDB' init function returned error.
+2018-02-25 21:36:27 12780 [ERROR] Plugin 'InnoDB' registration as a STORAGE ENGINE failed.
+2018-02-25 21:36:27 12780 [Note] Plugin 'FEEDBACK' is disabled.
+2018-02-25 21:36:27 12780 [ERROR] Unknown/unsupported storage engine: InnoDB
+2018-02-25 21:36:27 12780 [ERROR] Aborting
+
+2018-02-25 21:37:23 12496 [Note] InnoDB: innodb_empty_free_list_algorithm has been changed to legacy because of small buffer pool size. In order to use backoff, increase buffer pool at least up to 20MB.
+
+2018-02-25 21:37:23 12496 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+2018-02-25 21:37:23 12496 [Note] InnoDB: The InnoDB memory heap is disabled
+2018-02-25 21:37:23 12496 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2018-02-25 21:37:23 12496 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2018-02-25 21:37:23 12496 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2018-02-25 21:37:23 12496 [Note] InnoDB: Using generic crc32 instructions
+2018-02-25 21:37:23 12496 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2018-02-25 21:37:23 12496 [Note] InnoDB: Completed initialization of buffer pool
+2018-02-25 21:37:23 12496 [ERROR] InnoDB: .\ibdata1 can't be opened in read-write mode
+2018-02-25 21:37:23 12496 [ERROR] InnoDB: The system tablespace must be writable!
+2018-02-25 21:37:23 12496 [ERROR] Plugin 'InnoDB' init function returned error.
+2018-02-25 21:37:23 12496 [ERROR] Plugin 'InnoDB' registration as a STORAGE ENGINE failed.
+2018-02-25 21:37:23 12496 [Note] Plugin 'FEEDBACK' is disabled.
+2018-02-25 21:37:23 12496 [ERROR] Unknown/unsupported storage engine: InnoDB
+2018-02-25 21:37:23 12496 [ERROR] Aborting
+
+2018-02-25 21:37:27 12328 [Note] InnoDB: innodb_empty_free_list_algorithm has been changed to legacy because of small buffer pool size. In order to use backoff, increase buffer pool at least up to 20MB.
+
+2018-02-25 21:37:27 12328 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+2018-02-25 21:37:27 12328 [Note] InnoDB: The InnoDB memory heap is disabled
+2018-02-25 21:37:27 12328 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2018-02-25 21:37:27 12328 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2018-02-25 21:37:27 12328 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2018-02-25 21:37:27 12328 [Note] InnoDB: Using generic crc32 instructions
+2018-02-25 21:37:27 12328 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2018-02-25 21:37:27 12328 [Note] InnoDB: Completed initialization of buffer pool
+2018-02-25 21:37:27 12328 [ERROR] InnoDB: .\ibdata1 can't be opened in read-write mode
+2018-02-25 21:37:27 12328 [ERROR] InnoDB: The system tablespace must be writable!
+2018-02-25 21:37:27 12328 [ERROR] Plugin 'InnoDB' init function returned error.
+2018-02-25 21:37:27 12328 [ERROR] Plugin 'InnoDB' registration as a STORAGE ENGINE failed.
+2018-02-25 21:37:27 12328 [Note] Plugin 'FEEDBACK' is disabled.
+2018-02-25 21:37:27 12328 [ERROR] Unknown/unsupported storage engine: InnoDB
+2018-02-25 21:37:27 12328 [ERROR] Aborting
+
+2018-02-25 21:38:36 9196 [Note] InnoDB: innodb_empty_free_list_algorithm has been changed to legacy because of small buffer pool size. In order to use backoff, increase buffer pool at least up to 20MB.
+
+2018-02-25 21:38:36 9196 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+2018-02-25 21:38:36 9196 [Note] InnoDB: The InnoDB memory heap is disabled
+2018-02-25 21:38:36 9196 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2018-02-25 21:38:36 9196 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2018-02-25 21:38:36 9196 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2018-02-25 21:38:36 9196 [Note] InnoDB: Using generic crc32 instructions
+2018-02-25 21:38:36 9196 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2018-02-25 21:38:36 9196 [Note] InnoDB: Completed initialization of buffer pool
+2018-02-25 21:38:36 9196 [ERROR] InnoDB: .\ibdata1 can't be opened in read-write mode
+2018-02-25 21:38:36 9196 [ERROR] InnoDB: The system tablespace must be writable!
+2018-02-25 21:38:36 9196 [ERROR] Plugin 'InnoDB' init function returned error.
+2018-02-25 21:38:36 9196 [ERROR] Plugin 'InnoDB' registration as a STORAGE ENGINE failed.
+2018-02-25 21:38:36 9196 [Note] Plugin 'FEEDBACK' is disabled.
+2018-02-25 21:38:36 9196 [ERROR] Unknown/unsupported storage engine: InnoDB
+2018-02-25 21:38:36 9196 [ERROR] Aborting
+
+2018-02-25 21:39:04 4140 [Note] InnoDB: innodb_empty_free_list_algorithm has been changed to legacy because of small buffer pool size. In order to use backoff, increase buffer pool at least up to 20MB.
+
+2018-02-25 21:39:04 4140 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+2018-02-25 21:39:04 4140 [Note] InnoDB: The InnoDB memory heap is disabled
+2018-02-25 21:39:04 4140 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2018-02-25 21:39:04 4140 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2018-02-25 21:39:04 4140 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2018-02-25 21:39:04 4140 [Note] InnoDB: Using generic crc32 instructions
+2018-02-25 21:39:04 4140 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2018-02-25 21:39:04 4140 [Note] InnoDB: Completed initialization of buffer pool
+2018-02-25 21:39:04 4140 [ERROR] InnoDB: .\ibdata1 can't be opened in read-write mode
+2018-02-25 21:39:04 4140 [ERROR] InnoDB: The system tablespace must be writable!
+2018-02-25 21:39:04 4140 [ERROR] Plugin 'InnoDB' init function returned error.
+2018-02-25 21:39:04 4140 [ERROR] Plugin 'InnoDB' registration as a STORAGE ENGINE failed.
+2018-02-25 21:39:04 4140 [Note] Plugin 'FEEDBACK' is disabled.
+2018-02-25 21:39:04 4140 [ERROR] Unknown/unsupported storage engine: InnoDB
+2018-02-25 21:39:04 4140 [ERROR] Aborting
+
+2018-02-25 21:42:43 2268 [Note] InnoDB: innodb_empty_free_list_algorithm has been changed to legacy because of small buffer pool size. In order to use backoff, increase buffer pool at least up to 20MB.
+
+2018-02-25 21:42:44 2268 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+2018-02-25 21:42:44 2268 [Note] InnoDB: The InnoDB memory heap is disabled
+2018-02-25 21:42:44 2268 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2018-02-25 21:42:44 2268 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2018-02-25 21:42:44 2268 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2018-02-25 21:42:44 2268 [Note] InnoDB: Using generic crc32 instructions
+2018-02-25 21:42:44 2268 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2018-02-25 21:42:44 2268 [Note] InnoDB: Completed initialization of buffer pool
+2018-02-25 21:42:44 2268 [Note] InnoDB: Highest supported file format is Barracuda.
+2018-02-25 21:42:44 2268 [Note] InnoDB: Starting crash recovery from checkpoint LSN=2326253
+2018-02-25 21:42:44 2268 [Note] InnoDB: Restoring possible half-written data pages from the doublewrite buffer...
+2018-02-25 21:42:44 2268 [Note] InnoDB: Starting final batch to recover 3 pages from redo log
+2018-02-25 21:42:44 2268 [Note] InnoDB: 128 rollback segment(s) are active.
+2018-02-25 21:42:44 2268 [Note] InnoDB: Waiting for purge to start
+2018-02-25 21:42:44 2268 [Note] InnoDB:  Percona XtraDB (http://www.percona.com) 5.6.36-82.2 started; log sequence number 2329635
+2018-02-25 21:42:44 14796 [Note] InnoDB: Dumping buffer pool(s) not yet started
+2018-02-25 21:42:44 2268 [Note] Plugin 'FEEDBACK' is disabled.
+2018-02-25 21:42:44 2268 [Note] Server socket created on IP: '::'.
+2018-02-27 12:08:31 13772 [Note] InnoDB: innodb_empty_free_list_algorithm has been changed to legacy because of small buffer pool size. In order to use backoff, increase buffer pool at least up to 20MB.
+
+2018-02-27 12:08:31 13772 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+2018-02-27 12:08:31 13772 [Note] InnoDB: The InnoDB memory heap is disabled
+2018-02-27 12:08:31 13772 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2018-02-27 12:08:31 13772 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2018-02-27 12:08:31 13772 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2018-02-27 12:08:31 13772 [Note] InnoDB: Using generic crc32 instructions
+2018-02-27 12:08:31 13772 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2018-02-27 12:08:31 13772 [Note] InnoDB: Completed initialization of buffer pool
+2018-02-27 12:08:31 13772 [Note] InnoDB: Highest supported file format is Barracuda.
+2018-02-27 12:08:31 13772 [Note] InnoDB: The log sequence number 2325154 in ibdata file do not match the log sequence number 2377939 in the ib_logfiles!
+2018-02-27 12:08:31 13772 [Note] InnoDB: Restoring possible half-written data pages from the doublewrite buffer...
+2018-02-27 12:08:31 13772 [Note] InnoDB: 128 rollback segment(s) are active.
+2018-02-27 12:08:31 13772 [Note] InnoDB: Waiting for purge to start
+2018-02-27 12:08:31 13772 [Note] InnoDB:  Percona XtraDB (http://www.percona.com) 5.6.36-82.2 started; log sequence number 2377939
+2018-02-27 12:08:31 2724 [Note] InnoDB: Dumping buffer pool(s) not yet started
+2018-02-27 12:08:31 13772 [Note] Plugin 'FEEDBACK' is disabled.
+2018-02-27 12:08:31 13772 [Note] Server socket created on IP: '::'.
+2018-02-27 16:00:53 13120 [Note] InnoDB: innodb_empty_free_list_algorithm has been changed to legacy because of small buffer pool size. In order to use backoff, increase buffer pool at least up to 20MB.
+
+2018-02-27 16:00:53 13120 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+2018-02-27 16:00:53 13120 [Note] InnoDB: The InnoDB memory heap is disabled
+2018-02-27 16:00:53 13120 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2018-02-27 16:00:53 13120 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2018-02-27 16:00:53 13120 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2018-02-27 16:00:53 13120 [Note] InnoDB: Using generic crc32 instructions
+2018-02-27 16:00:53 13120 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2018-02-27 16:00:53 13120 [Note] InnoDB: Completed initialization of buffer pool
+2018-02-27 16:00:53 13120 [Note] InnoDB: Highest supported file format is Barracuda.
+2018-02-27 16:00:53 13120 [Note] InnoDB: The log sequence number 2325154 in ibdata file do not match the log sequence number 2391881 in the ib_logfiles!
+2018-02-27 16:00:53 13120 [Note] InnoDB: Restoring possible half-written data pages from the doublewrite buffer...
+2018-02-27 16:00:54 13120 [Note] InnoDB: 128 rollback segment(s) are active.
+2018-02-27 16:00:54 13120 [Note] InnoDB: Waiting for purge to start
+2018-02-27 16:00:54 13120 [Note] InnoDB:  Percona XtraDB (http://www.percona.com) 5.6.36-82.2 started; log sequence number 2391881
+2018-02-27 16:00:54 12364 [Note] InnoDB: Dumping buffer pool(s) not yet started
+2018-02-27 16:00:54 13120 [Note] Plugin 'FEEDBACK' is disabled.
+2018-02-27 16:00:54 13120 [Note] Server socket created on IP: '::'.
+2018-02-28  0:14:27 5268 [Note] InnoDB: innodb_empty_free_list_algorithm has been changed to legacy because of small buffer pool size. In order to use backoff, increase buffer pool at least up to 20MB.
+
+2018-02-28  0:14:27 5268 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+2018-02-28  0:14:27 5268 [Note] InnoDB: The InnoDB memory heap is disabled
+2018-02-28  0:14:27 5268 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2018-02-28  0:14:27 5268 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2018-02-28  0:14:27 5268 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2018-02-28  0:14:27 5268 [Note] InnoDB: Using generic crc32 instructions
+2018-02-28  0:14:27 5268 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2018-02-28  0:14:27 5268 [Note] InnoDB: Completed initialization of buffer pool
+2018-02-28  0:14:27 5268 [Note] InnoDB: Highest supported file format is Barracuda.
+2018-02-28  0:14:27 5268 [Note] InnoDB: The log sequence number 2325154 in ibdata file do not match the log sequence number 2587046 in the ib_logfiles!
+2018-02-28  0:14:27 5268 [Note] InnoDB: Restoring possible half-written data pages from the doublewrite buffer...
+2018-02-28  0:14:27 5268 [Note] InnoDB: 128 rollback segment(s) are active.
+2018-02-28  0:14:27 5268 [Note] InnoDB: Waiting for purge to start
+2018-02-28  0:14:27 5268 [Note] InnoDB:  Percona XtraDB (http://www.percona.com) 5.6.36-82.2 started; log sequence number 2587046
+2018-02-28  0:14:27 14880 [Note] InnoDB: Dumping buffer pool(s) not yet started
+2018-02-28  0:14:27 5268 [Note] Plugin 'FEEDBACK' is disabled.
+2018-02-28  0:14:27 5268 [Note] Server socket created on IP: '::'.

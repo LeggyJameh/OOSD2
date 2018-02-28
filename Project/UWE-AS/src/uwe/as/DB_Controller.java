@@ -284,12 +284,12 @@ public class DB_Controller {
      * Update the details of the user in the database.
      */
     public static void updateUser(User user) {
-        String query = "UPDATE `users` SET (`Name`='" + user.getName()
+        String query = " UPDATE `users` SET `Name`='" + user.getName()
                 + "', `RealName`='" + user.getRealName()
                 + "', `EmailAddress`='" + user.getEmailAddress()
                 + "', `StudentNumber`='" + user.getStudentNumber()
                 + "', `AccountLevel`='" + Integer.toString(user.getAccountLevel())
-                + "') WHERE `UID`='" + Integer.toString(user.getUID()) + "';";
+                + "' WHERE `UID`='" + Integer.toString(user.getUID()) + "';";
         
         executeNonQuery(query);
     }
@@ -342,11 +342,12 @@ public class DB_Controller {
     public static void updateLease(Lease lease) {
         DateFormat df = new SimpleDateFormat();
         String date = df.format(lease.getStartDate());
-        String query = "UPDATE `leases` SET (`LeaseNumber`='" + Integer.toString(lease.getLeaseNumber())
+        String query = "UPDATE `leases` SET `LeaseNumber`='" + Integer.toString(lease.getLeaseNumber())
                 + "', `Duration`='" + Integer.toString(lease.getDuration())
                 + "', `StudentUID`='" + Integer.toString(lease.getStudentUID())
+                + "', `RoomUID`='" + Integer.toString(lease.getRoomUID())
                 + "', `StartDate`='" + date
-                + "') WHERE `UID`='" + Integer.toString(lease.getUID()) + "';";
+                + "' WHERE `UID`='" + Integer.toString(lease.getUID()) + "';";
         
         executeNonQuery(query);
     }
@@ -423,7 +424,7 @@ public class DB_Controller {
      * Create new lease in the database.
      */
     public static int createLease(Lease lease) {
-        String query = "INSERT INTO `users`"
+        String query = "INSERT INTO `leases`"
                 + "(`LeaseNumber`, `StudentUID`) VALUES ('"
                 + lease.getLeaseNumber() + "', '"
                 + lease.getStudentUID() + "')";
