@@ -38,6 +38,7 @@ public class Data_Cache {
         User.data_cache = this;
         uwe.asGUI.Login.data_cache = this;
         uwe.asGUI.MainScreen.data_cache = this;
+        uwe.asGUI.CreateLease.data_cache = this;
     }
 
     /**

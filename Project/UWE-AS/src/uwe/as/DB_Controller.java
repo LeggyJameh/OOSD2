@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Date;
 
 /**
  *
@@ -424,10 +425,14 @@ public class DB_Controller {
      * Create new lease in the database.
      */
     public static int createLease(Lease lease) {
+        Date date = new Date(lease.getStartDate().getTime());
         String query = "INSERT INTO `leases`"
-                + "(`LeaseNumber`, `StudentUID`) VALUES ('"
+                + "(`LeaseNumber`, `StudentUID`, `RoomUID`, `Duration`, `StartDate`) VALUES ('"
                 + lease.getLeaseNumber() + "', '"
-                + lease.getStudentUID() + "')";
+                + lease.getStudentUID() + "', '"
+                + lease.getRoomUID() + "', '"
+                + lease.getDuration() + "', '"
+                + date.toString() + "')";
         
         executeNonQuery(query);
 
@@ -527,7 +532,7 @@ public class DB_Controller {
      * Used to retrieve the last UID after creating a record.
      */
     private static int getLastInsertID() {
-        String query = "SELECT last_insert_id()";
+        String query = "SELECT last_insert_id() AS 'UID'";
 
         try {
             statement = connection.createStatement();
@@ -535,7 +540,7 @@ public class DB_Controller {
                 ResultSet result = statement.executeQuery(query);
 
                 result.first();
-                return result.getInt(0);
+                return result.getInt("UID");
             }
         } catch (SQLException ex) {
             System.out.println("DB_Controller.getLastInsertID() produced the following error:");

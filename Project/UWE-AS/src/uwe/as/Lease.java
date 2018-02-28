@@ -16,10 +16,12 @@ public class Lease {
     private Date startDate;
     public static Data_Cache data_cache;
 
-    public Lease(int number, int studentUID, int roomUID) {
+    public Lease(int number, int studentUID, int roomUID, int duration, Date startDate) {
         this.leaseNumber = number;
         this.studentUID = studentUID;
         this.roomUID = roomUID;
+        this.duration = duration;
+        this.startDate = startDate;
         data_cache.createLease(this);
     }
 
