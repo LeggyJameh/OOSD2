@@ -115,11 +115,49 @@ public class MainScreen extends javax.swing.JFrame {
 
     private void disableElementsForUserLevel() {
         switch (UWEAS.currentUser.getAccountLevel()) {
-            case 0: // Student
+            default: // Student
+                textbox_Hall_Name.setEditable(false);
+                textbox_Hall_Number.setEditable(false);
+                textbox_Hall_Address.setEditable(false);
+                textbox_Hall_Telephone.setEditable(false);
+                comboBox_Hall_Warden.setEnabled(false);
+                button_Hall_Update.setEnabled(false);
+                button_Hall_Delete.setEnabled(false);
+                button_Hall_Create.setEnabled(false);
+                comboBox_Room_CleanState.setEnabled(false);
+                textbox_Room_Rate.setEditable(false);
+                button_Room_Update.setEnabled(false);
+                button_Room_Delete.setEnabled(false);
+                button_Room_Create.setEnabled(false);
+                textbox_Lease_LeaseNumber.setEditable(false);
+                textbox_Lease_StartDate.setEditable(false);
+                comboBox_Lease_Duration.setEnabled(false);
+                button_Lease_UpdateLease.setEnabled(false);
+                button_Lease_DeleteLease.setEnabled(false);
+                button_Lease_CreateLease.setEnabled(false);
+                button_Nav_ViewApplications.setEnabled(false);
                 break;
             case 1: // Warden
+                textbox_Hall_Name.setEditable(false);
+                textbox_Hall_Number.setEditable(false);
+                textbox_Hall_Address.setEditable(false);
+                textbox_Hall_Telephone.setEditable(false);
+                comboBox_Hall_Warden.setEnabled(false);
+                button_Hall_Update.setEnabled(false);
+                button_Hall_Delete.setEnabled(false);
+                button_Hall_Create.setEnabled(false);
+                textbox_Room_Rate.setEditable(false);
+                button_Room_Update.setEnabled(false);
+                button_Room_Delete.setEnabled(false);
+                button_Room_Create.setEnabled(false);
+                textbox_Lease_LeaseNumber.setEditable(false);
+                textbox_Lease_StartDate.setEditable(false);
+                comboBox_Lease_Duration.setEnabled(false);
+                button_Lease_UpdateLease.setEnabled(false);
+                button_Lease_DeleteLease.setEnabled(false);
+                button_Lease_CreateLease.setEnabled(false);
+                button_Nav_ViewApplications.setEnabled(false);
                 break;
-            case 2: // Manager
         }
     }
 

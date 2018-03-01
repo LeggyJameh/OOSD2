@@ -1,6 +1,7 @@
 package uwe.as;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -33,11 +34,21 @@ public class RoomApplication {
     }
 
     public void approveApplication() {
-
+        List<Lease> leases = data_cache.getLeases();
+        if (leases != null)
+        {
+            if (!leases.isEmpty())
+            {
+                int lastNumber = leases.get(leases.size()-1).getLeaseNumber();
+                new Lease(lastNumber+1, this.studentUID, this.roomUID, this.duration, this.date);
+                data_cache.removeApplication(this);
+            }
+        }
+        
     }
 
     public void refuseApplication() {
-
+        data_cache.removeApplication(this);
     }
 
     public int getUID() {
