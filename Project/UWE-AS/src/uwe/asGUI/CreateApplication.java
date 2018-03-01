@@ -37,7 +37,7 @@ public class CreateApplication extends javax.swing.JFrame {
         this.setVisible(true);
         setup = false;
     }
-
+    
     private void importFromCache() {
         this.rooms = data_cache.getRooms();
         this.halls = data_cache.getHalls();
@@ -144,7 +144,13 @@ public class CreateApplication extends javax.swing.JFrame {
         button_Cancel = new javax.swing.JButton();
         comboBox_Duration = new javax.swing.JComboBox<>();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Create Application");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         label_Hall.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         label_Hall.setText("Hall");
@@ -309,6 +315,10 @@ public class CreateApplication extends javax.swing.JFrame {
     private void comboBox_RoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBox_RoomActionPerformed
         updateDetailsForRoom();
     }//GEN-LAST:event_comboBox_RoomActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        mainScreen.createApplicationClosing();
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
