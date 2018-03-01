@@ -1,7 +1,10 @@
 package uwe.asGUI;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import uwe.as.Hall;
 import uwe.as.Room;
 import uwe.as.RoomApplication;
@@ -28,6 +31,7 @@ public class ViewApplications extends javax.swing.JFrame {
     {
         List<RoomApplication> applications = data_cache.getApplications();
         DefaultTableModel model = (DefaultTableModel)jTable1.getModel();
+        model.setRowCount(0);
         Object[] row = new Object[11];
         
         for (RoomApplication a : applications)
@@ -56,6 +60,65 @@ public class ViewApplications extends javax.swing.JFrame {
             }
         }
         
+    }
+    
+    private RoomApplication getCurrentApplication()
+    {
+        int selectedRow = jTable1.getSelectedRow();
+        TableModel model = jTable1.getModel();
+        return data_cache.getApplication(Integer.parseInt(model.getValueAt(selectedRow, 7).toString()));
+    }
+    
+    private Hall getCurrentHall()
+    {
+        int selectedRow = jTable1.getSelectedRow();
+        TableModel model = jTable1.getModel();
+        return data_cache.getHall(Integer.parseInt(model.getValueAt(selectedRow, 8).toString()));
+    }
+    
+    private Room getCurrentRoom()
+    {
+        int selectedRow = jTable1.getSelectedRow();
+        TableModel model = jTable1.getModel();
+        return data_cache.getRoom(Integer.parseInt(model.getValueAt(selectedRow, 9).toString()));
+    }
+    
+    private User getCurrentStudent()
+    {
+        int selectedRow = jTable1.getSelectedRow();
+        TableModel model = jTable1.getModel();
+        return data_cache.getUser(Integer.parseInt(model.getValueAt(selectedRow, 10).toString()));
+    }
+    
+    private void updateDetails()
+    {
+        Hall currentHall = getCurrentHall();
+        Room currentRoom = getCurrentRoom();
+        User currentStudent = getCurrentStudent();
+        RoomApplication currentApplication = getCurrentApplication();
+        
+        if (currentHall != null)
+        {
+            textbox_HallName.setText(currentHall.getName());
+            textbox_HallNumber.setText(currentHall.getNumber());
+        }
+        if (currentRoom != null)
+        {
+            textbox_RoomNumber.setText(currentRoom.getNumber());
+            textbox_RoomRate.setText(Integer.toString(currentRoom.getRate()));
+        }
+        if (currentStudent != null)
+        {
+            textbox_StudentName.setText(currentStudent.getRealName());
+            textbox_StudentNumber.setText(currentStudent.getStudentNumber());
+            textbox_StudentEmail.setText(currentStudent.getEmailAddress());
+        }
+        if (currentApplication != null)
+        {
+            DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+            textbox_StartDate.setText(df.format(currentApplication.getDate()));
+            textbox_Duration.setText(Integer.toString(currentApplication.getDuration()));
+        }
     }
 
     /**
@@ -134,6 +197,7 @@ public class ViewApplications extends javax.swing.JFrame {
             }
         });
         jTable1.setColumnSelectionAllowed(true);
+        jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jTable1.getTableHeader().setReorderingAllowed(false);
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -328,15 +392,19 @@ public class ViewApplications extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void button_ApproveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_ApproveActionPerformed
-        // TODO add your handling code here:
+        RoomApplication currentApplication = getCurrentApplication();
+        currentApplication.approveApplication();
+        updateTable();
     }//GEN-LAST:event_button_ApproveActionPerformed
 
     private void button_DenyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_DenyActionPerformed
-        // TODO add your handling code here:
+        RoomApplication currentApplication = getCurrentApplication();
+        currentApplication.refuseApplication();
+        updateTable();
     }//GEN-LAST:event_button_DenyActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        // TODO add your handling code here:
+        updateDetails();
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void button_CloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_CloseActionPerformed
