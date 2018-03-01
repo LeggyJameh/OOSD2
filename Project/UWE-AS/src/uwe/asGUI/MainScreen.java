@@ -836,6 +836,7 @@ public class MainScreen extends javax.swing.JFrame {
         {
             CreateLease createLease = new CreateLease(this);
         }
+        refresh_jtable();
     }//GEN-LAST:event_buttonAddLeaseActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
