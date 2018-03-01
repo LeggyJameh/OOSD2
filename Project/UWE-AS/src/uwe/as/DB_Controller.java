@@ -317,7 +317,7 @@ public class DB_Controller {
      */
     public static void updateRoom(Room room) {
         int cleanliness;
-        switch (room.getCleanliness()) {
+        switch (room.getCleaniness()) {
             default:
                 cleanliness = 0;
                 break;

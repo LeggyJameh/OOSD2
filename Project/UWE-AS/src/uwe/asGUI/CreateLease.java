@@ -13,7 +13,7 @@ import uwe.as.User;
 
 /**
  *
- * @author Jamie Mills (16004255)
+ * @author Sprackle
  */
 public class CreateLease extends javax.swing.JFrame {
 
@@ -157,6 +157,7 @@ public class CreateLease extends javax.swing.JFrame {
                 Integer.toString(duration) + " " +
                 df.format(date));
         new uwe.as.Lease(leaseNumber, currentStudentUID, currentRoomUID, duration, date);
+        
     }
 
     /**
@@ -186,7 +187,6 @@ public class CreateLease extends javax.swing.JFrame {
         textfieldLeaseNumber = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Add Lease");
         setAlwaysOnTop(true);
         setResizable(false);
 

@@ -1,7 +1,6 @@
 package uwe.as;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -59,7 +58,7 @@ public class Room {
         return this.rentRate;
     }
 
-    public CleanState getCleanliness() {
+    public CleanState getCleaniness() {
         return this.cleanliness;
     }
 
@@ -71,7 +70,7 @@ public class Room {
         return this.description;
     }
 
-    public void changeCleanlinessState(CleanState newState) {
+    public void changeCleaninessState(CleanState newState) {
         this.cleanliness = newState;
         data_cache.updateRoom(this);
     }
@@ -86,29 +85,13 @@ public class Room {
     }
 
     public void removeLease(int lease) {
-       leases.remove(lease); 
+       leases.remove(lease);
+       
+        
     }
 
     public Lease getLeaseForDate(Date date) {
-        for (int l : leases)
-        {
-            Lease currentLease = data_cache.getLease(l);
-            if (currentLease != null)
-            {
-                if (currentLease.getStartDate().before(date))
-                {
-                    Calendar calCurrent = Calendar.getInstance();
-                    Calendar calAfter = Calendar.getInstance();
-                    calAfter.setTime(date);
-                    calCurrent.setTime(date);
-                    calAfter.add(Calendar.MONTH, currentLease.getDuration());
-                    if (calAfter.after(calCurrent))
-                    {
-                        return currentLease;
-                    }
-                }
-            }
-        }
+        // TODO
         return null;
     }
 
