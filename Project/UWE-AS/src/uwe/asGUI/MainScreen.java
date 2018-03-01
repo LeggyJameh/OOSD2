@@ -41,13 +41,13 @@ public class MainScreen extends javax.swing.JFrame {
         this.setVisible(true);
     }
 
-    public void refresh_jtable() {
+    private void refresh_jtable() {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
         show_users_in_jtable();
     }
 
-    public void show_users_in_jtable() {
+    private void show_users_in_jtable() {
         // Pulling data lists from cache
         List<Room> rooms = data_cache.getRooms();
         List<Lease> leases = data_cache.getLeases();
@@ -1139,11 +1139,16 @@ public class MainScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_button_Hall_CreateActionPerformed
 
     private void button_Nav_CreateApplicationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Nav_CreateApplicationActionPerformed
-        // TODO add your handling code here:
+        if (createApplication == null) {
+            createApplication = new CreateApplication(this);
+        }
     }//GEN-LAST:event_button_Nav_CreateApplicationActionPerformed
 
     private void button_Nav_ViewApplicationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Nav_ViewApplicationsActionPerformed
-        // TODO add your handling code here:
+        if (viewApplications == null)
+        {
+            viewApplications = new ViewApplications(this);
+        }
     }//GEN-LAST:event_button_Nav_ViewApplicationsActionPerformed
 
     /**

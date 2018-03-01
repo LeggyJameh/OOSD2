@@ -20,8 +20,10 @@ public class CreateHall extends javax.swing.JFrame {
     private void getAllFieldsAndSubmit() {
         String currentName = textfield_Name.getText();
         String currentNumber = textfield_Number.getText();
+        String currentAddress = textfield_Address.getText();
+        String currentTelephone = textfield_Telephone.getText();
 
-        new uwe.as.Hall(currentName, currentNumber);
+        new uwe.as.Hall(currentName, currentNumber, currentAddress, currentTelephone);
     }
 
     /**
@@ -35,12 +37,16 @@ public class CreateHall extends javax.swing.JFrame {
 
         labelName = new javax.swing.JLabel();
         labelNumber = new javax.swing.JLabel();
-        textfield_Name = new javax.swing.JFormattedTextField();
         buttonCancel = new javax.swing.JButton();
         buttonAdd = new javax.swing.JButton();
         labelTitle = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        textfield_Number = new javax.swing.JFormattedTextField();
+        textfield_Name = new javax.swing.JTextField();
+        textfield_Number = new javax.swing.JTextField();
+        labelTelephone = new javax.swing.JLabel();
+        labelAddress = new javax.swing.JLabel();
+        textfield_Address = new javax.swing.JTextField();
+        textfield_Telephone = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Add Lease");
@@ -52,10 +58,6 @@ public class CreateHall extends javax.swing.JFrame {
 
         labelNumber.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         labelNumber.setText("Number");
-
-        textfield_Name.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter()));
-        textfield_Name.setMinimumSize(new java.awt.Dimension(100, 20));
-        textfield_Name.setPreferredSize(new java.awt.Dimension(100, 20));
 
         buttonCancel.setText("Cancel");
         buttonCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -74,9 +76,27 @@ public class CreateHall extends javax.swing.JFrame {
         labelTitle.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         labelTitle.setText("Add New Hall");
 
-        textfield_Number.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter()));
+        textfield_Name.setMaximumSize(new java.awt.Dimension(100, 20));
+        textfield_Name.setMinimumSize(new java.awt.Dimension(100, 20));
+        textfield_Name.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        textfield_Number.setMaximumSize(new java.awt.Dimension(100, 20));
         textfield_Number.setMinimumSize(new java.awt.Dimension(100, 20));
         textfield_Number.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        labelTelephone.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelTelephone.setText("Telephone");
+
+        labelAddress.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelAddress.setText("Address");
+
+        textfield_Address.setMaximumSize(new java.awt.Dimension(100, 20));
+        textfield_Address.setMinimumSize(new java.awt.Dimension(100, 20));
+        textfield_Address.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        textfield_Telephone.setMaximumSize(new java.awt.Dimension(100, 20));
+        textfield_Telephone.setMinimumSize(new java.awt.Dimension(100, 20));
+        textfield_Telephone.setPreferredSize(new java.awt.Dimension(100, 20));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -89,7 +109,7 @@ public class CreateHall extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jSeparator1)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGap(0, 153, Short.MAX_VALUE)
                                 .addComponent(buttonAdd)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(buttonCancel))
@@ -100,12 +120,16 @@ public class CreateHall extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(labelName)
-                            .addComponent(labelNumber))
-                        .addGap(78, 78, 78)
+                            .addComponent(labelNumber)
+                            .addComponent(labelAddress)
+                            .addComponent(labelTelephone))
+                        .addGap(39, 39, 39)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textfield_Name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(textfield_Number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 56, Short.MAX_VALUE))))
+                            .addComponent(textfield_Telephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textfield_Address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textfield_Number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textfield_Name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -120,7 +144,15 @@ public class CreateHall extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelNumber)
                     .addComponent(textfield_Number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelAddress)
+                    .addComponent(textfield_Address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelTelephone)
+                    .addComponent(textfield_Telephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -176,10 +208,14 @@ public class CreateHall extends javax.swing.JFrame {
     private javax.swing.JButton buttonAdd;
     private javax.swing.JButton buttonCancel;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel labelAddress;
     private javax.swing.JLabel labelName;
     private javax.swing.JLabel labelNumber;
+    private javax.swing.JLabel labelTelephone;
     private javax.swing.JLabel labelTitle;
-    private javax.swing.JFormattedTextField textfield_Name;
-    private javax.swing.JFormattedTextField textfield_Number;
+    private javax.swing.JTextField textfield_Address;
+    private javax.swing.JTextField textfield_Name;
+    private javax.swing.JTextField textfield_Number;
+    private javax.swing.JTextField textfield_Telephone;
     // End of variables declaration//GEN-END:variables
 }

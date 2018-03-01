@@ -396,9 +396,11 @@ public class DB_Controller {
      */
     public static int createHall(Hall hall) {
         String query = "INSERT INTO `halls`"
-                + "(`Name`, `Number`, VALUES ('"
+                + " (`Name`, `Number`, `Address`, `TelephoneNumber`) VALUES ('"
                 + hall.getName() + "', '"
-                + hall.getNumber() + "', ')";
+                + hall.getNumber() + "', '"
+                + hall.getAddress() + "', '"
+                + hall.getTelephoneNumber() + "')";
 
         executeNonQuery(query);
 
@@ -444,13 +446,12 @@ public class DB_Controller {
      * Create new application in the database.
      */
     public static int createApplication(RoomApplication application) {
-        DateFormat df = new SimpleDateFormat();
-        String date = df.format(application.getDate());
-        String query = "INSERT INTO `users`"
+        Date date = new Date(application.getDate().getTime());
+        String query = "INSERT INTO `applications`"
                 + "(`RoomUID`, `Date`, `Duration`,"
-                + "`StudentUID` VALUES ('"
+                + "`StudentUID`) VALUES ('"
                 + application.getRoomUID() + "', '"
-                + date + "', '"
+                + date.toString() + "', '"
                 + application.getDuration() + "', '"
                 + application.getStudentUID() + "')";
         

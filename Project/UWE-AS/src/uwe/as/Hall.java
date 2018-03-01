@@ -18,7 +18,7 @@ public class Hall {
     private List<Integer> roomUIDs;
     public static Data_Cache data_cache;
 
-    public Hall(String name, String number) {
+    public Hall(String name, String number, String address, String telephone) {
         if (name != null) {
             this.name = name;
         } else {
@@ -28,6 +28,16 @@ public class Hall {
             this.number = number;
         } else {
             this.number = "";
+        }
+        if (address != null) {
+            this.address = address;
+        } else {
+            this.address = "";
+        }
+        if (telephone != null) {
+            this.telephoneNumber = telephone;
+        } else {
+            this.telephoneNumber = "";
         }
         data_cache.createHall(this);
     }

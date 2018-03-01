@@ -50,7 +50,7 @@ public class CreateRoom extends javax.swing.JFrame {
 
     private void getAllFieldsAndSubmit() {
         String number = textfield_Number.getText();
-        int rate = (int) textfield_Rate.getValue();
+        int rate = Integer.parseInt(textfield_Rate.getText());
         Hall currentHall = getCurrentHall();
 
         if (currentHall != null) {

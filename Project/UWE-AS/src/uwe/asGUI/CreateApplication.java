@@ -1,23 +1,122 @@
 package uwe.asGUI;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import uwe.as.Hall;
+import uwe.as.Room;
+import uwe.as.Data_Cache;
+import uwe.as.UWEAS;
+
 /**
  *
  * @author Jamie Mills (16004255)
  */
 public class CreateApplication extends javax.swing.JFrame {
-    public static uwe.as.Data_Cache data_cache;
+
+    public static Data_Cache data_cache;
+    private List<Hall> halls;
+    private List<Room> rooms;
     MainScreen mainScreen;
-    
+    boolean setup = true;
+
     /**
      * Creates new form CreateApplication
      */
-    public CreateApplication() {
+    public CreateApplication(MainScreen mainScreen) {
         initComponents();
+        importFromCache();
+        populateDateField();
+        populateHallBox();
+        populateRooms();
+        this.mainScreen = mainScreen;
+        this.setVisible(true);
+        setup = false;
     }
-    
-    private void getAllFieldsAndSubmit()
-    {
-        
+
+    private void importFromCache() {
+        this.rooms = data_cache.getRooms();
+        this.halls = data_cache.getHalls();
+    }
+
+    private void getAllFieldsAndSubmit() {
+        int currentRoomUID = -1;
+        int duration = Integer.parseInt(comboBox_Duration.getItemAt(comboBox_Duration.getSelectedIndex()));
+        Date date = new Date();
+        DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        try {
+            date = df.parse(textbox_StartDate.getText());
+        } catch (ParseException ex) {
+            System.out.println("CreateLease.getAllFieldsAndSubmit() produced the following error:");
+            System.out.println(ex);
+        }
+
+        Room currentRoom = getCurrentRoom();
+        if (currentRoom != null) {
+            currentRoomUID = currentRoom.getUID();
+        }
+
+        new uwe.as.RoomApplication(currentRoomUID, date, duration, UWEAS.currentUser.getUID());
+    }
+
+    private void populateHallBox() {
+        comboBox_Hall.removeAllItems();
+        for (Hall h : halls) {
+            if (!h.getRooms().isEmpty()) {
+                comboBox_Hall.addItem(h.getName());
+            }
+        }
+    }
+
+    private void populateDateField() {
+        DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        Date now = Calendar.getInstance().getTime();
+        String date = df.format(now);
+        this.textbox_StartDate.setText(date);
+    }
+
+    private Hall getCurrentHall() {
+        String currentHallName = comboBox_Hall.getItemAt(comboBox_Hall.getSelectedIndex());
+        List<Hall> filteredHalls = halls.stream().filter(h -> h.getName().equals(currentHallName)).collect(Collectors.toList());
+        if (!filteredHalls.isEmpty()) {
+            return filteredHalls.get(0);
+        }
+        return null;
+    }
+
+    private Room getCurrentRoom() {
+        String currentRoomNumber = comboBox_Room.getItemAt(comboBox_Room.getSelectedIndex());
+        List<Room> filteredRooms = rooms.stream().filter(r -> r.getNumber().equals(currentRoomNumber)).collect(Collectors.toList());
+        if (!filteredRooms.isEmpty()) {
+            return filteredRooms.get(0);
+        }
+        return null;
+    }
+
+    private void populateRooms() {
+        setup = true;
+        Hall currentHall = getCurrentHall();
+        comboBox_Room.removeAllItems();
+        if (currentHall != null) {
+            List<Room> roomsInHall = rooms.stream().filter(r -> currentHall.getRooms().contains(r.getUID())).collect(Collectors.toList());
+            for (Room r : roomsInHall) {
+                comboBox_Room.addItem(r.getNumber());
+            }
+        }
+        setup = false;
+    }
+
+    private void updateDetailsForRoom() {
+        if (setup == false)
+        {
+            Room currentRoom = getCurrentRoom();
+            textbox_RoomDesc.setText(currentRoom.getDescription());
+            textbox_Price.setValue(currentRoom.getRate());
+        }
     }
 
     /**
@@ -39,11 +138,11 @@ public class CreateApplication extends javax.swing.JFrame {
         label_Description = new javax.swing.JLabel();
         label_Price = new javax.swing.JLabel();
         textbox_Price = new javax.swing.JFormattedTextField();
-        comboBox_CreateApplication_Hall = new javax.swing.JComboBox<>();
+        comboBox_Hall = new javax.swing.JComboBox<>();
         comboBox_Room = new javax.swing.JComboBox<>();
         textbox_StartDate = new javax.swing.JFormattedTextField();
-        textbox_Duration = new javax.swing.JFormattedTextField();
         button_Cancel = new javax.swing.JButton();
+        comboBox_Duration = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -80,23 +179,28 @@ public class CreateApplication extends javax.swing.JFrame {
         textbox_Price.setMinimumSize(new java.awt.Dimension(100, 20));
         textbox_Price.setPreferredSize(new java.awt.Dimension(100, 20));
 
-        comboBox_CreateApplication_Hall.setMaximumSize(new java.awt.Dimension(100, 20));
-        comboBox_CreateApplication_Hall.setMinimumSize(new java.awt.Dimension(100, 20));
-        comboBox_CreateApplication_Hall.setPreferredSize(new java.awt.Dimension(100, 20));
+        comboBox_Hall.setMaximumSize(new java.awt.Dimension(100, 20));
+        comboBox_Hall.setMinimumSize(new java.awt.Dimension(100, 20));
+        comboBox_Hall.setPreferredSize(new java.awt.Dimension(100, 20));
+        comboBox_Hall.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboBox_HallActionPerformed(evt);
+            }
+        });
 
         comboBox_Room.setMaximumSize(new java.awt.Dimension(100, 20));
         comboBox_Room.setMinimumSize(new java.awt.Dimension(100, 20));
         comboBox_Room.setPreferredSize(new java.awt.Dimension(100, 20));
+        comboBox_Room.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboBox_RoomActionPerformed(evt);
+            }
+        });
 
         textbox_StartDate.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter()));
         textbox_StartDate.setMaximumSize(new java.awt.Dimension(100, 20));
         textbox_StartDate.setMinimumSize(new java.awt.Dimension(100, 20));
         textbox_StartDate.setPreferredSize(new java.awt.Dimension(100, 20));
-
-        textbox_Duration.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        textbox_Duration.setMaximumSize(new java.awt.Dimension(100, 20));
-        textbox_Duration.setMinimumSize(new java.awt.Dimension(100, 20));
-        textbox_Duration.setPreferredSize(new java.awt.Dimension(100, 20));
 
         button_Cancel.setText("Cancel");
         button_Cancel.addActionListener(new java.awt.event.ActionListener() {
@@ -104,6 +208,11 @@ public class CreateApplication extends javax.swing.JFrame {
                 button_CancelActionPerformed(evt);
             }
         });
+
+        comboBox_Duration.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "6", "12", "18", "24" }));
+        comboBox_Duration.setMaximumSize(new java.awt.Dimension(100, 20));
+        comboBox_Duration.setMinimumSize(new java.awt.Dimension(100, 20));
+        comboBox_Duration.setPreferredSize(new java.awt.Dimension(100, 20));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -120,7 +229,7 @@ public class CreateApplication extends javax.swing.JFrame {
                                     .addComponent(label_Room))
                                 .addGap(85, 85, 85)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(comboBox_CreateApplication_Hall, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(comboBox_Hall, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(comboBox_Room, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(label_Description))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -137,7 +246,7 @@ public class CreateApplication extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(textbox_Price, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(textbox_StartDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(textbox_Duration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(comboBox_Duration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(72, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -154,14 +263,14 @@ public class CreateApplication extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(label_StartDate)
                     .addComponent(textbox_StartDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(comboBox_CreateApplication_Hall, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboBox_Hall, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(label_Hall))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(label_Duration)
-                    .addComponent(textbox_Duration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(comboBox_Room, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label_Room))
+                    .addComponent(label_Room)
+                    .addComponent(comboBox_Duration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textbox_Price, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -193,6 +302,14 @@ public class CreateApplication extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_button_CancelActionPerformed
 
+    private void comboBox_HallActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBox_HallActionPerformed
+        populateRooms();
+    }//GEN-LAST:event_comboBox_HallActionPerformed
+
+    private void comboBox_RoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBox_RoomActionPerformed
+        updateDetailsForRoom();
+    }//GEN-LAST:event_comboBox_RoomActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -223,7 +340,6 @@ public class CreateApplication extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CreateApplication().setVisible(true);
             }
         });
     }
@@ -231,7 +347,8 @@ public class CreateApplication extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton button_Apply;
     private javax.swing.JButton button_Cancel;
-    private javax.swing.JComboBox<String> comboBox_CreateApplication_Hall;
+    private javax.swing.JComboBox<String> comboBox_Duration;
+    private javax.swing.JComboBox<String> comboBox_Hall;
     private javax.swing.JComboBox<String> comboBox_Room;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel label_Description;
@@ -240,7 +357,6 @@ public class CreateApplication extends javax.swing.JFrame {
     private javax.swing.JLabel label_Price;
     private javax.swing.JLabel label_Room;
     private javax.swing.JLabel label_StartDate;
-    private javax.swing.JFormattedTextField textbox_Duration;
     private javax.swing.JFormattedTextField textbox_Price;
     private javax.swing.JTextPane textbox_RoomDesc;
     private javax.swing.JFormattedTextField textbox_StartDate;

@@ -35,7 +35,7 @@
                               </Group>
                               <EmptySpace min="-2" pref="85" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="comboBox_CreateApplication_Hall" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="comboBox_Hall" alignment="1" min="-2" max="-2" attributes="0"/>
                                   <Component id="comboBox_Room" alignment="1" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -59,7 +59,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="textbox_Price" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="textbox_StartDate" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="textbox_Duration" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="comboBox_Duration" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="72" max="32767" attributes="0"/>
                   </Group>
@@ -82,15 +82,15 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="label_StartDate" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="textbox_StartDate" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="comboBox_CreateApplication_Hall" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="comboBox_Hall" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="label_Hall" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="label_Duration" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="textbox_Duration" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="comboBox_Room" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="label_Room" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="comboBox_Duration" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -201,7 +201,7 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JComboBox" name="comboBox_CreateApplication_Hall">
+    <Component class="javax.swing.JComboBox" name="comboBox_Hall">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="0"/>
@@ -216,6 +216,9 @@
           <Dimension value="[100, 20]"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="comboBox_HallActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
@@ -235,6 +238,9 @@
           <Dimension value="[100, 20]"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="comboBox_RoomActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
@@ -255,10 +261,23 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JFormattedTextField" name="textbox_Duration">
+    <Component class="javax.swing.JButton" name="button_Cancel">
       <Properties>
-        <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
-          <Format format="#0" subtype="-1" type="0"/>
+        <Property name="text" type="java.lang.String" value="Cancel"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_CancelActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="comboBox_Duration">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="4">
+            <StringItem index="0" value="6"/>
+            <StringItem index="1" value="12"/>
+            <StringItem index="2" value="18"/>
+            <StringItem index="3" value="24"/>
+          </StringArray>
         </Property>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[100, 20]"/>
@@ -270,14 +289,9 @@
           <Dimension value="[100, 20]"/>
         </Property>
       </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="button_Cancel">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Cancel"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_CancelActionPerformed"/>
-      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>
