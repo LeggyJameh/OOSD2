@@ -39,6 +39,9 @@ public class Data_Cache {
         uwe.asGUI.Login.data_cache = this;
         uwe.asGUI.MainScreen.data_cache = this;
         uwe.asGUI.CreateLease.data_cache = this;
+        uwe.asGUI.CreateRoom.data_cache = this;
+        uwe.asGUI.CreateApplication.data_cache = this;
+        uwe.asGUI.ViewApplications.data_cache = this;
     }
 
     /**
@@ -57,6 +60,11 @@ public class Data_Cache {
      */
     public void removeHall(Hall hall) {
         if (halls.contains(hall)) {
+            for (Room r : rooms) {
+                if (r.getHallUID() == hall.getUID()) {
+                    removeRoom(r);
+                }
+            }
             halls.remove(hall);
             DB_Controller.removeHall(hall);
         }
@@ -119,6 +127,16 @@ public class Data_Cache {
      */
     public void removeRoom(Room room) {
         if (rooms.contains(room)) {
+            for (Lease l : leases) {
+                if (l.getRoomUID() == room.getUID()) {
+                    removeLease(l);
+                }
+            }
+            for (RoomApplication ra : applications) {
+                if (ra.getRoomUID() == room.getUID()) {
+                    removeApplication(ra);
+                }
+            }
             rooms.remove(room);
             DB_Controller.removeRoom(room);
         }
@@ -126,8 +144,8 @@ public class Data_Cache {
 
     /**
      * Creates a new room. This will add it to the database as well as the
-     * data_cache. Do not use the existing reference after calling. Re-pull
-     * room class from data_cache.
+     * data_cache. Do not use the existing reference after calling. Re-pull room
+     * class from data_cache.
      */
     public void createRoom(Room room) {
         int id = DB_Controller.createRoom(room);
@@ -157,8 +175,8 @@ public class Data_Cache {
 
     /**
      * Creates a new user. This will add it to the database as well as the
-     * data_cache. Do not use the existing reference after calling. Re-pull
-     * user class from data_cache.
+     * data_cache. Do not use the existing reference after calling. Re-pull user
+     * class from data_cache.
      */
     public void createUser(User user) {
         int id = DB_Controller.createUser(user);
@@ -242,6 +260,7 @@ public class Data_Cache {
 
     /**
      * Find a user by it's username.
+     *
      * @param username The user's name, <b>in uppercase</b>.
      */
     public User getUser(String username) {
@@ -361,26 +380,28 @@ public class Data_Cache {
     public void updateRoomApplication(RoomApplication application) {
         DB_Controller.updateApplication(application);
     }
-    
+
     /**
      * Authenticate the user.
-     * @param user The user that they are trying to authenticate for, can be null.
+     *
+     * @param user The user that they are trying to authenticate for, can be
+     * null.
      * @param passwordAttempt The password that they have entered.
-     * @return Returns true if password correct for given user. Will return false if user is null or password incorrect.
+     * @return Returns true if password correct for given user. Will return
+     * false if user is null or password incorrect.
      */
     public boolean authenticate(User user, char[] passwordAttempt) {
         try {
-        if (user != null) {
-            if (PasswordStorage.verifyPassword(passwordAttempt, user.getPasswordHash())) {
-                return true;
+            if (user != null) {
+                if (PasswordStorage.verifyPassword(passwordAttempt, user.getPasswordHash())) {
+                    return true;
+                }
             }
-        }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Data_Cache.authenticate() produced the following error");
             System.out.println(ex);
         }
-            
+
         return false;
     }
 }

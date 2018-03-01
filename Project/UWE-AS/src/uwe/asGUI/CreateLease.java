@@ -22,8 +22,9 @@ public class CreateLease extends javax.swing.JFrame {
     private List<Hall> halls;
     private List<User> students;
     MainScreen mainScreen;
+
     /**
-     * Creates new form CreatLease
+     * Creates new form CreateLease
      */
     public CreateLease(MainScreen mainScreen) {
         initComponents();
@@ -35,127 +36,105 @@ public class CreateLease extends javax.swing.JFrame {
         this.mainScreen = mainScreen;
         this.setVisible(true);
     }
-    
-    private void importFromCache()
-    {
-       this.rooms = data_cache.getRooms();
-       this.halls = data_cache.getHalls();
-       List<User> users = data_cache.getUsers();
-       this.students = users.stream().filter(u -> u.getAccountLevel() == 0).collect(Collectors.toList());
+
+    private void importFromCache() {
+        this.rooms = data_cache.getRooms();
+        this.halls = data_cache.getHalls();
+        List<User> users = data_cache.getUsers();
+        this.students = users.stream().filter(u -> u.getAccountLevel() == 0).collect(Collectors.toList());
     }
-    
-    private void populateDateField()
-    {
-       DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-       Date now = Calendar.getInstance().getTime();
-       String date = df.format(now);
-       this.textfieldDate.setText(date);   
+
+    private void populateDateField() {
+        DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        Date now = Calendar.getInstance().getTime();
+        String date = df.format(now);
+        this.textfieldDate.setText(date);
     }
-    
-    private void populateHallBox()
-    {
+
+    private void populateHallBox() {
         comboBoxHall.removeAllItems();
-        for (Hall h : halls)
-        {
-            if (!h.getRooms().isEmpty())
-            {
+        for (Hall h : halls) {
+            if (!h.getRooms().isEmpty()) {
                 comboBoxHall.addItem(h.getName());
             }
         }
     }
-    
-    private Hall getCurrentHall()
-    {
+
+    private Hall getCurrentHall() {
         String currentHallName = comboBoxHall.getItemAt(comboBoxHall.getSelectedIndex());
         List<Hall> filteredHalls = halls.stream().filter(h -> h.getName().equals(currentHallName)).collect(Collectors.toList());
-        if (!filteredHalls.isEmpty())
-        {
+        if (!filteredHalls.isEmpty()) {
             return filteredHalls.get(0);
         }
         return null;
     }
-    
-    private Room getCurrentRoom()
-    {
+
+    private Room getCurrentRoom() {
         String currentRoomNumber = comboBoxRoom.getItemAt(comboBoxRoom.getSelectedIndex());
         List<Room> filteredRooms = rooms.stream().filter(r -> r.getNumber().equals(currentRoomNumber)).collect(Collectors.toList());
-        if (!filteredRooms.isEmpty())
-        {
-          return filteredRooms.get(0);
+        if (!filteredRooms.isEmpty()) {
+            return filteredRooms.get(0);
         }
-        return null; 
+        return null;
     }
-    
-    private User getCurrentStudent()
-    {
+
+    private User getCurrentStudent() {
         String currentStudent = comboBoxStudent.getItemAt(comboBoxStudent.getSelectedIndex());
         List<User> filteredStudents = students.stream().filter(u -> u.getRealName() == currentStudent).collect(Collectors.toList());
-        if (!filteredStudents.isEmpty())
-        {
-          return filteredStudents.get(0);
+        if (!filteredStudents.isEmpty()) {
+            return filteredStudents.get(0);
         }
-        return null;  
+        return null;
     }
-    
-    private void populateRooms()
-    {
+
+    private void populateRooms() {
         Hall currentHall = getCurrentHall();
         comboBoxRoom.removeAllItems();
-        if (currentHall != null)
-        {
+        if (currentHall != null) {
             List<Room> roomsInHall = rooms.stream().filter(r -> currentHall.getRooms().contains(r.getUID())).collect(Collectors.toList());
-            for (Room r : roomsInHall)
-            {
+            for (Room r : roomsInHall) {
                 comboBoxRoom.addItem(r.getNumber());
             }
         }
     }
-    
-    private void populateStudents()
-    {
+
+    private void populateStudents() {
         comboBoxStudent.removeAllItems();
-        for (User u : students)
-        {
+        for (User u : students) {
             comboBoxStudent.addItem(u.getRealName());
         }
     }
-    
-    private void getAllFieldsAndSubmit()
-    {
+
+    private void getAllFieldsAndSubmit() {
         int currentRoomUID = -1;
         int currentStudentUID = -1;
         int leaseNumber = Integer.parseInt(textfieldLeaseNumber.getText());
         int duration = Integer.parseInt(comboBoxDuration.getItemAt(comboBoxDuration.getSelectedIndex()));
         Date date = new Date();
         DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-        try
-        {
+        try {
             date = df.parse(textfieldDate.getText());
-        }
-        catch (ParseException ex)
-        {
-            System.out.println("DB_Controller.getLeaseFromResult() produced the following error:");
+        } catch (ParseException ex) {
+            System.out.println("CreateLease.getAllFieldsAndSubmit() produced the following error:");
             System.out.println(ex);
         }
-        
+
         Room currentRoom = getCurrentRoom();
-        if (currentRoom != null)
-        {
+        if (currentRoom != null) {
             currentRoomUID = currentRoom.getUID();
         }
-        
+
         User currentStudent = getCurrentStudent();
-        if (currentStudent != null)
-        {
+        if (currentStudent != null) {
             currentStudentUID = currentStudent.getUID();
         }
-        
-        System.out.println("Creating a new lease with the following properties: (" +
-                Integer.toString(leaseNumber) + " " +
-                Integer.toString(currentStudentUID) + " " +
-                Integer.toString(currentRoomUID) + " " +
-                Integer.toString(duration) + " " +
-                df.format(date));
+
+        System.out.println("Creating a new lease with the following properties: ("
+                + Integer.toString(leaseNumber) + " "
+                + Integer.toString(currentStudentUID) + " "
+                + Integer.toString(currentRoomUID) + " "
+                + Integer.toString(duration) + " "
+                + df.format(date));
         new uwe.as.Lease(leaseNumber, currentStudentUID, currentRoomUID, duration, date);
     }
 
