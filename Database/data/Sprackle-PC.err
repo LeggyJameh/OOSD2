@@ -126,3 +126,30 @@ InnoDB: tablespace but not the InnoDB log files. See
 InnoDB: http://dev.mysql.com/doc/refman/5.6/en/forcing-innodb-recovery.html
 InnoDB: for more information.
 2018-02-28 21:23:55 3476 [Warning] IP address '196.52.43.111' could not be resolved: No such host is known. 
+2018-03-01  3:36:18 7784 [Note] InnoDB: innodb_empty_free_list_algorithm has been changed to legacy because of small buffer pool size. In order to use backoff, increase buffer pool at least up to 20MB.
+
+2018-03-01  3:36:18 7784 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+2018-03-01  3:36:18 7784 [Note] InnoDB: The InnoDB memory heap is disabled
+2018-03-01  3:36:18 7784 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2018-03-01  3:36:18 7784 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2018-03-01  3:36:18 7784 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2018-03-01  3:36:18 7784 [Note] InnoDB: Using generic crc32 instructions
+2018-03-01  3:36:18 7784 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2018-03-01  3:36:18 7784 [Note] InnoDB: Completed initialization of buffer pool
+2018-03-01  3:36:18 7784 [Note] InnoDB: Highest supported file format is Barracuda.
+2018-03-01  3:36:18 7784 [Note] InnoDB: 128 rollback segment(s) are active.
+2018-03-01  3:36:18 7784 [Note] InnoDB: Waiting for purge to start
+2018-03-01  3:36:18 7784 [Note] InnoDB:  Percona XtraDB (http://www.percona.com) 5.6.36-82.2 started; log sequence number 2689317
+2018-03-01  3:36:18 6864 [Note] InnoDB: Dumping buffer pool(s) not yet started
+2018-03-01  3:36:18 7784 [Note] Plugin 'FEEDBACK' is disabled.
+2018-03-01  3:36:18 7784 [Note] Server socket created on IP: '::'.
+2018-03-01  3:36:18 7784 [Note] Database\bin\mysqld.exe: ready for connections.
+Version: '10.1.30-MariaDB'  socket: ''  port: 3306  mariadb.org binary distribution
+2018-03-01  5:32:07 3940 [Note] Database\bin\mysqld.exe: Normal shutdown
+2018-03-01  5:32:07 3940 [Note] Event Scheduler: Purging the queue. 0 events
+2018-03-01  5:32:07 1724 [Note] InnoDB: FTS optimize thread exiting.
+2018-03-01  5:32:07 3940 [Note] InnoDB: Starting shutdown...
+2018-03-01  5:32:07 3940 [Note] InnoDB: Waiting for page_cleaner to finish flushing of buffer pool
+2018-03-01  5:32:08 3940 [Note] InnoDB: Shutdown completed; log sequence number 2689327
+2018-03-01  5:32:08 3940 [Note] Database\bin\mysqld.exe: Shutdown complete
+

@@ -20,13 +20,14 @@ public class Room {
     private String description;
     public static Data_Cache data_cache;
 
-    public Room(String number, int rate) {
+    public Room(String number, int rate, int hallUID) {
         if (number != null) {
             this.number = number;
         } else {
             this.number = "";
         }
         this.rentRate = rate;
+        this.hallUID = hallUID;
         data_cache.createRoom(this);
     }
 
@@ -79,6 +80,11 @@ public class Room {
     public void modifyRate(int newRate) {
         this.rentRate = newRate;
         data_cache.updateRoom(this);
+    }
+    
+    public void modifyDescription(String newDescription)
+    {
+        this.description = newDescription;
     }
 
     public void addLease(int lease) {

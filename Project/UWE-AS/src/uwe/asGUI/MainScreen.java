@@ -1,12 +1,17 @@
 package uwe.asGUI;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import uwe.as.CleanState;
 import uwe.as.Hall;
 import uwe.as.Lease;
 import uwe.as.Room;
@@ -15,12 +20,16 @@ import uwe.as.User;
 
 /**
  *
- * @author Adwait
+ * @author Adwait Chhetri (15021047) - Main Jamie Mills (16004255) - Some tweaks
  */
 public class MainScreen extends javax.swing.JFrame {
 
     public static uwe.as.Data_Cache data_cache;
     private CreateLease createLease = null;
+    private CreateRoom createRoom = null;
+    private CreateHall createHall = null;
+    private CreateApplication createApplication = null;
+    private ViewApplications viewApplications = null;
 
     /**
      * Creates new form MainScreen
@@ -87,9 +96,25 @@ public class MainScreen extends javax.swing.JFrame {
         this.createLease = null;
     }
 
+    public void createRoomClosing() {
+        this.createRoom = null;
+    }
+
+    public void createHallClosing() {
+        this.createHall = null;
+    }
+    
+    public void createApplicationClosing() {
+        this.createApplication = null;
+    }
+    
+    public void viewApplicationsClosing() {
+        this.viewApplications = null;
+    }
+            
+
     private void disableElementsForUserLevel() {
-        switch (UWEAS.currentUser.getAccountLevel())
-        {
+        switch (UWEAS.currentUser.getAccountLevel()) {
             case 0: // Student
                 break;
             case 1: // Warden
@@ -101,7 +126,7 @@ public class MainScreen extends javax.swing.JFrame {
     private void navButtonClick(int button) {
         int selectedRow = jTable1.getSelectedRow();
         switch (button) {
-            case 0:
+            default:
                 panelHallView.setVisible(true);
                 panelRoomView.setVisible(false);
                 panelLeaseView.setVisible(false);
@@ -126,7 +151,7 @@ public class MainScreen extends javax.swing.JFrame {
         int selectedRow = jTable1.getSelectedRow();
         TableModel model = jTable1.getModel();
         List<User> users = data_cache.getUsers();
-        Hall currentHall = data_cache.getHall(Integer.parseInt(model.getValueAt(selectedRow, 9).toString()));
+        Hall currentHall = getCurrentHall();
         if (users != null && currentHall != null) {
             textbox_Hall_Name.setText(model.getValueAt(selectedRow, 1).toString());
             textbox_Hall_Number.setText(model.getValueAt(selectedRow, 2).toString());
@@ -152,7 +177,7 @@ public class MainScreen extends javax.swing.JFrame {
     private void updateRoomPanelContents() {
         int selectedRow = jTable1.getSelectedRow();
         TableModel model = jTable1.getModel();
-        Room currentRoom = data_cache.getRoom(Integer.parseInt(model.getValueAt(selectedRow, 8).toString()));
+        Room currentRoom = getCurrentRoom();
         if (currentRoom != null) {
             Lease currentLease = currentRoom.getLeaseForDate(Date.from(Instant.now()));
 
@@ -173,7 +198,7 @@ public class MainScreen extends javax.swing.JFrame {
 
             uwe.as.CleanState state = currentRoom.getCleanliness();
             switch (state) {
-                case CLEAN:
+                default:
                     comboBox_Room_CleanState.setSelectedIndex(0);
                     break;
                 case DIRTY:
@@ -191,7 +216,7 @@ public class MainScreen extends javax.swing.JFrame {
     private void updateLeasePanelContents() {
         int selectedRow = jTable1.getSelectedRow();
         TableModel model = jTable1.getModel();
-        Lease currentLease = data_cache.getLease(Integer.parseInt(model.getValueAt(selectedRow, 7).toString()));
+        Lease currentLease = getCurrentLease();
         if (currentLease != null) {
             Calendar endDate = Calendar.getInstance();
             endDate.setTime(currentLease.getStartDate());
@@ -207,6 +232,18 @@ public class MainScreen extends javax.swing.JFrame {
         } else {
             System.out.println("Couldn't find current lease!");
         }
+    }
+
+    private Hall getCurrentHall() {
+        return data_cache.getHall(Integer.parseInt(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 9).toString()));
+    }
+
+    private Room getCurrentRoom() {
+        return data_cache.getRoom(Integer.parseInt(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 8).toString()));
+    }
+
+    private Lease getCurrentLease() {
+        return data_cache.getLease(Integer.parseInt(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 7).toString()));
     }
 
     /**
@@ -225,6 +262,8 @@ public class MainScreen extends javax.swing.JFrame {
         button_Nav_Room = new javax.swing.JButton();
         button_Nav_Lease = new javax.swing.JButton();
         button_Nav_Exit = new javax.swing.JButton();
+        button_Nav_CreateApplication = new javax.swing.JButton();
+        button_Nav_ViewApplications = new javax.swing.JButton();
         ms_database_table = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         panelControl = new javax.swing.JPanel();
@@ -246,6 +285,8 @@ public class MainScreen extends javax.swing.JFrame {
         textbox_Lease_EndDate = new javax.swing.JFormattedTextField();
         textbox_Lease_LeaseNumber = new javax.swing.JFormattedTextField();
         textbox_Lease_StudentName = new javax.swing.JTextField();
+        label_Lease_Duration = new javax.swing.JLabel();
+        comboBox_Lease_Duration = new javax.swing.JComboBox<>();
         panelRoomView = new javax.swing.JPanel();
         label_Room_HallName = new javax.swing.JLabel();
         label_Room_HallNumber = new javax.swing.JLabel();
@@ -287,6 +328,7 @@ public class MainScreen extends javax.swing.JFrame {
         setTitle("UWE Accomodation App");
         setBackground(new java.awt.Color(247, 245, 242));
         setLocationByPlatform(true);
+        setPreferredSize(new java.awt.Dimension(849, 1000));
 
         panel_Navigation.setBackground(new java.awt.Color(247, 245, 242));
 
@@ -333,6 +375,24 @@ public class MainScreen extends javax.swing.JFrame {
             }
         });
 
+        button_Nav_CreateApplication.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        button_Nav_CreateApplication.setText("<html><div style=\"text-align:center\">Create Application</div>");
+        button_Nav_CreateApplication.setBorder(null);
+        button_Nav_CreateApplication.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Nav_CreateApplicationActionPerformed(evt);
+            }
+        });
+
+        button_Nav_ViewApplications.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        button_Nav_ViewApplications.setText("<html><div style=\"text-align:center\">View Applications</div>");
+        button_Nav_ViewApplications.setBorder(null);
+        button_Nav_ViewApplications.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Nav_ViewApplicationsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panel_NavigationLayout = new javax.swing.GroupLayout(panel_Navigation);
         panel_Navigation.setLayout(panel_NavigationLayout);
         panel_NavigationLayout.setHorizontalGroup(
@@ -340,6 +400,7 @@ public class MainScreen extends javax.swing.JFrame {
             .addGroup(panel_NavigationLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panel_NavigationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(button_Nav_Exit)
                     .addGroup(panel_NavigationLayout.createSequentialGroup()
                         .addGroup(panel_NavigationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(button_Nav_Hall)
@@ -348,7 +409,8 @@ public class MainScreen extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(button_Nav_Room, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
                     .addComponent(button_Nav_Lease, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-                    .addComponent(button_Nav_Exit, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE))
+                    .addComponent(button_Nav_CreateApplication, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                    .addComponent(button_Nav_ViewApplications, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE))
                 .addContainerGap())
         );
         panel_NavigationLayout.setVerticalGroup(
@@ -365,8 +427,12 @@ public class MainScreen extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(button_Nav_Lease, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(button_Nav_CreateApplication, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(11, 11, 11)
+                .addComponent(button_Nav_ViewApplications, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(button_Nav_Exit, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(1010, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -395,6 +461,20 @@ public class MainScreen extends javax.swing.JFrame {
             }
         });
         ms_database_table.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(6).setMinWidth(0);
+            jTable1.getColumnModel().getColumn(6).setPreferredWidth(0);
+            jTable1.getColumnModel().getColumn(6).setMaxWidth(0);
+            jTable1.getColumnModel().getColumn(7).setMinWidth(0);
+            jTable1.getColumnModel().getColumn(7).setPreferredWidth(0);
+            jTable1.getColumnModel().getColumn(7).setMaxWidth(0);
+            jTable1.getColumnModel().getColumn(8).setMinWidth(0);
+            jTable1.getColumnModel().getColumn(8).setPreferredWidth(0);
+            jTable1.getColumnModel().getColumn(8).setMaxWidth(0);
+            jTable1.getColumnModel().getColumn(9).setMinWidth(0);
+            jTable1.getColumnModel().getColumn(9).setPreferredWidth(0);
+            jTable1.getColumnModel().getColumn(9).setMaxWidth(0);
+        }
 
         panelControl.setBackground(new java.awt.Color(247, 245, 242));
         panelControl.setLayout(new java.awt.CardLayout());
@@ -425,19 +505,37 @@ public class MainScreen extends javax.swing.JFrame {
         label_Lease_EndDate.setText("End Date");
 
         button_Lease_UpdateLease.setText("Update Lease");
+        button_Lease_UpdateLease.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Lease_UpdateLeaseActionPerformed(evt);
+            }
+        });
 
         button_Lease_CreateLease.setText("Create New Lease");
+        button_Lease_CreateLease.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Lease_CreateLeaseActionPerformed(evt);
+            }
+        });
 
         button_Lease_DeleteLease.setText("Delete Lease");
+        button_Lease_DeleteLease.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Lease_DeleteLeaseActionPerformed(evt);
+            }
+        });
 
+        textbox_Lease_HallName.setEditable(false);
         textbox_Lease_HallName.setMaximumSize(new java.awt.Dimension(100, 20));
         textbox_Lease_HallName.setMinimumSize(new java.awt.Dimension(100, 20));
         textbox_Lease_HallName.setPreferredSize(new java.awt.Dimension(100, 20));
 
+        textbox_Lease_HallNumber.setEditable(false);
         textbox_Lease_HallNumber.setMaximumSize(new java.awt.Dimension(100, 20));
         textbox_Lease_HallNumber.setMinimumSize(new java.awt.Dimension(100, 20));
         textbox_Lease_HallNumber.setPreferredSize(new java.awt.Dimension(100, 20));
 
+        textbox_Lease_RoomNumber.setEditable(false);
         textbox_Lease_RoomNumber.setMaximumSize(new java.awt.Dimension(100, 20));
         textbox_Lease_RoomNumber.setMinimumSize(new java.awt.Dimension(100, 20));
         textbox_Lease_RoomNumber.setPreferredSize(new java.awt.Dimension(100, 20));
@@ -447,6 +545,7 @@ public class MainScreen extends javax.swing.JFrame {
         textbox_Lease_StartDate.setMinimumSize(new java.awt.Dimension(100, 20));
         textbox_Lease_StartDate.setPreferredSize(new java.awt.Dimension(100, 20));
 
+        textbox_Lease_EndDate.setEditable(false);
         textbox_Lease_EndDate.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter()));
         textbox_Lease_EndDate.setMaximumSize(new java.awt.Dimension(100, 20));
         textbox_Lease_EndDate.setMinimumSize(new java.awt.Dimension(100, 20));
@@ -456,9 +555,18 @@ public class MainScreen extends javax.swing.JFrame {
         textbox_Lease_LeaseNumber.setMinimumSize(new java.awt.Dimension(100, 20));
         textbox_Lease_LeaseNumber.setPreferredSize(new java.awt.Dimension(100, 20));
 
+        textbox_Lease_StudentName.setEditable(false);
         textbox_Lease_StudentName.setMaximumSize(new java.awt.Dimension(100, 20));
         textbox_Lease_StudentName.setMinimumSize(new java.awt.Dimension(100, 20));
         textbox_Lease_StudentName.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        label_Lease_Duration.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Lease_Duration.setText("Duration (Months)");
+
+        comboBox_Lease_Duration.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "6", "12", "18", "24" }));
+        comboBox_Lease_Duration.setMaximumSize(new java.awt.Dimension(100, 20));
+        comboBox_Lease_Duration.setMinimumSize(new java.awt.Dimension(100, 20));
+        comboBox_Lease_Duration.setPreferredSize(new java.awt.Dimension(100, 20));
 
         javax.swing.GroupLayout panelLeaseViewLayout = new javax.swing.GroupLayout(panelLeaseView);
         panelLeaseView.setLayout(panelLeaseViewLayout);
@@ -480,27 +588,23 @@ public class MainScreen extends javax.swing.JFrame {
                         .addComponent(button_Lease_CreateLease))
                     .addGroup(panelLeaseViewLayout.createSequentialGroup()
                         .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelLeaseViewLayout.createSequentialGroup()
-                                .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(textbox_Lease_HallName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(textbox_Lease_HallNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(textbox_Lease_StartDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(32, 32, 32)
-                                .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(panelLeaseViewLayout.createSequentialGroup()
-                                        .addComponent(label_Lease_LeaseNumber)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(textbox_Lease_LeaseNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panelLeaseViewLayout.createSequentialGroup()
-                                        .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(label_Lease_StudentName)
-                                            .addComponent(label_Lease_EndDate))
-                                        .addGap(18, 18, 18)
-                                        .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(textbox_Lease_EndDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(textbox_Lease_StudentName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addComponent(textbox_Lease_HallName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textbox_Lease_HallNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textbox_Lease_StartDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(textbox_Lease_RoomNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 51, Short.MAX_VALUE)))
+                        .addGap(32, 32, 32)
+                        .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(label_Lease_StudentName)
+                            .addComponent(label_Lease_EndDate)
+                            .addComponent(label_Lease_Duration)
+                            .addComponent(label_Lease_LeaseNumber))
+                        .addGap(18, 18, 18)
+                        .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(textbox_Lease_LeaseNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(comboBox_Lease_Duration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textbox_Lease_EndDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textbox_Lease_StudentName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 26, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         panelLeaseViewLayout.setVerticalGroup(
@@ -519,7 +623,9 @@ public class MainScreen extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(label_Lease_RoomNumber)
-                            .addComponent(textbox_Lease_RoomNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(textbox_Lease_RoomNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(label_Lease_Duration)
+                            .addComponent(comboBox_Lease_Duration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(label_Lease_StartDate)
@@ -563,15 +669,32 @@ public class MainScreen extends javax.swing.JFrame {
         label_Room_Rate.setText("Rate");
 
         button_Room_Update.setText("Update Room");
+        button_Room_Update.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Room_UpdateActionPerformed(evt);
+            }
+        });
 
         button_Room_Create.setText("Create New Room");
+        button_Room_Create.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Room_CreateActionPerformed(evt);
+            }
+        });
 
         button_Room_Delete.setText("Delete Room");
+        button_Room_Delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Room_DeleteActionPerformed(evt);
+            }
+        });
 
+        textbox_Room_HallNumber.setEditable(false);
         textbox_Room_HallNumber.setMaximumSize(new java.awt.Dimension(100, 20));
         textbox_Room_HallNumber.setMinimumSize(new java.awt.Dimension(100, 20));
         textbox_Room_HallNumber.setPreferredSize(new java.awt.Dimension(100, 20));
 
+        textbox_Room_RoomNumber.setEditable(false);
         textbox_Room_RoomNumber.setMaximumSize(new java.awt.Dimension(100, 20));
         textbox_Room_RoomNumber.setMinimumSize(new java.awt.Dimension(100, 20));
         textbox_Room_RoomNumber.setPreferredSize(new java.awt.Dimension(100, 20));
@@ -584,10 +707,12 @@ public class MainScreen extends javax.swing.JFrame {
         label_Room_LeaseNumber.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         label_Room_LeaseNumber.setText("Lease Number");
 
+        textbox_Room_LeaseNumber.setEditable(false);
         textbox_Room_LeaseNumber.setMaximumSize(new java.awt.Dimension(100, 20));
         textbox_Room_LeaseNumber.setMinimumSize(new java.awt.Dimension(100, 20));
         textbox_Room_LeaseNumber.setPreferredSize(new java.awt.Dimension(100, 20));
 
+        textbox_Room_StudentName.setEditable(false);
         textbox_Room_StudentName.setMaximumSize(new java.awt.Dimension(100, 20));
         textbox_Room_StudentName.setMinimumSize(new java.awt.Dimension(100, 20));
         textbox_Room_StudentName.setPreferredSize(new java.awt.Dimension(100, 20));
@@ -601,6 +726,7 @@ public class MainScreen extends javax.swing.JFrame {
         label_Room_StudentName1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         label_Room_StudentName1.setText("Student Number");
 
+        textbox_Room_StudentNumber.setEditable(false);
         textbox_Room_StudentNumber.setMaximumSize(new java.awt.Dimension(100, 20));
         textbox_Room_StudentNumber.setMinimumSize(new java.awt.Dimension(100, 20));
         textbox_Room_StudentNumber.setPreferredSize(new java.awt.Dimension(100, 20));
@@ -655,6 +781,7 @@ public class MainScreen extends javax.swing.JFrame {
         textbox_Room_Rate.setMinimumSize(new java.awt.Dimension(100, 20));
         textbox_Room_Rate.setPreferredSize(new java.awt.Dimension(100, 20));
 
+        textbox_Room_HallName.setEditable(false);
         textbox_Room_HallName.setMaximumSize(new java.awt.Dimension(100, 20));
         textbox_Room_HallName.setMinimumSize(new java.awt.Dimension(100, 20));
         textbox_Room_HallName.setPreferredSize(new java.awt.Dimension(100, 20));
@@ -716,12 +843,12 @@ public class MainScreen extends javax.swing.JFrame {
                             .addComponent(textbox_Room_Rate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(panelRoomViewLayout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(18, 18, 18)
                         .addGroup(panelRoomViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(button_Room_Update)
                             .addComponent(button_Room_Delete)
                             .addComponent(button_Room_Create))))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         panelControl.add(panelRoomView, "card6");
@@ -745,10 +872,25 @@ public class MainScreen extends javax.swing.JFrame {
         label_Hall_Telephone.setText("Telephone");
 
         button_Hall_Update.setText("Update Hall");
+        button_Hall_Update.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Hall_UpdateActionPerformed(evt);
+            }
+        });
 
         button_Hall_Create.setText("Create New Hall");
+        button_Hall_Create.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Hall_CreateActionPerformed(evt);
+            }
+        });
 
         button_Hall_Delete.setText("Delete Hall");
+        button_Hall_Delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Hall_DeleteActionPerformed(evt);
+            }
+        });
 
         textbox_Hall_Name.setMaximumSize(new java.awt.Dimension(100, 20));
         textbox_Hall_Name.setMinimumSize(new java.awt.Dimension(100, 20));
@@ -835,7 +977,7 @@ public class MainScreen extends javax.swing.JFrame {
                     .addComponent(button_Hall_Update)
                     .addComponent(button_Hall_Delete)
                     .addComponent(button_Hall_Create))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         panelControl.add(panelHallView, "card7");
@@ -845,27 +987,26 @@ public class MainScreen extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addContainerGap()
                 .addComponent(panel_Navigation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(panelControl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0))
+                    .addComponent(panelControl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ms_database_table, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(panel_Navigation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
                         .addComponent(ms_database_table, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(panelControl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(911, 911, 911)))
-                .addContainerGap(140, Short.MAX_VALUE))
+                        .addComponent(panelControl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(panel_Navigation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -892,6 +1033,118 @@ public class MainScreen extends javax.swing.JFrame {
     private void button_Nav_ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Nav_ExitActionPerformed
         navButtonClick(3);
     }//GEN-LAST:event_button_Nav_ExitActionPerformed
+
+    private void button_Lease_CreateLeaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Lease_CreateLeaseActionPerformed
+        if (createLease == null) {
+            createLease = new CreateLease(this);
+        }
+        refresh_jtable();
+    }//GEN-LAST:event_button_Lease_CreateLeaseActionPerformed
+
+    private void button_Lease_UpdateLeaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Lease_UpdateLeaseActionPerformed
+        Lease currentLease = getCurrentLease();
+        if (currentLease != null) {
+            Date date = new Date();
+            DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+            try {
+                date = df.parse(textbox_Lease_StartDate.getText());
+            } catch (ParseException ex) {
+                System.out.println("MainScreen.button_Lease_UpdateLeaseActionPerformed() produced the following error:");
+                System.out.println(ex);
+            }
+
+            currentLease.modifyDuration(Integer.parseInt(comboBox_Lease_Duration.getItemAt(comboBox_Lease_Duration.getSelectedIndex())));
+            currentLease.modifyLeaseNumber(Integer.parseInt(textbox_Lease_LeaseNumber.getText()));
+            currentLease.modifyStartDate(date);
+        }
+    }//GEN-LAST:event_button_Lease_UpdateLeaseActionPerformed
+
+    private void button_Lease_DeleteLeaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Lease_DeleteLeaseActionPerformed
+        Lease currentLease = getCurrentLease();
+        if (currentLease != null) {
+            int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete the selected lease? This action is permanent.", "Delete?", JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.YES_OPTION) {
+                data_cache.removeLease(currentLease);
+            }
+        }
+        refresh_jtable();
+    }//GEN-LAST:event_button_Lease_DeleteLeaseActionPerformed
+
+    private void button_Room_UpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Room_UpdateActionPerformed
+        Room currentRoom = getCurrentRoom();
+        if (currentRoom != null) {
+            currentRoom.modifyRate(Integer.parseInt(textbox_Room_Rate.getText()));
+            switch (comboBox_Room_CleanState.getItemAt(comboBox_Room_CleanState.getSelectedIndex())) {
+                case "Dirty":
+                    currentRoom.changeCleanlinessState(CleanState.DIRTY);
+                    break;
+                case "Offline":
+                    currentRoom.changeCleanlinessState(CleanState.OFFLINE);
+                    break;
+                default:
+                    currentRoom.changeCleanlinessState(CleanState.CLEAN);
+                    break;
+            }
+        }
+    }//GEN-LAST:event_button_Room_UpdateActionPerformed
+
+    private void button_Room_DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Room_DeleteActionPerformed
+        Room currentRoom = getCurrentRoom();
+        if (currentRoom != null) {
+            int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete the selected room? This action is permanent.", "Delete?", JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.YES_OPTION) {
+                data_cache.removeRoom(currentRoom);
+            }
+        }
+        refresh_jtable();
+    }//GEN-LAST:event_button_Room_DeleteActionPerformed
+
+    private void button_Room_CreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Room_CreateActionPerformed
+        if (createRoom == null) {
+            createRoom = new CreateRoom(this);
+        }
+        refresh_jtable();
+    }//GEN-LAST:event_button_Room_CreateActionPerformed
+
+    private void button_Hall_UpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Hall_UpdateActionPerformed
+        Hall currentHall = getCurrentHall();
+
+        currentHall.modifyAddress(textbox_Hall_Address.getText());
+        currentHall.modifyName(textbox_Hall_Name.getText());
+        currentHall.modifyNumber(textbox_Hall_Number.getText());
+        currentHall.modifyTelephone(textbox_Hall_Telephone.getText());
+
+        User currentWarden = data_cache.getUser(currentHall.getWardenUID());
+        if (currentWarden != null) {
+            currentHall.modifyWarden(currentWarden.getUID());
+        }
+    }//GEN-LAST:event_button_Hall_UpdateActionPerformed
+
+    private void button_Hall_DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Hall_DeleteActionPerformed
+        Hall currentHall = getCurrentHall();
+        if (currentHall != null) {
+            int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete the selected hall? This action is permanent.", "Delete?", JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.YES_OPTION) {
+                data_cache.removeHall(currentHall);
+            }
+        }
+        refresh_jtable();
+    }//GEN-LAST:event_button_Hall_DeleteActionPerformed
+
+    private void button_Hall_CreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Hall_CreateActionPerformed
+        if (createHall == null) {
+            createHall = new CreateHall(this);
+        }
+        refresh_jtable();
+    }//GEN-LAST:event_button_Hall_CreateActionPerformed
+
+    private void button_Nav_CreateApplicationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Nav_CreateApplicationActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_button_Nav_CreateApplicationActionPerformed
+
+    private void button_Nav_ViewApplicationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Nav_ViewApplicationsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_button_Nav_ViewApplicationsActionPerformed
 
     /**
      * @param args the command line arguments
@@ -935,14 +1188,17 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JButton button_Lease_CreateLease;
     private javax.swing.JButton button_Lease_DeleteLease;
     private javax.swing.JButton button_Lease_UpdateLease;
+    private javax.swing.JButton button_Nav_CreateApplication;
     private javax.swing.JButton button_Nav_Exit;
     private javax.swing.JButton button_Nav_Hall;
     private javax.swing.JButton button_Nav_Lease;
     private javax.swing.JButton button_Nav_Room;
+    private javax.swing.JButton button_Nav_ViewApplications;
     private javax.swing.JButton button_Room_Create;
     private javax.swing.JButton button_Room_Delete;
     private javax.swing.JButton button_Room_Update;
     private javax.swing.JComboBox<String> comboBox_Hall_Warden;
+    private javax.swing.JComboBox<String> comboBox_Lease_Duration;
     private javax.swing.JComboBox<String> comboBox_Room_CleanState;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JTable jTable1;
@@ -951,6 +1207,7 @@ public class MainScreen extends javax.swing.JFrame {
     private javax.swing.JLabel label_Hall_Number;
     private javax.swing.JLabel label_Hall_Telephone;
     private javax.swing.JLabel label_Hall_Warden;
+    private javax.swing.JLabel label_Lease_Duration;
     private javax.swing.JLabel label_Lease_EndDate;
     private javax.swing.JLabel label_Lease_HallName;
     private javax.swing.JLabel label_Lease_HallNumber;
