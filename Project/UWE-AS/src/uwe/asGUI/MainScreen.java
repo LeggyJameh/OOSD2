@@ -1,14 +1,16 @@
 package uwe.asGUI;
 
-import java.awt.Color;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import uwe.as.Hall;
 import uwe.as.Lease;
 import uwe.as.Room;
+import uwe.as.UWEAS;
 import uwe.as.User;
 
 /**
@@ -26,6 +28,7 @@ public class MainScreen extends javax.swing.JFrame {
     public MainScreen() {
         initComponents();
         show_users_in_jtable();
+        disableElementsForUserLevel();
         this.setVisible(true);
     }
 
@@ -42,7 +45,7 @@ public class MainScreen extends javax.swing.JFrame {
         List<Hall> halls = data_cache.getHalls();
 
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        Object[] row = new Object[9];
+        Object[] row = new Object[10];
 
         if (halls != null && rooms != null && leases != null) {
             for (int j = 0; j < halls.size(); j++) {
@@ -55,8 +58,8 @@ public class MainScreen extends javax.swing.JFrame {
                     if (currentRoom.getHallUID() == currentHall.getUID()) {
 
                         for (Lease l : leases) {
-                            
-                            if(currentRoom.getLeases().contains(l.getUID())) {
+
+                            if (currentRoom.getLeases().contains(l.getUID())) {
                                 User currentUser = data_cache.getUser(l.getStudentUID());
 
                                 if (currentUser != null) {
@@ -65,41 +68,145 @@ public class MainScreen extends javax.swing.JFrame {
                                     row[2] = currentHall.getNumber();
                                     row[3] = currentRoom.getNumber();
                                     row[4] = currentUser.getName();
-                                    row[5] = currentUser.getUID();
-                                    row[6] = currentRoom.getCleaniness();
+                                    row[5] = currentRoom.getCleanliness();
+                                    row[6] = currentUser.getUID();
                                     row[7] = l.getUID();
                                     row[8] = currentRoom.getUID();
+                                    row[9] = currentHall.getUID();
                                     model.addRow(row);
                                 }
-
                             }
-                            if (currentRoom.getLeases().isEmpty() || currentRoom.getLeases() == null) {
-                                System.out.println(currentRoom.getLeases());
-                                row[0] = "";
-                                row[1] = currentHall.getName();
-                                row[2] = currentHall.getNumber();
-                                row[3] = currentRoom.getNumber();
-                                row[4] = "";
-                                row[5] = "";
-                                row[6] = currentRoom.getCleaniness();
-                                row[7] = "";
-                                row[8] = currentRoom.getUID();
-                                model.addRow(row);
-                                break;
-                            }
-
                         }
-
                     }
-
                 }
             }
         }
     }
-    
-    public void createLeaseClosing()
-    {
+
+    public void createLeaseClosing() {
         this.createLease = null;
+    }
+
+    private void disableElementsForUserLevel() {
+        switch (UWEAS.currentUser.getAccountLevel())
+        {
+            case 0: // Student
+                break;
+            case 1: // Warden
+                break;
+            case 2: // Manager
+        }
+    }
+
+    private void navButtonClick(int button) {
+        int selectedRow = jTable1.getSelectedRow();
+        switch (button) {
+            case 0:
+                panelHallView.setVisible(true);
+                panelRoomView.setVisible(false);
+                panelLeaseView.setVisible(false);
+                break;
+            case 1:
+                panelHallView.setVisible(false);
+                panelRoomView.setVisible(true);
+                panelLeaseView.setVisible(false);
+                break;
+            case 2:
+                panelHallView.setVisible(false);
+                panelRoomView.setVisible(false);
+                panelLeaseView.setVisible(true);
+                break;
+            case 3:
+                this.dispose();
+                break;
+        }
+    }
+
+    private void updateHallPanelContents() {
+        int selectedRow = jTable1.getSelectedRow();
+        TableModel model = jTable1.getModel();
+        List<User> users = data_cache.getUsers();
+        Hall currentHall = data_cache.getHall(Integer.parseInt(model.getValueAt(selectedRow, 9).toString()));
+        if (users != null && currentHall != null) {
+            textbox_Hall_Name.setText(model.getValueAt(selectedRow, 1).toString());
+            textbox_Hall_Number.setText(model.getValueAt(selectedRow, 2).toString());
+            textbox_Hall_Telephone.setText(currentHall.getTelephoneNumber());
+            textbox_Hall_Address.setText(currentHall.getAddress());
+            comboBox_Hall_Warden.removeAllItems();
+
+            for (User u : users) {
+                if (u.getAccountLevel() == 1) {
+                    comboBox_Hall_Warden.addItem(u.getRealName());
+                }
+            }
+
+            User currentWarden = data_cache.getUser(currentHall.getWardenUID());
+            if (currentWarden != null) {
+                comboBox_Hall_Warden.setSelectedItem(currentWarden.getRealName());
+            }
+        } else {
+            System.out.println("Couldn't find users and/or current hall!");
+        }
+    }
+
+    private void updateRoomPanelContents() {
+        int selectedRow = jTable1.getSelectedRow();
+        TableModel model = jTable1.getModel();
+        Room currentRoom = data_cache.getRoom(Integer.parseInt(model.getValueAt(selectedRow, 8).toString()));
+        if (currentRoom != null) {
+            Lease currentLease = currentRoom.getLeaseForDate(Date.from(Instant.now()));
+
+            textbox_Room_HallName.setText(model.getValueAt(selectedRow, 1).toString());
+            textbox_Room_HallNumber.setText(model.getValueAt(selectedRow, 2).toString());
+            textbox_Room_RoomNumber.setText(model.getValueAt(selectedRow, 3).toString());
+            textbox_Room_Rate.setValue(currentRoom.getRate());
+            if (currentLease != null) {
+                textbox_Room_LeaseNumber.setText(Integer.toString(currentLease.getLeaseNumber()));
+                User currentStudent = data_cache.getUser(currentLease.getStudentUID());
+                if (currentStudent != null) {
+                    textbox_Room_StudentName.setText(currentStudent.getRealName());
+                    textbox_Room_StudentNumber.setText(currentStudent.getStudentNumber());
+                }
+            } else {
+                System.out.println("Couldn't find current lease!");
+            }
+
+            uwe.as.CleanState state = currentRoom.getCleanliness();
+            switch (state) {
+                case CLEAN:
+                    comboBox_Room_CleanState.setSelectedIndex(0);
+                    break;
+                case DIRTY:
+                    comboBox_Room_CleanState.setSelectedIndex(1);
+                    break;
+                case OFFLINE:
+                    comboBox_Room_CleanState.setSelectedIndex(2);
+                    break;
+            }
+        } else {
+            System.out.println("Couldn't find current room!");
+        }
+    }
+
+    private void updateLeasePanelContents() {
+        int selectedRow = jTable1.getSelectedRow();
+        TableModel model = jTable1.getModel();
+        Lease currentLease = data_cache.getLease(Integer.parseInt(model.getValueAt(selectedRow, 7).toString()));
+        if (currentLease != null) {
+            Calendar endDate = Calendar.getInstance();
+            endDate.setTime(currentLease.getStartDate());
+            endDate.add(Calendar.MONTH, currentLease.getDuration());
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MMM-dd");
+
+            textbox_Lease_HallName.setText(model.getValueAt(selectedRow, 1).toString());
+            textbox_Lease_HallNumber.setText(model.getValueAt(selectedRow, 2).toString());
+            textbox_Lease_RoomNumber.setText(model.getValueAt(selectedRow, 3).toString());
+            textbox_Lease_StudentName.setText(model.getValueAt(selectedRow, 4).toString());
+            textbox_Lease_StartDate.setText(df.format(currentLease.getStartDate()));
+            textbox_Lease_EndDate.setText(df.format(endDate.getTime()));
+        } else {
+            System.out.println("Couldn't find current lease!");
+        }
     }
 
     /**
@@ -111,238 +218,155 @@ public class MainScreen extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        ms_panel = new javax.swing.JPanel();
-        ms_uwe_text = new javax.swing.JLabel();
-        ms_seperator = new javax.swing.JSeparator();
-        ms_btn_hallmanager = new javax.swing.JPanel();
-        ms_ind_hallmanager = new javax.swing.JPanel();
-        ms_hallmanager_text = new javax.swing.JLabel();
-        ms_btn_warden = new javax.swing.JPanel();
-        ms_ind_warden = new javax.swing.JPanel();
-        ms_warden_text = new javax.swing.JLabel();
-        ms_btn_all = new javax.swing.JPanel();
-        ms_ind_all = new javax.swing.JPanel();
-        ms_btn_all_text = new javax.swing.JLabel();
+        panel_Navigation = new javax.swing.JPanel();
+        label_Navigation_Title = new javax.swing.JLabel();
+        seperator_Navigation = new javax.swing.JSeparator();
+        button_Nav_Hall = new javax.swing.JButton();
+        button_Nav_Room = new javax.swing.JButton();
+        button_Nav_Lease = new javax.swing.JButton();
+        button_Nav_Exit = new javax.swing.JButton();
         ms_database_table = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        panelControl = new javax.swing.JPanel();
+        panelLeaseView = new javax.swing.JPanel();
+        label_Lease_HallName = new javax.swing.JLabel();
+        label_Lease_HallNumber = new javax.swing.JLabel();
+        label_Lease_RoomNumber = new javax.swing.JLabel();
+        label_Lease_LeaseNumber = new javax.swing.JLabel();
+        label_Lease_StudentName = new javax.swing.JLabel();
+        label_Lease_StartDate = new javax.swing.JLabel();
+        label_Lease_EndDate = new javax.swing.JLabel();
+        button_Lease_UpdateLease = new javax.swing.JButton();
+        button_Lease_CreateLease = new javax.swing.JButton();
+        button_Lease_DeleteLease = new javax.swing.JButton();
+        textbox_Lease_HallName = new javax.swing.JTextField();
+        textbox_Lease_HallNumber = new javax.swing.JTextField();
+        textbox_Lease_RoomNumber = new javax.swing.JTextField();
+        textbox_Lease_StartDate = new javax.swing.JFormattedTextField();
+        textbox_Lease_EndDate = new javax.swing.JFormattedTextField();
+        textbox_Lease_LeaseNumber = new javax.swing.JFormattedTextField();
+        textbox_Lease_StudentName = new javax.swing.JTextField();
+        panelRoomView = new javax.swing.JPanel();
+        label_Room_HallName = new javax.swing.JLabel();
+        label_Room_HallNumber = new javax.swing.JLabel();
+        label_Room_RoomNumber = new javax.swing.JLabel();
+        label_Room_CleanState = new javax.swing.JLabel();
+        label_Room_Rate = new javax.swing.JLabel();
+        button_Room_Update = new javax.swing.JButton();
+        button_Room_Create = new javax.swing.JButton();
+        button_Room_Delete = new javax.swing.JButton();
+        textbox_Room_HallNumber = new javax.swing.JTextField();
+        textbox_Room_RoomNumber = new javax.swing.JTextField();
+        comboBox_Room_CleanState = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        room_number_tf = new javax.swing.JTextField();
-        hall_number_tf = new javax.swing.JTextField();
-        hall_name_tf = new javax.swing.JTextField();
-        lease_number_tf = new javax.swing.JTextField();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        student_name_tf = new javax.swing.JTextField();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jLabel16 = new javax.swing.JLabel();
-        jComboBox3 = new javax.swing.JComboBox<>();
-        jButton3 = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        l_hall_number_tf = new javax.swing.JTextField();
-        l_hall_name_tf = new javax.swing.JTextField();
-        l_room_number_tf = new javax.swing.JTextField();
-        l_lease_number_tf = new javax.swing.JTextField();
-        l_student_name_tf = new javax.swing.JTextField();
-        l_btn_delete = new javax.swing.JButton();
-        buttonAddLease = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        l_student_uid_tf = new javax.swing.JTextField();
-        l_hall_uid_tf = new javax.swing.JTextField();
-        l_lease_uid_tf = new javax.swing.JTextField();
-        l_room_uid_tf = new javax.swing.JTextField();
+        label_Room_LeaseNumber = new javax.swing.JLabel();
+        textbox_Room_LeaseNumber = new javax.swing.JFormattedTextField();
+        textbox_Room_StudentName = new javax.swing.JTextField();
+        label_Room_StudentName = new javax.swing.JLabel();
+        label_Room_CurrentLeaseInfo = new javax.swing.JLabel();
+        label_Room_StudentName1 = new javax.swing.JLabel();
+        textbox_Room_StudentNumber = new javax.swing.JTextField();
+        textbox_Room_Rate = new javax.swing.JFormattedTextField();
+        textbox_Room_HallName = new javax.swing.JTextField();
+        panelHallView = new javax.swing.JPanel();
+        label_Hall_Name = new javax.swing.JLabel();
+        label_Hall_Number = new javax.swing.JLabel();
+        label_Hall_Warden = new javax.swing.JLabel();
+        label_Hall_Address = new javax.swing.JLabel();
+        label_Hall_Telephone = new javax.swing.JLabel();
+        button_Hall_Update = new javax.swing.JButton();
+        button_Hall_Create = new javax.swing.JButton();
+        button_Hall_Delete = new javax.swing.JButton();
+        textbox_Hall_Name = new javax.swing.JTextField();
+        textbox_Hall_Number = new javax.swing.JTextField();
+        textbox_Hall_Telephone = new javax.swing.JTextField();
+        comboBox_Hall_Warden = new javax.swing.JComboBox<>();
+        textbox_Hall_Address = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("UWE Accomodation App");
         setBackground(new java.awt.Color(247, 245, 242));
         setLocationByPlatform(true);
 
-        ms_panel.setBackground(new java.awt.Color(247, 245, 242));
+        panel_Navigation.setBackground(new java.awt.Color(247, 245, 242));
 
-        ms_uwe_text.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        ms_uwe_text.setText("UWE Accomodation");
+        label_Navigation_Title.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        label_Navigation_Title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        label_Navigation_Title.setText("<html><div style=\"text-align: center\">UWE Accomodation<br>System</div>");
+        label_Navigation_Title.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
-        ms_seperator.setBackground(new java.awt.Color(247, 245, 242));
+        seperator_Navigation.setBackground(new java.awt.Color(247, 245, 242));
 
-        ms_btn_hallmanager.setBackground(new java.awt.Color(247, 245, 242));
-        ms_btn_hallmanager.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                ms_btn_hallmanagerMousePressed(evt);
+        button_Nav_Hall.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        button_Nav_Hall.setText("<html><div style=\"text-align:center\">Hall View</div>");
+        button_Nav_Hall.setBorder(null);
+        button_Nav_Hall.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Nav_HallActionPerformed(evt);
             }
         });
 
-        ms_ind_hallmanager.setBackground(new java.awt.Color(19, 19, 19));
-        ms_ind_hallmanager.setOpaque(false);
-
-        javax.swing.GroupLayout ms_ind_hallmanagerLayout = new javax.swing.GroupLayout(ms_ind_hallmanager);
-        ms_ind_hallmanager.setLayout(ms_ind_hallmanagerLayout);
-        ms_ind_hallmanagerLayout.setHorizontalGroup(
-            ms_ind_hallmanagerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 8, Short.MAX_VALUE)
-        );
-        ms_ind_hallmanagerLayout.setVerticalGroup(
-            ms_ind_hallmanagerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        ms_hallmanager_text.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        ms_hallmanager_text.setText("Hall Manager");
-        ms_hallmanager_text.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                ms_hallmanager_textMousePressed(evt);
+        button_Nav_Room.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        button_Nav_Room.setText("<html><div style=\"text-align:center\">Room View</div>");
+        button_Nav_Room.setBorder(null);
+        button_Nav_Room.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Nav_RoomActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout ms_btn_hallmanagerLayout = new javax.swing.GroupLayout(ms_btn_hallmanager);
-        ms_btn_hallmanager.setLayout(ms_btn_hallmanagerLayout);
-        ms_btn_hallmanagerLayout.setHorizontalGroup(
-            ms_btn_hallmanagerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ms_btn_hallmanagerLayout.createSequentialGroup()
-                .addComponent(ms_ind_hallmanager, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        button_Nav_Lease.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        button_Nav_Lease.setText("<html><div style=\"text-align:center\">Lease View</div>");
+        button_Nav_Lease.setBorder(null);
+        button_Nav_Lease.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Nav_LeaseActionPerformed(evt);
+            }
+        });
+
+        button_Nav_Exit.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        button_Nav_Exit.setText("<html><div style=\"text-align:center\">Exit</div>");
+        button_Nav_Exit.setBorder(null);
+        button_Nav_Exit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_Nav_ExitActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panel_NavigationLayout = new javax.swing.GroupLayout(panel_Navigation);
+        panel_Navigation.setLayout(panel_NavigationLayout);
+        panel_NavigationLayout.setHorizontalGroup(
+            panel_NavigationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel_NavigationLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panel_NavigationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panel_NavigationLayout.createSequentialGroup()
+                        .addGroup(panel_NavigationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(button_Nav_Hall)
+                            .addComponent(seperator_Navigation, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                            .addComponent(label_Navigation_Title, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(button_Nav_Room, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                    .addComponent(button_Nav_Lease, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                    .addComponent(button_Nav_Exit, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        panel_NavigationLayout.setVerticalGroup(
+            panel_NavigationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel_NavigationLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(label_Navigation_Title, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ms_hallmanager_text, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        ms_btn_hallmanagerLayout.setVerticalGroup(
-            ms_btn_hallmanagerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(ms_ind_hallmanager, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(ms_btn_hallmanagerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ms_hallmanager_text)
-                .addContainerGap(23, Short.MAX_VALUE))
-        );
-
-        ms_btn_warden.setBackground(new java.awt.Color(247, 245, 242));
-        ms_btn_warden.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                ms_btn_wardenMousePressed(evt);
-            }
-        });
-
-        ms_ind_warden.setBackground(new java.awt.Color(19, 19, 19));
-        ms_ind_warden.setOpaque(false);
-
-        javax.swing.GroupLayout ms_ind_wardenLayout = new javax.swing.GroupLayout(ms_ind_warden);
-        ms_ind_warden.setLayout(ms_ind_wardenLayout);
-        ms_ind_wardenLayout.setHorizontalGroup(
-            ms_ind_wardenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 8, Short.MAX_VALUE)
-        );
-        ms_ind_wardenLayout.setVerticalGroup(
-            ms_ind_wardenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        ms_warden_text.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        ms_warden_text.setText("Warden");
-
-        javax.swing.GroupLayout ms_btn_wardenLayout = new javax.swing.GroupLayout(ms_btn_warden);
-        ms_btn_warden.setLayout(ms_btn_wardenLayout);
-        ms_btn_wardenLayout.setHorizontalGroup(
-            ms_btn_wardenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ms_btn_wardenLayout.createSequentialGroup()
-                .addComponent(ms_ind_warden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ms_warden_text, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        ms_btn_wardenLayout.setVerticalGroup(
-            ms_btn_wardenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(ms_ind_warden, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(ms_btn_wardenLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ms_warden_text)
-                .addContainerGap(35, Short.MAX_VALUE))
-        );
-
-        ms_btn_all.setBackground(new java.awt.Color(247, 245, 242));
-        ms_btn_all.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                ms_btn_allMousePressed(evt);
-            }
-        });
-
-        ms_ind_all.setBackground(new java.awt.Color(19, 19, 19));
-        ms_ind_all.setOpaque(false);
-
-        javax.swing.GroupLayout ms_ind_allLayout = new javax.swing.GroupLayout(ms_ind_all);
-        ms_ind_all.setLayout(ms_ind_allLayout);
-        ms_ind_allLayout.setHorizontalGroup(
-            ms_ind_allLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 8, Short.MAX_VALUE)
-        );
-        ms_ind_allLayout.setVerticalGroup(
-            ms_ind_allLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        ms_btn_all_text.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        ms_btn_all_text.setText("All");
-
-        javax.swing.GroupLayout ms_btn_allLayout = new javax.swing.GroupLayout(ms_btn_all);
-        ms_btn_all.setLayout(ms_btn_allLayout);
-        ms_btn_allLayout.setHorizontalGroup(
-            ms_btn_allLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ms_btn_allLayout.createSequentialGroup()
-                .addComponent(ms_ind_all, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(ms_btn_all_text, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        ms_btn_allLayout.setVerticalGroup(
-            ms_btn_allLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(ms_ind_all, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(ms_btn_allLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ms_btn_all_text)
-                .addContainerGap(23, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout ms_panelLayout = new javax.swing.GroupLayout(ms_panel);
-        ms_panel.setLayout(ms_panelLayout);
-        ms_panelLayout.setHorizontalGroup(
-            ms_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ms_panelLayout.createSequentialGroup()
-                .addGroup(ms_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(ms_panelLayout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(ms_uwe_text))
-                    .addGroup(ms_panelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(ms_seperator, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(ms_btn_warden, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(ms_btn_hallmanager, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(ms_btn_all, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        ms_panelLayout.setVerticalGroup(
-            ms_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ms_panelLayout.createSequentialGroup()
+                .addComponent(seperator_Navigation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(ms_uwe_text)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ms_seperator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
-                .addComponent(ms_btn_hallmanager, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addComponent(ms_btn_warden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
-                .addComponent(ms_btn_all, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(button_Nav_Hall, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(button_Nav_Room, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(button_Nav_Lease, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(button_Nav_Exit, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(1010, Short.MAX_VALUE))
         );
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -350,17 +374,20 @@ public class MainScreen extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Lease Number", "Hall Name", "Hall Number ", "Room Number", "Student Name", "Student ID", "Cleaning Status", "Lease ID", "RoomID"
+                "Lease Number", "Hall Name", "Hall Number ", "Room Number", "Student Name", "Cleaning Status", "Student ID", "Lease ID", "RoomID", "HallID"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        jTable1.setPreferredSize(new java.awt.Dimension(800, 500));
+        jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTable1.setShowHorizontalLines(false);
         jTable1.getTableHeader().setReorderingAllowed(false);
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -369,359 +396,449 @@ public class MainScreen extends javax.swing.JFrame {
         });
         ms_database_table.setViewportView(jTable1);
 
-        jPanel2.setBackground(new java.awt.Color(247, 245, 242));
-        jPanel2.setLayout(new java.awt.CardLayout());
+        panelControl.setBackground(new java.awt.Color(247, 245, 242));
+        panelControl.setLayout(new java.awt.CardLayout());
 
-        jPanel3.setBackground(new java.awt.Color(247, 245, 242));
+        panelLeaseView.setMaximumSize(new java.awt.Dimension(530, 250));
+        panelLeaseView.setMinimumSize(new java.awt.Dimension(530, 250));
+        panelLeaseView.setPreferredSize(new java.awt.Dimension(530, 250));
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel3.setText("Room Cleaning Status");
+        label_Lease_HallName.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Lease_HallName.setText("Hall Name");
 
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel10.setText("Hall Name");
+        label_Lease_HallNumber.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Lease_HallNumber.setText("Hall Number");
 
-        jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel11.setText("Hall Number");
+        label_Lease_RoomNumber.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Lease_RoomNumber.setText("Room Number");
 
-        jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel12.setText("Room Number");
+        label_Lease_LeaseNumber.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Lease_LeaseNumber.setText("Lease Number");
 
-        room_number_tf.setEditable(false);
-        room_number_tf.setBackground(new java.awt.Color(247, 245, 242));
-        room_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        label_Lease_StudentName.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Lease_StudentName.setText("Student Name");
 
-        hall_number_tf.setEditable(false);
-        hall_number_tf.setBackground(new java.awt.Color(247, 245, 242));
-        hall_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        label_Lease_StartDate.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Lease_StartDate.setText("Start Date");
 
-        hall_name_tf.setEditable(false);
-        hall_name_tf.setBackground(new java.awt.Color(247, 245, 242));
-        hall_name_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        hall_name_tf.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                hall_name_tfActionPerformed(evt);
-            }
-        });
+        label_Lease_EndDate.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Lease_EndDate.setText("End Date");
 
-        lease_number_tf.setEditable(false);
-        lease_number_tf.setBackground(new java.awt.Color(247, 245, 242));
-        lease_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        button_Lease_UpdateLease.setText("Update Lease");
 
-        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel13.setText("Lease Number");
+        button_Lease_CreateLease.setText("Create New Lease");
 
-        jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel14.setText("Student Name");
+        button_Lease_DeleteLease.setText("Delete Lease");
 
-        jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel15.setText("Occupancy");
+        textbox_Lease_HallName.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Lease_HallName.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Lease_HallName.setPreferredSize(new java.awt.Dimension(100, 20));
 
-        student_name_tf.setBackground(new java.awt.Color(247, 245, 242));
-        student_name_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        textbox_Lease_HallNumber.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Lease_HallNumber.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Lease_HallNumber.setPreferredSize(new java.awt.Dimension(100, 20));
 
-        jComboBox2.setBackground(new java.awt.Color(247, 245, 242));
-        jComboBox2.setEditable(true);
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Clean", "Dirty", "Offline" }));
-        jComboBox2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        textbox_Lease_RoomNumber.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Lease_RoomNumber.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Lease_RoomNumber.setPreferredSize(new java.awt.Dimension(100, 20));
 
-        jLabel16.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel16.setText("Room Status");
+        textbox_Lease_StartDate.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter()));
+        textbox_Lease_StartDate.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Lease_StartDate.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Lease_StartDate.setPreferredSize(new java.awt.Dimension(100, 20));
 
-        jComboBox3.setBackground(new java.awt.Color(247, 245, 242));
-        jComboBox3.setEditable(true);
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Unoccupied", "Occupied" }));
-        jComboBox3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        textbox_Lease_EndDate.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter()));
+        textbox_Lease_EndDate.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Lease_EndDate.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Lease_EndDate.setPreferredSize(new java.awt.Dimension(100, 20));
 
-        jButton3.setText("Apply");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
+        textbox_Lease_LeaseNumber.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Lease_LeaseNumber.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Lease_LeaseNumber.setPreferredSize(new java.awt.Dimension(100, 20));
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        textbox_Lease_StudentName.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Lease_StudentName.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Lease_StudentName.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        javax.swing.GroupLayout panelLeaseViewLayout = new javax.swing.GroupLayout(panelLeaseView);
+        panelLeaseView.setLayout(panelLeaseViewLayout);
+        panelLeaseViewLayout.setHorizontalGroup(
+            panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelLeaseViewLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel16)
-                        .addGap(26, 26, 26)
-                        .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(36, 36, 36)
-                .addComponent(jButton3)
-                .addGap(166, 166, 166))
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel3Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel10)
-                        .addComponent(jLabel11)
-                        .addComponent(jLabel12))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(room_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(hall_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(hall_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabel13))
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addGap(36, 36, 36)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel15)
-                                .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING))))
-                    .addGap(18, 18, 18)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(lease_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(student_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addContainerGap(10, Short.MAX_VALUE)))
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel3Layout.createSequentialGroup()
-                    .addGap(379, 379, 379)
-                    .addComponent(jComboBox3, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGap(16, 16, 16)))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 172, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel16)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3))
-                .addGap(7, 7, 7))
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel3Layout.createSequentialGroup()
-                    .addGap(51, 51, 51)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel10)
-                                .addComponent(hall_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel13))
-                            .addGap(35, 35, 35)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel11)
-                                .addComponent(hall_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel14))
-                            .addGap(38, 38, 38)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel12)
-                                .addComponent(room_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel15)))
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addComponent(lease_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(35, 35, 35)
-                            .addComponent(student_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addContainerGap(58, Short.MAX_VALUE)))
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                    .addContainerGap(174, Short.MAX_VALUE)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(42, 42, 42)))
-        );
-
-        jPanel2.add(jPanel3, "card2");
-
-        jPanel4.setBackground(new java.awt.Color(247, 245, 242));
-
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel4.setText("Admin All Access");
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4)
-                .addContainerGap(370, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4)
-                .addContainerGap(211, Short.MAX_VALUE))
-        );
-
-        jPanel2.add(jPanel4, "card2");
-
-        jPanel1.setBackground(new java.awt.Color(247, 245, 242));
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setText("Lease Information");
-
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel2.setText("Hall Number");
-
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel5.setText("Hall Name");
-
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel6.setText("Room Number");
-
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel7.setText("Lease Number");
-
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel8.setText("Student Name");
-
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel9.setText("Occupancy");
-
-        l_hall_number_tf.setBackground(new java.awt.Color(247, 245, 242));
-        l_hall_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        l_hall_name_tf.setBackground(new java.awt.Color(247, 245, 242));
-        l_hall_name_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        l_hall_name_tf.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                l_hall_name_tfActionPerformed(evt);
-            }
-        });
-
-        l_room_number_tf.setBackground(new java.awt.Color(247, 245, 242));
-        l_room_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        l_lease_number_tf.setBackground(new java.awt.Color(247, 245, 242));
-        l_lease_number_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        l_student_name_tf.setBackground(new java.awt.Color(247, 245, 242));
-        l_student_name_tf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        l_btn_delete.setText("Delete");
-        l_btn_delete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                l_btn_deleteActionPerformed(evt);
-            }
-        });
-
-        buttonAddLease.setText("Add Lease");
-        buttonAddLease.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonAddLeaseActionPerformed(evt);
-            }
-        });
-
-        jComboBox1.setBackground(new java.awt.Color(247, 245, 242));
-        jComboBox1.setEditable(true);
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Unoccupied", "Occupied" }));
-        jComboBox1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        l_student_uid_tf.setText("jTextField1");
-
-        l_hall_uid_tf.setText("jTextField1");
-
-        l_lease_uid_tf.setText("jTextField2");
-
-        l_room_uid_tf.setText("jTextField3");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(l_room_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(l_hall_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(l_hall_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel7))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(36, 36, 36)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel9)
-                                    .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING))))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(l_lease_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(l_student_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(l_student_uid_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(l_hall_uid_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(l_lease_uid_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(l_room_uid_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(button_Lease_UpdateLease)
+                    .addComponent(label_Lease_HallName)
+                    .addComponent(label_Lease_HallNumber)
+                    .addComponent(label_Lease_RoomNumber)
+                    .addComponent(label_Lease_StartDate))
+                .addGap(18, 18, 18)
+                .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelLeaseViewLayout.createSequentialGroup()
+                        .addComponent(button_Lease_DeleteLease)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(l_btn_delete)
-                        .addGap(37, 37, 37)
-                        .addComponent(buttonAddLease)
-                        .addGap(9, 9, 9)))
+                        .addComponent(button_Lease_CreateLease))
+                    .addGroup(panelLeaseViewLayout.createSequentialGroup()
+                        .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelLeaseViewLayout.createSequentialGroup()
+                                .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(textbox_Lease_HallName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(textbox_Lease_HallNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(textbox_Lease_StartDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(32, 32, 32)
+                                .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(panelLeaseViewLayout.createSequentialGroup()
+                                        .addComponent(label_Lease_LeaseNumber)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(textbox_Lease_LeaseNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panelLeaseViewLayout.createSequentialGroup()
+                                        .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(label_Lease_StudentName)
+                                            .addComponent(label_Lease_EndDate))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(textbox_Lease_EndDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(textbox_Lease_StudentName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addComponent(textbox_Lease_RoomNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 51, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        panelLeaseViewLayout.setVerticalGroup(
+            panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelLeaseViewLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(20, 20, 20)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(l_hall_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7))
-                        .addGap(35, 35, 35)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(l_hall_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8))
-                        .addGap(36, 36, 36)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(l_room_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(l_lease_number_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(35, 35, 35)
-                        .addComponent(l_student_name_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(buttonAddLease)
-                            .addComponent(l_btn_delete))
-                        .addContainerGap())
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelLeaseViewLayout.createSequentialGroup()
+                        .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label_Lease_HallName)
+                            .addComponent(textbox_Lease_HallName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(l_student_uid_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(l_hall_uid_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(l_lease_uid_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(l_room_uid_tf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(12, Short.MAX_VALUE))))
+                        .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label_Lease_HallNumber)
+                            .addComponent(textbox_Lease_HallNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label_Lease_RoomNumber)
+                            .addComponent(textbox_Lease_RoomNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label_Lease_StartDate)
+                            .addComponent(label_Lease_EndDate)
+                            .addComponent(textbox_Lease_StartDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textbox_Lease_EndDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(panelLeaseViewLayout.createSequentialGroup()
+                        .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label_Lease_LeaseNumber)
+                            .addComponent(textbox_Lease_LeaseNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label_Lease_StudentName)
+                            .addComponent(textbox_Lease_StudentName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(69, 69, 69)
+                .addGroup(panelLeaseViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(button_Lease_UpdateLease)
+                    .addComponent(button_Lease_DeleteLease)
+                    .addComponent(button_Lease_CreateLease))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel2.add(jPanel1, "card2");
+        panelControl.add(panelLeaseView, "card5");
+
+        panelRoomView.setMaximumSize(new java.awt.Dimension(530, 250));
+        panelRoomView.setMinimumSize(new java.awt.Dimension(530, 250));
+
+        label_Room_HallName.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Room_HallName.setText("Hall Name");
+
+        label_Room_HallNumber.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Room_HallNumber.setText("Hall Number");
+
+        label_Room_RoomNumber.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Room_RoomNumber.setText("Room Number");
+
+        label_Room_CleanState.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Room_CleanState.setText("Cleanliness Status");
+
+        label_Room_Rate.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Room_Rate.setText("Rate");
+
+        button_Room_Update.setText("Update Room");
+
+        button_Room_Create.setText("Create New Room");
+
+        button_Room_Delete.setText("Delete Room");
+
+        textbox_Room_HallNumber.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Room_HallNumber.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Room_HallNumber.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        textbox_Room_RoomNumber.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Room_RoomNumber.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Room_RoomNumber.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        comboBox_Room_CleanState.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Clean", "Dirty", "Offline" }));
+        comboBox_Room_CleanState.setMaximumSize(new java.awt.Dimension(100, 20));
+        comboBox_Room_CleanState.setMinimumSize(new java.awt.Dimension(100, 20));
+        comboBox_Room_CleanState.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        label_Room_LeaseNumber.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Room_LeaseNumber.setText("Lease Number");
+
+        textbox_Room_LeaseNumber.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Room_LeaseNumber.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Room_LeaseNumber.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        textbox_Room_StudentName.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Room_StudentName.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Room_StudentName.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        label_Room_StudentName.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Room_StudentName.setText("Student Name");
+
+        label_Room_CurrentLeaseInfo.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        label_Room_CurrentLeaseInfo.setText("Current Lease Info");
+
+        label_Room_StudentName1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Room_StudentName1.setText("Student Number");
+
+        textbox_Room_StudentNumber.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Room_StudentNumber.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Room_StudentNumber.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(label_Room_LeaseNumber)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(textbox_Room_LeaseNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(label_Room_StudentName)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(textbox_Room_StudentName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(label_Room_StudentName1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(textbox_Room_StudentNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(label_Room_CurrentLeaseInfo)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addComponent(label_Room_CurrentLeaseInfo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(label_Room_LeaseNumber)
+                    .addComponent(textbox_Room_LeaseNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(label_Room_StudentName)
+                    .addComponent(textbox_Room_StudentName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(label_Room_StudentName1)
+                    .addComponent(textbox_Room_StudentNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(55, Short.MAX_VALUE))
+        );
+
+        textbox_Room_Rate.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        textbox_Room_Rate.setText("0");
+        textbox_Room_Rate.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Room_Rate.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Room_Rate.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        textbox_Room_HallName.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Room_HallName.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Room_HallName.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        javax.swing.GroupLayout panelRoomViewLayout = new javax.swing.GroupLayout(panelRoomView);
+        panelRoomView.setLayout(panelRoomViewLayout);
+        panelRoomViewLayout.setHorizontalGroup(
+            panelRoomViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelRoomViewLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelRoomViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(button_Room_Update)
+                    .addComponent(label_Room_HallName)
+                    .addComponent(label_Room_HallNumber)
+                    .addComponent(label_Room_RoomNumber)
+                    .addComponent(label_Room_CleanState)
+                    .addComponent(label_Room_Rate))
+                .addGap(18, 18, 18)
+                .addGroup(panelRoomViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelRoomViewLayout.createSequentialGroup()
+                        .addComponent(button_Room_Delete)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 167, Short.MAX_VALUE)
+                        .addComponent(button_Room_Create))
+                    .addGroup(panelRoomViewLayout.createSequentialGroup()
+                        .addGroup(panelRoomViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(textbox_Room_HallNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textbox_Room_RoomNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(comboBox_Room_CleanState, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textbox_Room_Rate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textbox_Room_HallName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(39, 39, 39)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        panelRoomViewLayout.setVerticalGroup(
+            panelRoomViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelRoomViewLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelRoomViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelRoomViewLayout.createSequentialGroup()
+                        .addGroup(panelRoomViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label_Room_HallName)
+                            .addComponent(textbox_Room_HallName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(panelRoomViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label_Room_HallNumber)
+                            .addComponent(textbox_Room_HallNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(panelRoomViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label_Room_RoomNumber)
+                            .addComponent(textbox_Room_RoomNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(panelRoomViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label_Room_CleanState)
+                            .addComponent(comboBox_Room_CleanState, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(panelRoomViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label_Room_Rate)
+                            .addComponent(textbox_Room_Rate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(panelRoomViewLayout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(panelRoomViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(button_Room_Update)
+                            .addComponent(button_Room_Delete)
+                            .addComponent(button_Room_Create))))
+                .addContainerGap(17, Short.MAX_VALUE))
+        );
+
+        panelControl.add(panelRoomView, "card6");
+
+        panelHallView.setMaximumSize(new java.awt.Dimension(530, 250));
+        panelHallView.setMinimumSize(new java.awt.Dimension(530, 250));
+
+        label_Hall_Name.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Hall_Name.setText("Name");
+
+        label_Hall_Number.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Hall_Number.setText("Number");
+
+        label_Hall_Warden.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Hall_Warden.setText("Warden");
+
+        label_Hall_Address.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Hall_Address.setText("Address");
+
+        label_Hall_Telephone.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_Hall_Telephone.setText("Telephone");
+
+        button_Hall_Update.setText("Update Hall");
+
+        button_Hall_Create.setText("Create New Hall");
+
+        button_Hall_Delete.setText("Delete Hall");
+
+        textbox_Hall_Name.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Hall_Name.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Hall_Name.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        textbox_Hall_Number.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Hall_Number.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Hall_Number.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        textbox_Hall_Telephone.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Hall_Telephone.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Hall_Telephone.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        comboBox_Hall_Warden.setMaximumSize(new java.awt.Dimension(100, 20));
+        comboBox_Hall_Warden.setMinimumSize(new java.awt.Dimension(100, 20));
+        comboBox_Hall_Warden.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        textbox_Hall_Address.setMaximumSize(new java.awt.Dimension(100, 20));
+        textbox_Hall_Address.setMinimumSize(new java.awt.Dimension(100, 20));
+        textbox_Hall_Address.setPreferredSize(new java.awt.Dimension(100, 20));
+
+        javax.swing.GroupLayout panelHallViewLayout = new javax.swing.GroupLayout(panelHallView);
+        panelHallView.setLayout(panelHallViewLayout);
+        panelHallViewLayout.setHorizontalGroup(
+            panelHallViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelHallViewLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelHallViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(button_Hall_Update)
+                    .addComponent(label_Hall_Name)
+                    .addComponent(label_Hall_Number)
+                    .addComponent(label_Hall_Warden))
+                .addGap(38, 38, 38)
+                .addGroup(panelHallViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelHallViewLayout.createSequentialGroup()
+                        .addComponent(button_Hall_Delete)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(button_Hall_Create))
+                    .addGroup(panelHallViewLayout.createSequentialGroup()
+                        .addGroup(panelHallViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelHallViewLayout.createSequentialGroup()
+                                .addGroup(panelHallViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(textbox_Hall_Name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(textbox_Hall_Number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(32, 32, 32)
+                                .addGroup(panelHallViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(label_Hall_Telephone)
+                                    .addComponent(label_Hall_Address))
+                                .addGap(18, 18, 18)
+                                .addGroup(panelHallViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(textbox_Hall_Address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(textbox_Hall_Telephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(comboBox_Hall_Warden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 69, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        panelHallViewLayout.setVerticalGroup(
+            panelHallViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelHallViewLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelHallViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelHallViewLayout.createSequentialGroup()
+                        .addGroup(panelHallViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label_Hall_Name)
+                            .addComponent(textbox_Hall_Name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(panelHallViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label_Hall_Number)
+                            .addComponent(textbox_Hall_Number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(panelHallViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label_Hall_Warden)
+                            .addComponent(comboBox_Hall_Warden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(panelHallViewLayout.createSequentialGroup()
+                        .addGroup(panelHallViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label_Hall_Address)
+                            .addComponent(textbox_Hall_Address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(panelHallViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label_Hall_Telephone)
+                            .addComponent(textbox_Hall_Telephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(107, 107, 107)
+                .addGroup(panelHallViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(button_Hall_Update)
+                    .addComponent(button_Hall_Delete)
+                    .addComponent(button_Hall_Create))
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+
+        panelControl.add(panelHallView, "card7");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -729,157 +846,52 @@ public class MainScreen extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addComponent(ms_panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panel_Navigation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ms_database_table))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(panelControl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0))
+                    .addComponent(ms_database_table, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(ms_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(panel_Navigation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(ms_database_table, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(22, Short.MAX_VALUE))
+                        .addComponent(ms_database_table, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(panelControl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(911, 911, 911)))
+                .addContainerGap(140, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void ms_hallmanager_textMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ms_hallmanager_textMousePressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ms_hallmanager_textMousePressed
-
-    private void ms_btn_hallmanagerMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ms_btn_hallmanagerMousePressed
-        // TODO add your handling code here:
-        setColor(ms_btn_hallmanager);
-        resetColor(ms_btn_all);
-        resetColor(ms_btn_warden);
-        ms_ind_hallmanager.setOpaque(true);
-        ms_ind_warden.setOpaque(false);
-        ms_ind_all.setOpaque(false);
-
-        jPanel1.setVisible(true);
-        jPanel3.setVisible(false);
-        jPanel4.setVisible(false);
-
-    }//GEN-LAST:event_ms_btn_hallmanagerMousePressed
-
-    private void ms_btn_wardenMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ms_btn_wardenMousePressed
-        // TODO add your handling code here:
-        setColor(ms_btn_warden);
-        resetColor(ms_btn_all);
-        resetColor(ms_btn_hallmanager);
-        ms_ind_warden.setOpaque(true);
-        ms_ind_hallmanager.setOpaque(false);
-        ms_ind_all.setOpaque(false);
-
-        jPanel1.setVisible(false);
-        jPanel3.setVisible(true);
-        jPanel4.setVisible(false);
-    }//GEN-LAST:event_ms_btn_wardenMousePressed
-
-    private void ms_btn_allMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ms_btn_allMousePressed
-        // TODO add your handling code here:
-        setColor(ms_btn_all);
-        resetColor(ms_btn_hallmanager);
-        resetColor(ms_btn_warden);
-        ms_ind_hallmanager.setOpaque(false);
-        ms_ind_warden.setOpaque(false);
-        ms_ind_all.setOpaque(true);
-
-        jPanel1.setVisible(false);
-        jPanel3.setVisible(false);
-        jPanel4.setVisible(true);
-    }//GEN-LAST:event_ms_btn_allMousePressed
-
-    private void l_hall_name_tfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_l_hall_name_tfActionPerformed
-
-
-    }//GEN-LAST:event_l_hall_name_tfActionPerformed
-
-    private void l_btn_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_l_btn_deleteActionPerformed
-        // TODO add your handling code here:
-        Lease lease = data_cache.getLease(Integer.parseInt(l_lease_uid_tf.getText()));
-        Room room = data_cache.getRoom(Integer.parseInt(l_room_uid_tf.getText()));
-        User user = data_cache.getUser(Integer.parseInt(l_student_uid_tf.getText()));
-
-        if ((l_student_name_tf.getText() == null || l_student_name_tf.getText().trim().isEmpty()) && (l_lease_number_tf.getText() == null || l_lease_number_tf.getText().trim().isEmpty())) {
-            JOptionPane.showMessageDialog(null, "Lease already deleted", "Inane warning", JOptionPane.WARNING_MESSAGE);
-        } else if (room.getLeases().contains(lease.getUID())) {
-            data_cache.removeLease(lease);
-            refresh_jtable();
-            
-            
-            
-        }
-
-
-    }//GEN-LAST:event_l_btn_deleteActionPerformed
-
-    private void hall_name_tfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hall_name_tfActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_hall_name_tfActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void buttonAddLeaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddLeaseActionPerformed
-        if (createLease == null)
-        {
-            CreateLease createLease = new CreateLease(this);
-        }
-    }//GEN-LAST:event_buttonAddLeaseActionPerformed
-
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        // TODO add your handling code here:
-        int i = jTable1.getSelectedRow();
-        TableModel model = jTable1.getModel();
-        // Warden: Room cleaning info
-        lease_number_tf.setText(model.getValueAt(i, 0).toString());
-        hall_name_tf.setText(model.getValueAt(i, 1).toString());
-        hall_number_tf.setText(model.getValueAt(i, 2).toString());
-        room_number_tf.setText(model.getValueAt(i, 3).toString());
-        student_name_tf.setText(model.getValueAt(i, 4).toString());
-
-        //Hall manager: Lease information
-        if (l_lease_number_tf.getText() == null){
-            l_lease_number_tf.setText("");
-            l_hall_name_tf.setText(model.getValueAt(i, 1).toString());
-            l_hall_number_tf.setText(model.getValueAt(i, 2).toString());
-            l_room_number_tf.setText(model.getValueAt(i, 3).toString());
-            l_student_name_tf.setText(model.getValueAt(i, 4).toString());
-            l_student_uid_tf.setText("");
-            l_lease_uid_tf.setText("");
-            l_room_uid_tf.setText(model.getValueAt(i, 8).toString());
-        }else{        
-        l_lease_number_tf.setText(model.getValueAt(i, 0).toString());
-        l_hall_name_tf.setText(model.getValueAt(i, 1).toString());
-        l_hall_number_tf.setText(model.getValueAt(i, 2).toString());
-        l_room_number_tf.setText(model.getValueAt(i, 3).toString());
-        l_student_name_tf.setText(model.getValueAt(i, 4).toString());
-        l_student_uid_tf.setText(model.getValueAt(i, 5).toString());
-        l_lease_uid_tf.setText(model.getValueAt(i, 7).toString());
-        l_room_uid_tf.setText(model.getValueAt(i, 8).toString());
-        }
-
+        updateHallPanelContents();
+        updateRoomPanelContents();
+        updateLeasePanelContents();
     }//GEN-LAST:event_jTable1MouseClicked
 
-    // loading smaple data
-    void setColor(JPanel panel) {
-        panel.setBackground(new Color(197, 196, 193));
-    }
+    private void button_Nav_HallActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Nav_HallActionPerformed
+        navButtonClick(0);
+    }//GEN-LAST:event_button_Nav_HallActionPerformed
 
-    void resetColor(JPanel panel) {
-        panel.setBackground(new Color(247, 245, 242));
-    }
+    private void button_Nav_RoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Nav_RoomActionPerformed
+        navButtonClick(1);
+    }//GEN-LAST:event_button_Nav_RoomActionPerformed
+
+    private void button_Nav_LeaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Nav_LeaseActionPerformed
+        navButtonClick(2);
+    }//GEN-LAST:event_button_Nav_LeaseActionPerformed
+
+    private void button_Nav_ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Nav_ExitActionPerformed
+        navButtonClick(3);
+    }//GEN-LAST:event_button_Nav_ExitActionPerformed
 
     /**
      * @param args the command line arguments
@@ -917,59 +929,69 @@ public class MainScreen extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton buttonAddLease;
-    private javax.swing.JTextField hall_name_tf;
-    private javax.swing.JTextField hall_number_tf;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton button_Hall_Create;
+    private javax.swing.JButton button_Hall_Delete;
+    private javax.swing.JButton button_Hall_Update;
+    private javax.swing.JButton button_Lease_CreateLease;
+    private javax.swing.JButton button_Lease_DeleteLease;
+    private javax.swing.JButton button_Lease_UpdateLease;
+    private javax.swing.JButton button_Nav_Exit;
+    private javax.swing.JButton button_Nav_Hall;
+    private javax.swing.JButton button_Nav_Lease;
+    private javax.swing.JButton button_Nav_Room;
+    private javax.swing.JButton button_Room_Create;
+    private javax.swing.JButton button_Room_Delete;
+    private javax.swing.JButton button_Room_Update;
+    private javax.swing.JComboBox<String> comboBox_Hall_Warden;
+    private javax.swing.JComboBox<String> comboBox_Room_CleanState;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JTable jTable1;
-    private javax.swing.JButton l_btn_delete;
-    private javax.swing.JTextField l_hall_name_tf;
-    private javax.swing.JTextField l_hall_number_tf;
-    private javax.swing.JTextField l_hall_uid_tf;
-    private javax.swing.JTextField l_lease_number_tf;
-    private javax.swing.JTextField l_lease_uid_tf;
-    private javax.swing.JTextField l_room_number_tf;
-    private javax.swing.JTextField l_room_uid_tf;
-    private javax.swing.JTextField l_student_name_tf;
-    private javax.swing.JTextField l_student_uid_tf;
-    private javax.swing.JTextField lease_number_tf;
-    private javax.swing.JPanel ms_btn_all;
-    private javax.swing.JLabel ms_btn_all_text;
-    private javax.swing.JPanel ms_btn_hallmanager;
-    private javax.swing.JPanel ms_btn_warden;
+    private javax.swing.JLabel label_Hall_Address;
+    private javax.swing.JLabel label_Hall_Name;
+    private javax.swing.JLabel label_Hall_Number;
+    private javax.swing.JLabel label_Hall_Telephone;
+    private javax.swing.JLabel label_Hall_Warden;
+    private javax.swing.JLabel label_Lease_EndDate;
+    private javax.swing.JLabel label_Lease_HallName;
+    private javax.swing.JLabel label_Lease_HallNumber;
+    private javax.swing.JLabel label_Lease_LeaseNumber;
+    private javax.swing.JLabel label_Lease_RoomNumber;
+    private javax.swing.JLabel label_Lease_StartDate;
+    private javax.swing.JLabel label_Lease_StudentName;
+    private javax.swing.JLabel label_Navigation_Title;
+    private javax.swing.JLabel label_Room_CleanState;
+    private javax.swing.JLabel label_Room_CurrentLeaseInfo;
+    private javax.swing.JLabel label_Room_HallName;
+    private javax.swing.JLabel label_Room_HallNumber;
+    private javax.swing.JLabel label_Room_LeaseNumber;
+    private javax.swing.JLabel label_Room_Rate;
+    private javax.swing.JLabel label_Room_RoomNumber;
+    private javax.swing.JLabel label_Room_StudentName;
+    private javax.swing.JLabel label_Room_StudentName1;
     private javax.swing.JScrollPane ms_database_table;
-    private javax.swing.JLabel ms_hallmanager_text;
-    private javax.swing.JPanel ms_ind_all;
-    private javax.swing.JPanel ms_ind_hallmanager;
-    private javax.swing.JPanel ms_ind_warden;
-    private javax.swing.JPanel ms_panel;
-    private javax.swing.JSeparator ms_seperator;
-    private javax.swing.JLabel ms_uwe_text;
-    private javax.swing.JLabel ms_warden_text;
-    private javax.swing.JTextField room_number_tf;
-    private javax.swing.JTextField student_name_tf;
+    private javax.swing.JPanel panelControl;
+    private javax.swing.JPanel panelHallView;
+    private javax.swing.JPanel panelLeaseView;
+    private javax.swing.JPanel panelRoomView;
+    private javax.swing.JPanel panel_Navigation;
+    private javax.swing.JSeparator seperator_Navigation;
+    private javax.swing.JTextField textbox_Hall_Address;
+    private javax.swing.JTextField textbox_Hall_Name;
+    private javax.swing.JTextField textbox_Hall_Number;
+    private javax.swing.JTextField textbox_Hall_Telephone;
+    private javax.swing.JFormattedTextField textbox_Lease_EndDate;
+    private javax.swing.JTextField textbox_Lease_HallName;
+    private javax.swing.JTextField textbox_Lease_HallNumber;
+    private javax.swing.JFormattedTextField textbox_Lease_LeaseNumber;
+    private javax.swing.JTextField textbox_Lease_RoomNumber;
+    private javax.swing.JFormattedTextField textbox_Lease_StartDate;
+    private javax.swing.JTextField textbox_Lease_StudentName;
+    private javax.swing.JTextField textbox_Room_HallName;
+    private javax.swing.JTextField textbox_Room_HallNumber;
+    private javax.swing.JFormattedTextField textbox_Room_LeaseNumber;
+    private javax.swing.JFormattedTextField textbox_Room_Rate;
+    private javax.swing.JTextField textbox_Room_RoomNumber;
+    private javax.swing.JTextField textbox_Room_StudentName;
+    private javax.swing.JTextField textbox_Room_StudentNumber;
     // End of variables declaration//GEN-END:variables
 }
