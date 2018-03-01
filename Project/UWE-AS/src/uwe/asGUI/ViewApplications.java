@@ -154,7 +154,13 @@ public class ViewApplications extends javax.swing.JFrame {
         textbox_StartDate = new javax.swing.JTextField();
         textbox_Duration = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("View Applications");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         label_HallName.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         label_HallName.setText("Hall Name");
@@ -411,6 +417,10 @@ public class ViewApplications extends javax.swing.JFrame {
         mainScreen.viewApplicationsClosing();
         this.dispose();
     }//GEN-LAST:event_button_CloseActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        mainScreen.viewApplicationsClosing();
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

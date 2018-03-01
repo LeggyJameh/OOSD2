@@ -48,10 +48,15 @@ public class CreateHall extends javax.swing.JFrame {
         textfield_Address = new javax.swing.JTextField();
         textfield_Telephone = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Add Lease");
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Create Hall");
         setAlwaysOnTop(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         labelName.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         labelName.setText("Name");
@@ -174,6 +179,10 @@ public class CreateHall extends javax.swing.JFrame {
         mainScreen.createHallClosing();
         this.dispose();
     }//GEN-LAST:event_buttonAddActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        mainScreen.createHallClosing();
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

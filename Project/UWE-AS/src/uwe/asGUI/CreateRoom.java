@@ -78,10 +78,15 @@ public class CreateRoom extends javax.swing.JFrame {
         comboBox_Hall = new javax.swing.JComboBox<>();
         textfield_Number = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Add Lease");
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Create Room");
         setAlwaysOnTop(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         labelHall.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         labelHall.setText("Number");
@@ -193,6 +198,10 @@ public class CreateRoom extends javax.swing.JFrame {
         mainScreen.createRoomClosing();
         this.dispose();
     }//GEN-LAST:event_buttonAddActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        mainScreen.createRoomClosing();
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

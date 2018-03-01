@@ -164,10 +164,15 @@ public class CreateLease extends javax.swing.JFrame {
         labelLeaseNumber = new javax.swing.JLabel();
         textfieldLeaseNumber = new javax.swing.JFormattedTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Add Lease");
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Create Lease");
         setAlwaysOnTop(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         comboBoxHall.setMinimumSize(new java.awt.Dimension(100, 20));
         comboBoxHall.setPreferredSize(new java.awt.Dimension(100, 20));
@@ -329,6 +334,10 @@ public class CreateLease extends javax.swing.JFrame {
         mainScreen.createLeaseClosing();
         this.dispose();
     }//GEN-LAST:event_buttonAddActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        mainScreen.createLeaseClosing();
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
