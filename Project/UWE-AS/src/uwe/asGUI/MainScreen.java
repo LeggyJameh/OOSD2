@@ -7,7 +7,6 @@ import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -1191,6 +1190,7 @@ public class MainScreen extends javax.swing.JFrame {
         if (createApplication == null) {
             createApplication = new CreateApplication(this);
         }
+        refresh_jtable();
     }//GEN-LAST:event_button_Nav_CreateApplicationActionPerformed
 
     private void button_Nav_ViewApplicationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Nav_ViewApplicationsActionPerformed
@@ -1198,6 +1198,7 @@ public class MainScreen extends javax.swing.JFrame {
         {
             viewApplications = new ViewApplications(this);
         }
+        refresh_jtable();
     }//GEN-LAST:event_button_Nav_ViewApplicationsActionPerformed
 
     private void jTable1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyPressed
