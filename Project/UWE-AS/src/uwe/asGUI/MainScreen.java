@@ -156,6 +156,10 @@ public class MainScreen extends javax.swing.JFrame {
                 button_Lease_DeleteLease.setEnabled(false);
                 button_Lease_CreateLease.setEnabled(false);
                 button_Nav_ViewApplications.setEnabled(false);
+<<<<<<< HEAD
+
+=======
+>>>>>>> cc8dbec95ffe0f8f4784a8985385e74f08539a2e
                 break;
             case 2: // manager
                 break;
