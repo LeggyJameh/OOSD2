@@ -269,6 +269,7 @@ public class MainScreen extends javax.swing.JFrame {
             textbox_Lease_StudentName.setText(model.getValueAt(selectedRow, 4).toString());
             textbox_Lease_StartDate.setText(df.format(currentLease.getStartDate()));
             textbox_Lease_EndDate.setText(df.format(endDate.getTime()));
+            textbox_Lease_LeaseNumber.setText(Integer.toString(currentLease.getLeaseNumber()));
         } else {
             System.out.println("Couldn't find current lease!");
         }
@@ -498,6 +499,11 @@ public class MainScreen extends javax.swing.JFrame {
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTable1MouseClicked(evt);
+            }
+        });
+        jTable1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTable1KeyPressed(evt);
             }
         });
         ms_database_table.setViewportView(jTable1);
@@ -1097,6 +1103,7 @@ public class MainScreen extends javax.swing.JFrame {
             currentLease.modifyLeaseNumber(Integer.parseInt(textbox_Lease_LeaseNumber.getText()));
             currentLease.modifyStartDate(date);
         }
+        refresh_jtable();
     }//GEN-LAST:event_button_Lease_UpdateLeaseActionPerformed
 
     private void button_Lease_DeleteLeaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Lease_DeleteLeaseActionPerformed
@@ -1126,6 +1133,7 @@ public class MainScreen extends javax.swing.JFrame {
                     break;
             }
         }
+        refresh_jtable();
     }//GEN-LAST:event_button_Room_UpdateActionPerformed
 
     private void button_Room_DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Room_DeleteActionPerformed
@@ -1158,6 +1166,7 @@ public class MainScreen extends javax.swing.JFrame {
         if (currentWarden != null) {
             currentHall.modifyWarden(currentWarden.getUID());
         }
+        refresh_jtable();
     }//GEN-LAST:event_button_Hall_UpdateActionPerformed
 
     private void button_Hall_DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Hall_DeleteActionPerformed
@@ -1190,6 +1199,12 @@ public class MainScreen extends javax.swing.JFrame {
             viewApplications = new ViewApplications(this);
         }
     }//GEN-LAST:event_button_Nav_ViewApplicationsActionPerformed
+
+    private void jTable1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyPressed
+        updateHallPanelContents();
+        updateRoomPanelContents();
+        updateLeasePanelContents();
+    }//GEN-LAST:event_jTable1KeyPressed
 
     /**
      * @param args the command line arguments
