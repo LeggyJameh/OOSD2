@@ -301,12 +301,12 @@ public class DB_Controller {
      */
     public static void updateHall(Hall hall) {
         String query
-                = "UPDATE `halls` SET (`WardenUID`='" + Integer.toString(hall.getWardenUID())
+                = "UPDATE `halls` SET `WardenUID`='" + Integer.toString(hall.getWardenUID())
                 + "', `Name`='" + hall.getName()
                 + "', `Number`='" + hall.getNumber()
                 + "', `Address`='" + hall.getAddress()
                 + "', `TelephoneNumber`='" + hall.getTelephoneNumber()
-                + "') WHERE `UID`='" + Integer.toString(hall.getUID()) + "';";
+                + "' WHERE `UID`='" + Integer.toString(hall.getUID()) + "';";
         
         executeNonQuery(query);
     }
@@ -318,20 +318,20 @@ public class DB_Controller {
     public static void updateRoom(Room room) {
         int cleanliness;
         switch (room.getCleanliness()) {
-            default:
-                cleanliness = 0;
-                break;
             case DIRTY:
                 cleanliness = 1;
                 break;
             case OFFLINE:
                 cleanliness = 2;
                 break;
+            default:
+                cleanliness = 0;
+                break;
         }
-        String query = "UPDATE `rooms` SET (`Number`='" + room.getNumber()
+        String query = "UPDATE `rooms` SET `Number`='" + room.getNumber()
                 + "', `RentRate`='" + Integer.toString(room.getRate())
-                + "', `Cleaniness`='" + Integer.toString(cleanliness)
-                + "') WHERE `UID`='" + Integer.toString(room.getUID()) + "';";
+                + "', `Cleanliness`='" + Integer.toString(cleanliness)
+                + "' WHERE `UID`='" + Integer.toString(room.getUID()) + "';";
         
         executeNonQuery(query);
     }
@@ -360,11 +360,11 @@ public class DB_Controller {
     public static void updateApplication(RoomApplication application) {
         DateFormat df = new SimpleDateFormat();
         String date = df.format(application.getDate());
-        String query = "UPDATE `applications` SET (`RoomUID`='" + Integer.toString(application.getRoomUID())
+        String query = "UPDATE `applications` SET `RoomUID`='" + Integer.toString(application.getRoomUID())
                 + "', `Date`='" + date
                 + "', `Duration`='" + Integer.toString(application.getDuration())
                 + "', `StudentUID`='" + Integer.toString(application.getStudentUID())
-                + "') WHERE `UID`='" + Integer.toString(application.getUID()) + "';";
+                + "' WHERE `UID`='" + Integer.toString(application.getUID()) + "';";
         
         executeNonQuery(query);
     }

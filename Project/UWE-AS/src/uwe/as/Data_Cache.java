@@ -59,12 +59,24 @@ public class Data_Cache {
      * Removes a hall from the data_cache and database.
      */
     public void removeHall(Hall hall) {
+        List<Room> roomsToRemove = new ArrayList<>();
+        
         if (halls.contains(hall)) {
             for (Room r : rooms) {
                 if (r.getHallUID() == hall.getUID()) {
-                    removeRoom(r);
+                    roomsToRemove.add(r);
                 }
             }
+            
+            for (Room r : roomsToRemove)
+            {
+                removeRoom(r);
+            }
+            
+            // Mark for garbage collection
+            roomsToRemove.clear();
+            roomsToRemove = null;
+            
             halls.remove(hall);
             DB_Controller.removeHall(hall);
         }
@@ -126,17 +138,36 @@ public class Data_Cache {
      * Removes a room from the data_cache and database.
      */
     public void removeRoom(Room room) {
+        List<Lease> leasesToRemove = new ArrayList<>();
+        List<RoomApplication> applicationsToRemove = new ArrayList<>();
+        
         if (rooms.contains(room)) {
             for (Lease l : leases) {
                 if (l.getRoomUID() == room.getUID()) {
-                    removeLease(l);
+                    leasesToRemove.add(l);
                 }
             }
             for (RoomApplication ra : applications) {
                 if (ra.getRoomUID() == room.getUID()) {
-                    removeApplication(ra);
+                    applicationsToRemove.add(ra);
                 }
             }
+            
+            for (Lease l : leasesToRemove)
+            {
+                removeLease(l);
+            }
+            
+            for (RoomApplication ra : applicationsToRemove) {
+                removeApplication(ra);
+            }
+            
+            // Mark for garbage collection
+            leasesToRemove.clear();
+            leasesToRemove = null;
+            applicationsToRemove.clear();
+            applicationsToRemove = null;
+            
             rooms.remove(room);
             DB_Controller.removeRoom(room);
         }
