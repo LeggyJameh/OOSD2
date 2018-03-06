@@ -400,3 +400,58 @@
 2018-03-01  7:03:58 11048 [Note] InnoDB: Dumping buffer pool(s) not yet started
 2018-03-01  7:03:58 4376 [Note] Plugin 'FEEDBACK' is disabled.
 2018-03-01  7:03:58 4376 [Note] Server socket created on IP: '::'.
+2018-03-01 13:19:06 17436 [Note] InnoDB: innodb_empty_free_list_algorithm has been changed to legacy because of small buffer pool size. In order to use backoff, increase buffer pool at least up to 20MB.
+
+2018-03-01 13:19:06 17436 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+2018-03-01 13:19:06 17436 [Note] InnoDB: The InnoDB memory heap is disabled
+2018-03-01 13:19:06 17436 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2018-03-01 13:19:06 17436 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2018-03-01 13:19:06 17436 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2018-03-01 13:19:06 17436 [Note] InnoDB: Using generic crc32 instructions
+2018-03-01 13:19:06 17436 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2018-03-01 13:19:06 17436 [Note] InnoDB: Completed initialization of buffer pool
+2018-03-01 13:19:06 17436 [Note] InnoDB: Highest supported file format is Barracuda.
+2018-03-01 13:19:06 17436 [Note] InnoDB: The log sequence number 2707192 in ibdata file do not match the log sequence number 2707202 in the ib_logfiles!
+2018-03-01 13:19:06 17436 [Note] InnoDB: Restoring possible half-written data pages from the doublewrite buffer...
+2018-03-01 13:19:06 17436 [Note] InnoDB: 128 rollback segment(s) are active.
+2018-03-01 13:19:06 17436 [Note] InnoDB: Waiting for purge to start
+2018-03-01 13:19:06 2890 InnoDB: Error: page 3 log sequence number 2716727
+InnoDB: is in the future! Current system log sequence number 2707212.
+InnoDB: Your database may be corrupt or you may have copied the InnoDB
+InnoDB: tablespace but not the InnoDB log files. See
+InnoDB: http://dev.mysql.com/doc/refman/5.6/en/forcing-innodb-recovery.html
+InnoDB: for more information.
+2018-03-01 13:19:06 2890 InnoDB: Error: page 3 log sequence number 2716231
+InnoDB: is in the future! Current system log sequence number 2707212.
+InnoDB: Your database may be corrupt or you may have copied the InnoDB
+InnoDB: tablespace but not the InnoDB log files. See
+InnoDB: http://dev.mysql.com/doc/refman/5.6/en/forcing-innodb-recovery.html
+InnoDB: for more information.
+2018-03-01 13:19:06 2890 InnoDB: Error: page 3 log sequence number 2712701
+InnoDB: is in the future! Current system log sequence number 2707212.
+InnoDB: Your database may be corrupt or you may have copied the InnoDB
+InnoDB: tablespace but not the InnoDB log files. See
+InnoDB: http://dev.mysql.com/doc/refman/5.6/en/forcing-innodb-recovery.html
+InnoDB: for more information.
+2018-03-01 13:19:06 2890 InnoDB: Error: page 4 log sequence number 2716988
+InnoDB: is in the future! Current system log sequence number 2707212.
+InnoDB: Your database may be corrupt or you may have copied the InnoDB
+InnoDB: tablespace but not the InnoDB log files. See
+InnoDB: http://dev.mysql.com/doc/refman/5.6/en/forcing-innodb-recovery.html
+InnoDB: for more information.
+2018-03-01 13:19:06 2890 InnoDB: Error: page 5 log sequence number 2717001
+InnoDB: is in the future! Current system log sequence number 2707212.
+InnoDB: Your database may be corrupt or you may have copied the InnoDB
+InnoDB: tablespace but not the InnoDB log files. See
+InnoDB: http://dev.mysql.com/doc/refman/5.6/en/forcing-innodb-recovery.html
+InnoDB: for more information.
+2018-03-01 13:19:06 2890 InnoDB: Error: page 3 log sequence number 2717026
+InnoDB: is in the future! Current system log sequence number 2707212.
+InnoDB: Your database may be corrupt or you may have copied the InnoDB
+InnoDB: tablespace but not the InnoDB log files. See
+InnoDB: http://dev.mysql.com/doc/refman/5.6/en/forcing-innodb-recovery.html
+InnoDB: for more information.
+2018-03-01 13:19:06 17436 [Note] InnoDB:  Percona XtraDB (http://www.percona.com) 5.6.36-82.2 started; log sequence number 2707202
+2018-03-01 13:19:06 15912 [Note] InnoDB: Dumping buffer pool(s) not yet started
+2018-03-01 13:19:06 17436 [Note] Plugin 'FEEDBACK' is disabled.
+2018-03-01 13:19:06 17436 [Note] Server socket created on IP: '::'.
