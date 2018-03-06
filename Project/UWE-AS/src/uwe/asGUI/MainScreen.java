@@ -114,6 +114,29 @@ public class MainScreen extends javax.swing.JFrame {
 
     private void disableElementsForUserLevel() {
         switch (UWEAS.currentUser.getAccountLevel()) {
+            case 1: // Warden
+                textbox_Hall_Name.setEditable(false);
+                textbox_Hall_Number.setEditable(false);
+                textbox_Hall_Address.setEditable(false);
+                textbox_Hall_Telephone.setEditable(false);
+                comboBox_Hall_Warden.setEnabled(false);
+                button_Hall_Update.setEnabled(false);
+                button_Hall_Delete.setEnabled(false);
+                button_Hall_Create.setEnabled(false);
+                textbox_Room_Rate.setEditable(false);
+                button_Room_Update.setEnabled(false);
+                button_Room_Delete.setEnabled(false);
+                button_Room_Create.setEnabled(false);
+                textbox_Lease_LeaseNumber.setEditable(false);
+                textbox_Lease_StartDate.setEditable(false);
+                comboBox_Lease_Duration.setEnabled(false);
+                button_Lease_UpdateLease.setEnabled(false);
+                button_Lease_DeleteLease.setEnabled(false);
+                button_Lease_CreateLease.setEnabled(false);
+                button_Nav_ViewApplications.setEnabled(false);
+                break;
+            case 2: // manager
+                break;
             default: // Student
                 textbox_Hall_Name.setEditable(false);
                 textbox_Hall_Number.setEditable(false);
@@ -136,50 +159,23 @@ public class MainScreen extends javax.swing.JFrame {
                 button_Lease_CreateLease.setEnabled(false);
                 button_Nav_ViewApplications.setEnabled(false);
                 break;
-            case 1: // Warden
-                textbox_Hall_Name.setEditable(false);
-                textbox_Hall_Number.setEditable(false);
-                textbox_Hall_Address.setEditable(false);
-                textbox_Hall_Telephone.setEditable(false);
-                comboBox_Hall_Warden.setEnabled(false);
-                button_Hall_Update.setEnabled(false);
-                button_Hall_Delete.setEnabled(false);
-                button_Hall_Create.setEnabled(false);
-                textbox_Room_Rate.setEditable(false);
-                button_Room_Update.setEnabled(false);
-                button_Room_Delete.setEnabled(false);
-                button_Room_Create.setEnabled(false);
-                textbox_Lease_LeaseNumber.setEditable(false);
-                textbox_Lease_StartDate.setEditable(false);
-                comboBox_Lease_Duration.setEnabled(false);
-                button_Lease_UpdateLease.setEnabled(false);
-                button_Lease_DeleteLease.setEnabled(false);
-                button_Lease_CreateLease.setEnabled(false);
-                button_Nav_ViewApplications.setEnabled(false);
-<<<<<<< HEAD
-
-=======
->>>>>>> cc8dbec95ffe0f8f4784a8985385e74f08539a2e
-                break;
-            case 2: // manager
-                break;
         }
     }
 
     private void navButtonClick(int button) {
         int selectedRow = jTable1.getSelectedRow();
         switch (button) {
-            default:
+            default: // Hall View
                 panelHallView.setVisible(true);
                 panelRoomView.setVisible(false);
                 panelLeaseView.setVisible(false);
                 break;
-            case 1:
+            case 1: // Room View
                 panelHallView.setVisible(false);
                 panelRoomView.setVisible(true);
                 panelLeaseView.setVisible(false);
                 break;
-            case 2:
+            case 2: // Lease View
                 panelHallView.setVisible(false);
                 panelRoomView.setVisible(false);
                 panelLeaseView.setVisible(true);
